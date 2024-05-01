@@ -1,0 +1,7 @@
+#!/usr/bin/env nu
+
+def main [] {}
+
+def 'main build react-native' [] {
+  chokidar '../../src/**/*.ts' build.ts -c 'bun run build.ts' --initial
+}

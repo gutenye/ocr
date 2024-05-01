@@ -1,0 +1,6 @@
+{
+  "name": "browser-example",
+  "dependencies": {
+    "@gutenye/ocr-browser": "worksapce:*"
+  }
+}

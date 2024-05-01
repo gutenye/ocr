@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "sourceMap": true,
+    "outDir": "./build"
+  },
+  "include": ["src"],
+  "exclude": ["lib", "src/**/*.test.ts", "**/__tests__"],
+  "tsc-alias": {
+    "resolveFullPaths": true
+  }
+}

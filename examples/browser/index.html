@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OCR Example</title>
+    <link href="/index.css" type="text/css" rel="stylesheet" />
+  </head>
+  <body>
+    <h1 id="title">OCR is Loading</h1>
+    <div>
+      <input type="file" id="input-image" />
+      <br />
+      <div id="performance"></div>
+    </div>
+    <div class="result">
+      <img id="result-image" />
+      <pre id="result-text"></pre>
+    </div>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script> -->
+    <script src="/browser.js"></script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+#!/usr/bin/env nu
+
+def 'main' [] {}
+
+def 'main start' [
+  path: string = 'assets/cn-01.jpg'
+] {
+  rm -rf output
+  bun run node.ts $path
+}

@@ -1,0 +1,15 @@
+#!/usr/bin/env nu
+
+def main [] {}
+
+def 'main build' [] {
+  rm -rf build
+  do -i { bun run tsc --project tsconfig.build.json }
+  bun run tsc-alias --project tsconfig.build.json
+}
+
+def 'main publish' [] {
+  # build by scripts.prepublishOnly
+  npm publish
+}
+

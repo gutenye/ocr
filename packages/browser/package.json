@@ -1,0 +1,27 @@
+{
+  "name": "@gutenye/ocr-browser",
+  "version": "1.0.0",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gutenye/ocr.git",
+    "directory": "packages/browser"
+  },
+  "exports": {
+    "bun": "./src/index.ts",
+    "default": "./build/index.js"
+  },
+  "files": [
+    "src",
+    "build",
+    "tsconfig.json",
+    "!**/__tests__"
+  ],
+  "scripts": {
+    "prepublishOnly": "./ake build"
+  },
+  "dependencies": {
+    "onnxruntime-web": "^1.17.3"
+  }
+}

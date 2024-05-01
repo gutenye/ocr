@@ -1,0 +1,36 @@
+{
+  "name": "@gutenye/ocr-common",
+  "version": "1.0.1",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gutenye/ocr.git",
+    "directory": "packages/common"
+  },
+  "exports": {
+    ".": {
+      "bun": "./src/index.ts",
+      "default": "./build/index.js"
+    },
+    "./use-default-models.node": {
+      "bun": "./src/use-default-models.node.ts",
+      "default": "./build/use-default-models.node.js"
+    }
+  },
+  "files": [
+    "assets",
+    "src",
+    "build",
+    "tsconfig.json",
+    "!**/__tests__"
+  ],
+  "scripts": {
+    "prepublishOnly": "./ake build"
+  },
+  "dependencies": {
+    "@techstark/opencv-js": "^4.9.0-release.3",
+    "js-clipper": "^1.0.1",
+    "tiny-invariant": "^1.3.3"
+  }
+}

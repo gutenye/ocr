@@ -1,0 +1,18 @@
+#!/usr/bin/env nu
+
+def main [] {}
+
+def 'main build' [] {
+  bun run scripts/build.ts
+}
+
+def 'main node' [] {
+  cd examples/node
+  ./ake start
+}
+
+def 'main browser' [] {
+  cd examples/browser
+  ./ake build
+  ./ake start
+}

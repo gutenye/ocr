@@ -1,0 +1,29 @@
+{
+  "name": "@gutenye/ocr-node",
+  "version": "1.0.2",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gutenye/ocr.git",
+    "directory": "packages/node"
+  },
+  "exports": {
+    "bun": "./src/index.ts",
+    "default": "./build/index.js"
+  },
+  "files": [
+    "src",
+    "build",
+    "tsconfig.json",
+    "!**/__tests__"
+  ],
+  "scripts": {
+    "prepublishOnly": "./ake build"
+  },
+  "dependencies": {
+    "sharp": "^0.33.3",
+    "onnxruntime-node": "^1.17.3-rev.1",
+    "@gutenye/ocr-common": "^1.0.0"
+  }
+}

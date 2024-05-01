@@ -1,0 +1,18 @@
+#!/usr/bin/env nu
+
+$env.DEFAULT_IMAGE_PATH = '/assets/cn-01.jpg'
+
+def main [] {}
+
+def 'main build:watch' [] {
+  chokidar '../../src/**/*.ts' 'web.ts' 'build.ts' -c 'bun run build.ts' --initial
+}
+
+def 'main start' [] {
+  bun run build.ts
+  main start:prod --header "Cache-Control:no-cache"
+}
+
+def --wrapped 'main start:prod' [...args] {
+  miniserve build -p 3000 --index index.html --verbose ...$args
+}
