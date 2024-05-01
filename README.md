@@ -1,6 +1,6 @@
 # @gutenye/ocr
 
-> an OCR Javascript library works on Node.js, Browser and React Native
+> an OCR Javascript library runs on Node.js, Browser and React Native
 
 Based on [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)
 
@@ -37,7 +37,7 @@ const result = await ocr.detect(imageUrl)
 
 ### React Native
 
-Due to opencv does not work on React Native. You need to implement the [detectBoxes](./common/src/splitIntoLineImages.ts) method by yourself
+Due to opencv does not work on React Native. You need to implement the [detectBoxes](./packages/common/src/splitIntoLineImages.ts) method by yourself
 
 ## Related Projects
 
