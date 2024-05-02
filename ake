@@ -6,9 +6,9 @@ def 'main build' [] {
   bun run scripts/build.ts
 }
 
-def 'main node' [] {
+def --wrapped 'main node' [...args] {
   cd examples/node
-  ./ake start
+  ./ake start ...$args
 }
 
 def 'main browser' [] {

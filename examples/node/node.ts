@@ -8,6 +8,7 @@ async function main() {
   await fs.mkdir('output', { recursive: true })
   console.time('ocr')
   const result = await ocr.detect(imagePath, { isDebug: true })
+  console.log(result)
   console.timeEnd('ocr')
 
   console.log(result.map((v) => `${v.mean.toFixed(2)} ${v.text}`).join('\n'))
