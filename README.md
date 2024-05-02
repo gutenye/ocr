@@ -27,8 +27,8 @@ bun add @gutenye/ocr-browser
 import Ocr from '@gutenye/ocr-browser'
 const ocr = await Ocr.create({
   models: {
-    detectionPath: '/assets/ch_PP-OCRv3_det_infer.onnx',
-    recognitionPath: '/assets/ch_PP-OCRv3_rec_infer.onnx',
+    detectionPath: '/assets/ch_PP-OCRv4_det_infer.onnx',
+    recognitionPath: '/assets/ch_PP-OCRv4_rec_infer.onnx',
     dictionaryPath: '/assets/ppocr_keys_v1.txt'
   }
 })
