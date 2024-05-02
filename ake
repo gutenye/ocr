@@ -13,6 +13,5 @@ def --wrapped 'main node' [...args] {
 
 def 'main browser' [] {
   cd examples/browser
-  ./ake build
   ./ake start
 }
