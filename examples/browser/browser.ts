@@ -52,7 +52,6 @@ function createApp(
     performanceEl.textContent = `Performance: ${duration}ms (Close Chrome DevTools for better perlrmance)`
   }
 
-  console.log(1, process.env.DEFAULT_IMAGE_PATH)
   if (process.env.DEFAULT_IMAGE_PATH) {
     handleChange(process.env.DEFAULT_IMAGE_PATH)
   }
