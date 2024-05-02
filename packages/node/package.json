@@ -1,6 +1,7 @@
 {
   "name": "@gutenye/ocr-node",
-  "version": "1.0.5",
+  "description": "High accurate text detection (OCR) Javascript/Typescript library that runs on Node.js, Browser, and React Native. Based on PaddleOCR and ONNX runtime",
+  "version": "1.2.0",
   "type": "module",
   "license": "MIT",
   "repository": {
@@ -22,8 +23,8 @@
     "prepublishOnly": "./ake build"
   },
   "dependencies": {
-    "sharp": "^0.33.3",
+    "@gutenye/ocr-common": "^1.2.0",
     "onnxruntime-node": "^1.17.3-rev.1",
-    "@gutenye/ocr-common": "^1.0.0"
+    "sharp": "^0.33.3"
   }
 }
