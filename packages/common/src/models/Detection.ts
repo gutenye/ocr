@@ -1,8 +1,8 @@
+import type { Tensor } from 'onnxruntime-common'
 import { ImageRaw, InferenceSession } from '#/backend'
 import { splitIntoLineImages } from '#/splitIntoLineImages'
-import { Tensor } from 'onnxruntime-common'
+import type { ModelBaseConstructorArgs, Size } from '#/types'
 import { ModelBase } from './ModelBase'
-import type { Size, ModelBaseConstructorArgs } from '#/types'
 
 const BASE_SIZE = 32
 
@@ -25,7 +25,7 @@ export class Detection extends ModelBase {
     //   - image width and height must be a multiple of 32
     //   - bigger image -> more accurate result, but takes longer time
     // inputImage = await Image.resize(image, multipleOfBaseSize(image, { maxSize: 960 }))
-    let inputImage = await image.resize(multipleOfBaseSize(image))
+    const inputImage = await image.resize(multipleOfBaseSize(image))
     this.debugImage(inputImage, './output/out1-multiple-of-base-size.jpg')
 
     // Covert image data to model data
@@ -59,10 +59,7 @@ export class Detection extends ModelBase {
   }
 }
 
-function multipleOfBaseSize(
-  image: ImageRaw,
-  { maxSize }: { maxSize?: number } = {},
-): Size {
+function multipleOfBaseSize(image: ImageRaw, { maxSize }: { maxSize?: number } = {}): Size {
   let width = image.width
   let height = image.height
   if (maxSize && Math.max(width, height) > maxSize) {
@@ -76,10 +73,7 @@ function multipleOfBaseSize(
     Math.ceil(width / BASE_SIZE) * BASE_SIZE,
     BASE_SIZE,
   )
-  const newHeight = Math.max(
-    Math.ceil(height / BASE_SIZE) * BASE_SIZE,
-    BASE_SIZE,
-  )
+  const newHeight = Math.max(Math.ceil(height / BASE_SIZE) * BASE_SIZE, BASE_SIZE)
   return { width: newWidth, height: newHeight }
 }
 

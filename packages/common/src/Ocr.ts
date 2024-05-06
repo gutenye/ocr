@@ -1,5 +1,5 @@
-import { Detection, Recognition } from './models'
 import invariant from 'tiny-invariant'
+import { Detection, Recognition } from './models'
 
 export class Ocr {
   static DEFAULT_DETECTION_PATH: string
@@ -17,11 +17,9 @@ export class Ocr {
   } = {}) {
     const detectionPath = this.DEFAULT_DETECTION_PATH || models?.detectionPath
     invariant(detectionPath, 'detectionPath is required')
-    const recognitionPath =
-      this.DEFAULT_RECOGINTION_PATH || models?.recognitionPath
+    const recognitionPath = this.DEFAULT_RECOGINTION_PATH || models?.recognitionPath
     invariant(recognitionPath, 'recognitionPath is required')
-    const dictionaryPath =
-      this.DEFAULT_DICTIONARY_PATH || models?.dictionaryPath
+    const dictionaryPath = this.DEFAULT_DICTIONARY_PATH || models?.dictionaryPath
     invariant(dictionaryPath, 'dictionaryPath is required')
 
     const detection = await Detection.create({

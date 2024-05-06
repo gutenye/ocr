@@ -19,13 +19,7 @@
       "default": "./build/use-default-models.node.js"
     }
   },
-  "files": [
-    "assets",
-    "src",
-    "build",
-    "tsconfig.json",
-    "!**/__tests__"
-  ],
+  "files": ["assets", "src", "build", "tsconfig.json", "!**/__tests__"],
   "scripts": {
     "prepublishOnly": "./ake build"
   },

@@ -6,8 +6,7 @@ import type {
 
 let FileUtils: FileUtilsType = undefined as unknown as FileUtilsType
 let ImageRaw: ImageRawType = undefined as unknown as ImageRawType
-let InferenceSession: InferenceSessionType =
-  undefined as unknown as InferenceSessionType
+let InferenceSession: InferenceSessionType = undefined as unknown as InferenceSessionType
 
 export function registerBackend(backend: {
   FileUtils: FileUtilsType

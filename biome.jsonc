@@ -3,6 +3,10 @@
   "organizeImports": {
     "enabled": true
   },
+  "formatter": {
+    "indentStyle": "space",
+    "lineWidth": 120
+  },
   "linter": {
     "enabled": true,
     "rules": {
@@ -14,5 +18,13 @@
       "quoteStyle": "single",
       "semicolons": "asNeeded"
     }
+  },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignore": ["ios", "android"]
   }
 }

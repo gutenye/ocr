@@ -29,12 +29,8 @@ function createApp(
 ) {
   const resultTextEl = document.querySelector('#result-text') as HTMLDivElement
   const performanceEl = document.querySelector('#performance') as HTMLDivElement
-  const resultImageEl = document.querySelector(
-    '#result-image',
-  ) as HTMLImageElement
-  const inputImageEl = document.querySelector(
-    '#input-image',
-  ) as HTMLImageElement
+  const resultImageEl = document.querySelector('#result-image') as HTMLImageElement
+  const inputImageEl = document.querySelector('#input-image') as HTMLImageElement
   inputImageEl.addEventListener('change', async (event) => {
     const file = (event.target as HTMLInputElement).files?.[0]
     if (!file) {

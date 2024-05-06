@@ -1,9 +1,8 @@
 {
   "name": "@gutenye/ocr",
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": ["packages/*"],
   "devDependencies": {
+    "@biomejs/biome": "1.7.3",
     "@types/bun": "latest",
     "tsc-alias": "^1.8.8",
     "typescript": "^5.0.0"

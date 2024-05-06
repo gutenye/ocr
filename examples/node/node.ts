@@ -1,6 +1,6 @@
+import filePath from 'path'
 import Ocr from '@gutenye/ocr-node'
 import fs from 'fs/promises'
-import filePath from 'path'
 
 async function main() {
   const ocr = await Ocr.create()

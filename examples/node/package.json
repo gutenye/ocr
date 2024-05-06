@@ -1,7 +1,7 @@
 {
-	"name": "node-example",
-	"type": "module",
-	"dependencies": {
-		"@gutenye/ocr-node": "^1.0.0"
-	}
+  "name": "node-example",
+  "type": "module",
+  "dependencies": {
+    "@gutenye/ocr-node": "^1.0.0"
+  }
 }

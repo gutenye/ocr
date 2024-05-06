@@ -1,5 +1,5 @@
 import { ImageRawBase } from '@gutenye/ocr-common'
-import type { ImageRawData, SizeOption, LineImage } from '@gutenye/ocr-common'
+import type { ImageRawData, LineImage, SizeOption } from '@gutenye/ocr-common'
 import invariant from 'tiny-invariant'
 
 export class ImageRaw extends ImageRawBase {
@@ -39,10 +39,7 @@ export class ImageRaw extends ImageRawBase {
   }
 
   async resize({ width, height }: SizeOption) {
-    invariant(
-      width !== undefined || height !== undefined,
-      'both width and height are undefined',
-    )
+    invariant(width !== undefined || height !== undefined, 'both width and height are undefined')
     const newWidth = width || Math.round((this.width / this.height) * height!)
     const newHeight = height || Math.round((this.height / this.width) * width!)
     const newCanvas = document.createElement('canvas')
@@ -92,24 +89,14 @@ export class ImageRaw extends ImageRawBase {
   }
 }
 
-function canvasDrawImage(
-  canvas: HTMLCanvasElement,
-  image: CanvasImageSource,
-  width?: number,
-  height?: number,
-) {
+function canvasDrawImage(canvas: HTMLCanvasElement, image: CanvasImageSource, width?: number, height?: number) {
   canvas.width = width || image.width
   canvas.height = height || image.height
   const ctx = canvas.getContext('2d')!
   ctx.drawImage(image, 0, 0, canvas.width, canvas.height)
 }
 
-function canvasPutImageData(
-  canvas: HTMLCanvasElement,
-  imageData: ImageData,
-  width?: number,
-  height?: number,
-) {
+function canvasPutImageData(canvas: HTMLCanvasElement, imageData: ImageData, width?: number, height?: number) {
   const ctx = canvas.getContext('2d')!
   canvas.width = width || imageData.width
   canvas.height = height || imageData.height
@@ -117,9 +104,7 @@ function canvasPutImageData(
 }
 
 function canvasGetImageData(canvas: HTMLCanvasElement) {
-  return canvas
-    .getContext('2d')!
-    .getImageData(0, 0, canvas.width, canvas.height)
+  return canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height)
 }
 
 async function imageFromUrl(url: string) {

@@ -1,5 +1,5 @@
-import clipper from 'js-clipper'
 import cv from '@techstark/opencv-js'
+import clipper from 'js-clipper'
 import { ImageRaw } from '#/backend'
 import type { LineImage } from '#/types'
 
@@ -7,48 +7,34 @@ type pointType = [number, number]
 type BoxType = [pointType, pointType, pointType, pointType]
 type pointsType = pointType[]
 
-export async function splitIntoLineImages(
-  image: ImageRaw,
-  sourceImage: ImageRaw,
-): Promise<LineImage[]> {
+export async function splitIntoLineImages(image: ImageRaw, sourceImage: ImageRaw): Promise<LineImage[]> {
   const w = image.width
   const h = image.height
   const srcData = sourceImage
 
-  let edgeRect: { box: BoxType; image: ImageRaw }[] = []
+  const edgeRect: { box: BoxType; image: ImageRaw }[] = []
 
-  let src = cvImread(image)
+  const src = cvImread(image)
 
   cv.cvtColor(src, src, cv.COLOR_RGBA2GRAY, 0)
-  let contours = new cv.MatVector()
-  let hierarchy = new cv.Mat()
+  const contours = new cv.MatVector()
+  const hierarchy = new cv.Mat()
 
-  cv.findContours(
-    src,
-    contours,
-    hierarchy,
-    cv.RETR_LIST,
-    cv.CHAIN_APPROX_SIMPLE,
-  )
+  cv.findContours(src, contours, hierarchy, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
 
   for (let i = 0; i < contours.size(); i++) {
-    let minSize = 3
-    let cnt = contours.get(i)
-    let { points, sside } = getMiniBoxes(cnt)
+    const minSize = 3
+    const cnt = contours.get(i)
+    const { points, sside } = getMiniBoxes(cnt)
     if (sside < minSize) continue
     // TODO sort fast
 
-    let clipBox = unclip(points)
+    const clipBox = unclip(points)
 
-    const boxMap = new cv.matFromArray(
-      clipBox.length / 2,
-      1,
-      cv.CV_32SC2,
-      clipBox,
-    )
+    const boxMap = new cv.matFromArray(clipBox.length / 2, 1, cv.CV_32SC2, clipBox)
 
     const resultObj = getMiniBoxes(boxMap)
-    let box = resultObj.points
+    const box = resultObj.points
     if (resultObj.sside < minSize + 2) {
       continue
     }
@@ -56,24 +42,24 @@ export async function splitIntoLineImages(
       return Math.max(min, Math.min(n, max))
     }
 
-    let rx = srcData.width / w
-    let ry = srcData.height / h
+    const rx = srcData.width / w
+    const ry = srcData.height / h
 
     for (let i = 0; i < box.length; i++) {
       box[i][0] *= rx
       box[i][1] *= ry
     }
 
-    let box1 = orderPointsClockwise(box)
+    const box1 = orderPointsClockwise(box)
     box1.forEach((item) => {
       item[0] = clip(Math.round(item[0]), 0, srcData.width)
       item[1] = clip(Math.round(item[1]), 0, srcData.height)
     })
-    let rect_width = int(linalgNorm(box1[0], box1[1]))
-    let rect_height = int(linalgNorm(box1[0], box1[3]))
+    const rect_width = int(linalgNorm(box1[0], box1[1]))
+    const rect_height = int(linalgNorm(box1[0], box1[3]))
     if (rect_width <= 3 || rect_height <= 3) continue
 
-    let c = getRotateCropImage(srcData, box)
+    const c = getRotateCropImage(srcData, box)
 
     edgeRect.push({
       box,
@@ -90,9 +76,9 @@ export async function splitIntoLineImages(
 
 function getMiniBoxes(contour: any) {
   const boundingBox = cv.minAreaRect(contour)
-  const points = Array.from(
-    boxPoints(boundingBox.center, boundingBox.size, boundingBox.angle),
-  ).sort((a, b) => a[0] - b[0]) as pointsType
+  const points = Array.from(boxPoints(boundingBox.center, boundingBox.size, boundingBox.angle)).sort(
+    (a, b) => a[0] - b[0],
+  ) as pointsType
 
   let index_1 = 0,
     index_2 = 1,
@@ -113,12 +99,7 @@ function getMiniBoxes(contour: any) {
     index_3 = 2
   }
 
-  const box = [
-    points[index_1],
-    points[index_2],
-    points[index_3],
-    points[index_4],
-  ] as BoxType
+  const box = [points[index_1], points[index_2], points[index_3], points[index_4]] as BoxType
   const side = Math.min(boundingBox.size.height, boundingBox.size.width)
   return { points: box, sside: side }
 }
@@ -139,11 +120,7 @@ function unclip(box: pointsType) {
     tmpArr.push(obj)
   })
   const offset = new clipper.ClipperOffset()
-  offset.AddPath(
-    tmpArr,
-    clipper.JoinType.jtRound,
-    clipper.EndType.etClosedPolygon,
-  )
+  offset.AddPath(tmpArr, clipper.JoinType.jtRound, clipper.EndType.etClosedPolygon)
   const expanded: { X: number; Y: number }[][] = []
   offset.Execute(expanded, distance)
   let expandedArr: pointsType = []
@@ -182,18 +159,8 @@ function int(num: number) {
 }
 
 function getRotateCropImage(imageRaw: ImageRaw, points: BoxType): ImageRaw {
-  const img_crop_width = int(
-    Math.max(
-      linalgNorm(points[0], points[1]),
-      linalgNorm(points[2], points[3]),
-    ),
-  )
-  const img_crop_height = int(
-    Math.max(
-      linalgNorm(points[0], points[3]),
-      linalgNorm(points[1], points[2]),
-    ),
-  )
+  const img_crop_width = int(Math.max(linalgNorm(points[0], points[1]), linalgNorm(points[2], points[3])))
+  const img_crop_height = int(Math.max(linalgNorm(points[0], points[3]), linalgNorm(points[1], points[2])))
   const pts_std = [
     [0, 0],
     [img_crop_width, 0],
@@ -210,15 +177,7 @@ function getRotateCropImage(imageRaw: ImageRaw, points: BoxType): ImageRaw {
   const dst = new cv.Mat()
   const dsize = new cv.Size(img_crop_width, img_crop_height)
   // 透视转换
-  cv.warpPerspective(
-    src,
-    dst,
-    M,
-    dsize,
-    cv.INTER_CUBIC,
-    cv.BORDER_REPLICATE,
-    new cv.Scalar(),
-  )
+  cv.warpPerspective(src, dst, M, dsize, cv.INTER_CUBIC, cv.BORDER_REPLICATE, new cv.Scalar())
 
   const dst_img_height = dst.matSize[0]
   const dst_img_width = dst.matSize[1]
@@ -229,15 +188,7 @@ function getRotateCropImage(imageRaw: ImageRaw, points: BoxType): ImageRaw {
     const dsize_rot = new cv.Size(dst.rows, dst.cols)
     const center = new cv.Point(dst.cols / 2, dst.cols / 2)
     const M = cv.getRotationMatrix2D(center, 90, 1)
-    cv.warpAffine(
-      dst,
-      dst_rot,
-      M,
-      dsize_rot,
-      cv.INTER_CUBIC,
-      cv.BORDER_REPLICATE,
-      new cv.Scalar(),
-    )
+    cv.warpAffine(dst, dst_rot, M, dsize_rot, cv.INTER_CUBIC, cv.BORDER_REPLICATE, new cv.Scalar())
   }
 
   src.delete()
@@ -250,11 +201,7 @@ function getRotateCropImage(imageRaw: ImageRaw, points: BoxType): ImageRaw {
   return cvImshow(dst_rot || dst)
 }
 
-function boxPoints(
-  center: { x: number; y: number },
-  size: { width: number; height: number },
-  angle: number,
-) {
+function boxPoints(center: { x: number; y: number }, size: { width: number; height: number }, angle: number) {
   const width = size.width
   const height = size.height
 
