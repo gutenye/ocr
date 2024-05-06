@@ -6,9 +6,6 @@
       "#root/*": ["./*"]
     },
 
-    "moduleSuffixes": [".browser", ""],
-
-    // Enable latest features
     "lib": ["ESNext", "DOM"],
     "target": "ESNext",
     "module": "ESNext",
