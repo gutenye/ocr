@@ -1,7 +1,7 @@
 import Ocr, { registerBackend } from '@gutenye/ocr-common'
+import { InferenceSession } from 'onnxruntime-web'
 import { FileUtils } from './FileUtils'
 import { ImageRaw } from './ImageRaw'
-import { InferenceSession } from 'onnxruntime-web'
 
 registerBackend({ FileUtils, ImageRaw, InferenceSession })
 

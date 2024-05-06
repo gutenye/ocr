@@ -1,12 +1,7 @@
+import type { Tensor } from 'onnxruntime-common'
 import { FileUtils, InferenceSession } from '#/backend'
-import { Tensor } from 'onnxruntime-common'
+import type { Dictionary, Line, LineImage, ModelBaseConstructorArgs } from '#/types'
 import { ModelBase } from './ModelBase'
-import type {
-  LineImage,
-  Line,
-  Dictionary,
-  ModelBaseConstructorArgs,
-} from '#/types'
 
 export class Recognition extends ModelBase {
   #dictionary: Dictionary
@@ -69,8 +64,8 @@ export class Recognition extends ModelBase {
 
   decodeText(output: Tensor) {
     const data = output
-    let predLen = data.dims[2]
-    let line: Line[] = []
+    const predLen = data.dims[2]
+    const line: Line[] = []
     let ml = data.dims[0] - 1
     for (let l = 0; l < data.data.length; l += predLen * data.dims[1]) {
       const predsIdx: number[] = []
@@ -78,7 +73,7 @@ export class Recognition extends ModelBase {
 
       for (let i = l; i < l + predLen * data.dims[1]; i += predLen) {
         const tmpArr = data.data.slice(i, i + predLen) as Float32Array
-        const tmpMax = tmpArr.reduce((a, b) => Math.max(a, b), -Infinity)
+        const tmpMax = tmpArr.reduce((a, b) => Math.max(a, b), Number.NEGATIVE_INFINITY)
         const tmpIdx = tmpArr.indexOf(tmpMax)
         predsProb.push(tmpMax)
         predsIdx.push(tmpIdx)
@@ -90,12 +85,7 @@ export class Recognition extends ModelBase {
   }
 }
 
-function decode(
-  dictionary: string[],
-  textIndex: number[],
-  textProb: number[],
-  isRemoveDuplicate: boolean,
-) {
+function decode(dictionary: string[], textIndex: number[], textProb: number[], isRemoveDuplicate: boolean) {
   const ignoredTokens = [0]
   const charList = []
   const confList = []
@@ -137,9 +127,9 @@ function calculateBox({
 }) {
   let mainLine = lines
   const box = lineImages
-  for (let i in mainLine) {
-    let b = box[mainLine.length - Number(i) - 1].box
-    for (let p of b) {
+  for (const i in mainLine) {
+    const b = box[mainLine.length - Number(i) - 1].box
+    for (const p of b) {
       p[0] = p[0]
       p[1] = p[1]
     }
@@ -151,9 +141,9 @@ function calculateBox({
 }
 
 function afAfRec(l: Line[]) {
-  let line: Line[] = []
-  let ind: Map<BoxType, number> = new Map()
-  for (let i in l) {
+  const line: Line[] = []
+  const ind: Map<BoxType, number> = new Map()
+  for (const i in l) {
     ind.set(l[i].box, Number(i))
   }
 
@@ -198,13 +188,13 @@ function afAfRec(l: Line[]) {
     return result
   }
 
-  let boxes = groupBoxesByMidlineDifference([...ind.keys()])
+  const boxes = groupBoxesByMidlineDifference([...ind.keys()])
 
-  for (let i of boxes) {
-    let t = []
+  for (const i of boxes) {
+    const t = []
     let m = 0
-    for (let j of i) {
-      let x = l[ind.get(j)]
+    for (const j of i) {
+      const x = l[ind.get(j)]
       t.push(x.text)
       m += x.mean
     }

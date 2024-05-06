@@ -9,8 +9,5 @@ export default function useDefaultModels() {
 }
 
 function resolve(path: string) {
-  return filePath.resolve(
-    filePath.dirname(fileURLToPath(import.meta.url)),
-    path,
-  )
+  return filePath.resolve(filePath.dirname(fileURLToPath(import.meta.url)), path)
 }

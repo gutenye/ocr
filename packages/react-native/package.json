@@ -13,12 +13,7 @@
     "react-native": "./src/index.ts",
     "default": "./build/index.js"
   },
-  "files": [
-    "src",
-    "build",
-    "tsconfig.json",
-    "!**/__tests__"
-  ],
+  "files": ["src", "build", "tsconfig.json", "!**/__tests__"],
   "scripts": {
     "prepublishOnly": "./ake build"
   },

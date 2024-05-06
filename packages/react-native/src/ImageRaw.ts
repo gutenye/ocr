@@ -1,5 +1,5 @@
 import { ImageRawBase } from '@gutenye/ocr-common'
-import type { ImageRawData, SizeOption, LineImage } from '@gutenye/ocr-common'
+import type { ImageRawData, LineImage, SizeOption } from '@gutenye/ocr-common'
 
 export class ImageRaw extends ImageRawBase {
   static async open(path: string): Promise<ImageRaw> {}

@@ -1,7 +1,7 @@
-import sharp from 'sharp'
 import filePath from 'node:path'
 import { ImageRawBase } from '@gutenye/ocr-common'
-import type { ImageRawData, SizeOption, LineImage } from '@gutenye/ocr-common'
+import type { ImageRawData, LineImage, SizeOption } from '@gutenye/ocr-common'
+import sharp from 'sharp'
 
 export class ImageRaw extends ImageRawBase {
   #sharp: sharp.Sharp
@@ -41,9 +41,7 @@ export class ImageRaw extends ImageRawBase {
           .join('\n')}
       </svg>
     `
-    return this.#apply(
-      this.#sharp.composite([{ input: Buffer.from(svg), left: 0, top: 0 }]),
-    )
+    return this.#apply(this.#sharp.composite([{ input: Buffer.from(svg), left: 0, top: 0 }]))
   }
 
   async #apply(sharp: sharp.Sharp) {

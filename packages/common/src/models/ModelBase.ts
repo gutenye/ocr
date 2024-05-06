@@ -1,11 +1,5 @@
 import { Tensor } from 'onnxruntime-common'
-import type {
-  ModelData,
-  InferenceSession,
-  ImageRaw,
-  ReshapeOptions,
-  ModelBaseConstructorArgs,
-} from '#/types'
+import type { ImageRaw, InferenceSession, ModelBaseConstructorArgs, ModelData, ReshapeOptions } from '#/types'
 
 export class ModelBase {
   isDebug: boolean
@@ -27,18 +21,10 @@ export class ModelBase {
 
   #prepareInput(modelData: ModelData) {
     const input = Float32Array.from(modelData.data)
-    return new Tensor('float32', input, [
-      1,
-      3,
-      modelData.height,
-      modelData.width,
-    ])
+    return new Tensor('float32', input, [1, 3, modelData.height, modelData.width])
   }
 
-  imageToInput(
-    image: ImageRaw,
-    { mean = [0, 0, 0], std = [1, 1, 1] }: ReshapeOptions,
-  ): ModelData {
+  imageToInput(image: ImageRaw, { mean = [0, 0, 0], std = [1, 1, 1] }: ReshapeOptions): ModelData {
     const R: number[] = []
     const G: number[] = []
     const B: number[] = []

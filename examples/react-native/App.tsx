@@ -1,6 +1,6 @@
 import camera from 'expo-camera'
-import * as ort from 'onnxruntime-react-native'
 import { StatusBar } from 'expo-status-bar'
+import * as ort from 'onnxruntime-react-native'
 import { StyleSheet, Text, View } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { Ocr } from '../build/ocr'
