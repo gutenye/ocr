@@ -2,6 +2,10 @@
 
 def main [] {}
 
-def 'main build react-native' [] {
+def 'main build' [] {
   chokidar '../../src/**/*.ts' build.ts -c 'bun run build.ts' --initial
+}
+
+def 'main start' [] }
+  
 }
