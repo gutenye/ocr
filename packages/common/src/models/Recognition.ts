@@ -1,6 +1,6 @@
 import type { Tensor } from 'onnxruntime-common'
-import { FileUtils, InferenceSession } from '#/backend'
-import type { Dictionary, Line, LineImage, ModelBaseConstructorArgs } from '#/types'
+import { FileUtils, InferenceSession } from '#common/backend'
+import type { Dictionary, Line, LineImage, ModelBaseConstructorArgs } from '#common/types'
 import { ModelBase } from './ModelBase'
 
 export class Recognition extends ModelBase {

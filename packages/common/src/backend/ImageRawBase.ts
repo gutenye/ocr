@@ -1,4 +1,4 @@
-import type { ImageRawData } from '#/types'
+import type { ImageRawData } from '#common/types'
 
 export class ImageRawBase {
   data: ImageRawData['data']

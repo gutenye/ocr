@@ -11,7 +11,9 @@
   },
   "exports": {
     "bun": "./src/index.ts",
-    "default": "./build/index.js"
+    "node": "./build/index.js",
+    "react-native": "./src/index.ts",
+    "default": "./src/index.ts"
   },
   "files": ["src", "build", "tsconfig.json", "!**/__tests__"],
   "scripts": {

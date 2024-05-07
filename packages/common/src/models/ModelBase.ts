@@ -1,5 +1,5 @@
 import { Tensor } from 'onnxruntime-common'
-import type { ImageRaw, InferenceSession, ModelBaseConstructorArgs, ModelData, ReshapeOptions } from '#/types'
+import type { ImageRaw, InferenceSession, ModelBaseConstructorArgs, ModelData, ReshapeOptions } from '#common/types'
 
 export class ModelBase {
   isDebug: boolean

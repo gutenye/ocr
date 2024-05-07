@@ -3,7 +3,7 @@ import type {
   ImageRaw as ImageRawType,
   InferenceSession as InferenceSessionType,
   SplitIntoLineImages as SplitIntoLineImagesType,
-} from '#/types'
+} from '#common/types'
 
 let FileUtils: FileUtilsType = undefined as unknown as FileUtilsType
 let ImageRaw: ImageRawType = undefined as unknown as ImageRawType
