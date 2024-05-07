@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { ImagePickerButton } from '#example-react-native/ImagePickerButton'
-import { recognize } from '#example-react-native/recognize'
+// import { recognize } from '#example-react-native/recognize'
 import type { ImageDetails } from '#example-react-native/types'
 
 globalThis.FileSystem = FileSystem
@@ -17,8 +17,8 @@ export default function App() {
       if (!image) {
         return
       }
-      const resultText = await recognize(image)
-      setResultText(resultText)
+      // const resultText = await recognize(image)
+      // setResultText(resultText)
     })()
   }, [image])
 
@@ -28,7 +28,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView>
+      <SafeAreaView style={styles.safeAreaView}>
         <View style={styles.container}>
           <ImagePickerButton onChange={handleChange} />
           {image && <Image source={{ uri: image.uri }} style={styles.image} />}
@@ -40,6 +40,9 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  safeAreaView: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
