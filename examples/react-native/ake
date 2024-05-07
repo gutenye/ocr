@@ -1,11 +1,20 @@
 #!/usr/bin/env nu
 
+alias expo = bun run expo
+alias pod-install = bun run pod-install
+
 def main [] {}
 
 def 'main build' [] {
-  chokidar '../../src/**/*.ts' build.ts -c 'bun run build.ts' --initial
+  chokidar '../../packages/**/*.ts' scripts/build.ts -c 'bun run scripts/build.ts' --initial
 }
 
-def 'main start' [] }
-  
+def 'main prebuild' [] {
+  expo prebuild
+  pod-install
+}
+
+
+def 'main start' [] {
+  bun run start
 }
