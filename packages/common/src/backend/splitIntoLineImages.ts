@@ -1,7 +1,7 @@
 import cv from '@techstark/opencv-js'
 import clipper from 'js-clipper'
-import { ImageRaw } from '#/backend'
-import type { LineImage } from '#/types'
+import { ImageRaw } from '#common/backend'
+import type { LineImage } from '#common/types'
 
 type pointType = [number, number]
 type BoxType = [pointType, pointType, pointType, pointType]

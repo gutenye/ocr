@@ -12,7 +12,9 @@
   "exports": {
     ".": {
       "bun": "./src/index.ts",
-      "default": "./build/index.js"
+      "node": "./build/index.js",
+      "react-native": "./src/index.ts",
+      "default": "./src/index.ts"
     },
     "./use-default-models.node": {
       "bun": "./src/use-default-models.node.ts",

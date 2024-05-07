@@ -1,1 +1,3 @@
-../common/tsconfig.build.json
+{
+  "extends": ["./tsconfig.json", "../../tsconfig.build.json"]
+}

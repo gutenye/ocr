@@ -1,8 +1,8 @@
 import { InferenceSession } from 'onnxruntime-common'
-import { ImageRawBase as ImageRaw } from '#/backend/ImageRawBase'
-import type { splitIntoLineImages } from '#/backend/splitIntoLineImages'
+import { ImageRawBase as ImageRaw } from '#common/backend/ImageRawBase'
+import type { splitIntoLineImages } from '#common/backend/splitIntoLineImages'
 
-export { FileUtilsBase as FileUtils } from '#/backend/FileUtilsBase'
+export { FileUtilsBase as FileUtils } from '#common/backend/FileUtilsBase'
 export { ImageRaw, InferenceSession }
 
 export type SplitIntoLineImages = typeof splitIntoLineImages

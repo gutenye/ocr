@@ -1,6 +1,6 @@
 import type { Tensor } from 'onnxruntime-common'
-import { ImageRaw, InferenceSession, splitIntoLineImages } from '#/backend'
-import type { ModelBaseConstructorArgs, Size } from '#/types'
+import { ImageRaw, InferenceSession, splitIntoLineImages } from '#common/backend'
+import type { ModelBaseConstructorArgs, Size } from '#common/types'
 import { ModelBase } from './ModelBase'
 
 const BASE_SIZE = 32
