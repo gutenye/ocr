@@ -1,12 +1,8 @@
-// import Ocr from './ocr-react-native'
-// import Ocr from '@gutenye/ocr-react-native'
-import Ocr from '@gutenye/ocr-common'
 import camera from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, Text, View } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
-
-console.log(':: 1', Ocr)
+import Ocr from '../ocr-react-native'
 
 export default function App() {
   return (
