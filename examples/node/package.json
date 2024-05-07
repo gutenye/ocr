@@ -2,6 +2,6 @@
   "name": "node-example",
   "type": "module",
   "dependencies": {
-    "@gutenye/ocr-node": "link:../../packages/node"
+    "@gutenye/ocr-node": "*"
   }
 }

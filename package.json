@@ -1,6 +1,6 @@
 {
   "name": "@gutenye/ocr",
-  "workspaces": ["packages/*"],
+  "workspaces": ["packages/*", "examples/*"],
   "devDependencies": {
     "@biomejs/biome": "1.7.3",
     "@types/bun": "latest",
