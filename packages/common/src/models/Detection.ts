@@ -15,7 +15,7 @@ export class Detection extends ModelBase {
     super(args)
   }
 
-  async run(path: string, { isDebug } = { isDebug: false }) {
+  async run(path: string, { isDebug }: { isDebug?: boolean } = { isDebug: false }) {
     this.isDebug = isDebug
 
     const image = await ImageRaw.open(path)

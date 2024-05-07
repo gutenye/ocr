@@ -13,3 +13,7 @@ def 'main prebuild' [] {
 def 'main start' [] {
   bun run start
 }
+
+def --wrapped 'main add' [...args] {
+  expo install ...$args
+}
