@@ -12,6 +12,7 @@
     "@gutenye/ocr-react-native": "^1.0.0",
     "expo": "~50.0.14",
     "expo-file-system": "~16.0.9",
+    "expo-image-manipulator": "~11.8.0",
     "expo-image-picker": "~14.7.1",
     "onnxruntime-react-native": "^1.17.3",
     "react": "18.2.0",
