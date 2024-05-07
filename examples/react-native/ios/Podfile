@@ -39,7 +39,7 @@ end
 
 target 'hello' do
   # onnxruntime-react-native @generated begin onnxruntime-react-native - expo prebuild (DO NOT MODIFY) sync-ce29b38a3c17305e25d19d9ab585e42df47e21e3
-  pod 'onnxruntime-react-native', :path => '../node_modules/onnxruntime-react-native'
+  pod 'onnxruntime-react-native', :path => File.dirname(`node --print "require.resolve('onnxruntime-react-native/package.json')"`)
   # onnxruntime-react-native @generated end onnxruntime-react-native
   use_expo_modules!
   config = use_native_modules!
