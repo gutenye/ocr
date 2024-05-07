@@ -24,7 +24,7 @@ export class Recognition extends ModelBase {
     this.#dictionary = dictionary
   }
 
-  async run(lineImages: LineImage[], { isDebug } = { isDebug: false }) {
+  async run(lineImages: LineImage[], { isDebug }: { isDebug?: boolean } = { isDebug: false }) {
     this.isDebug = isDebug
 
     const modelDatas = await Promise.all(
