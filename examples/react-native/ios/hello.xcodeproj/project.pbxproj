@@ -10,7 +10,9 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		1A6FAF8B2BEA537B00BEDEC5 /* resources in Resources */ = {isa = PBXBuildFile; fileRef = 1A6FAF8A2BEA537B00BEDEC5 /* resources */; };
+		1ADC65492BEA5FE10026B7CA /* ch_PP-OCRv4_det_infer.onnx in Resources */ = {isa = PBXBuildFile; fileRef = 1ADC65452BEA5FE10026B7CA /* ch_PP-OCRv4_det_infer.onnx */; };
+		1ADC654A2BEA5FE10026B7CA /* ch_PP-OCRv4_rec_infer.onnx in Resources */ = {isa = PBXBuildFile; fileRef = 1ADC65462BEA5FE10026B7CA /* ch_PP-OCRv4_rec_infer.onnx */; };
+		1ADC654B2BEA5FE10026B7CA /* ppocr_keys_v1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1ADC65472BEA5FE10026B7CA /* ppocr_keys_v1.txt */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		96905EF65AED1B983A6B3ABC /* libPods-hello.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-hello.a */; };
 		AA91D852D6D4473687108770 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB38ABC8220F4044914246A4 /* noop-file.swift */; };
@@ -19,13 +21,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		13B07F961A680F5B00A75B9A /* ocr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = ocr.app; path = OCRExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* OCRExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OCRExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = hello/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = hello/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = hello/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = hello/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = hello/main.m; sourceTree = "<group>"; };
-		1A6FAF8A2BEA537B00BEDEC5 /* resources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = resources; path = ../resources; sourceTree = "<group>"; };
+		1ADC65452BEA5FE10026B7CA /* ch_PP-OCRv4_det_infer.onnx */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ch_PP-OCRv4_det_infer.onnx"; sourceTree = "<group>"; };
+		1ADC65462BEA5FE10026B7CA /* ch_PP-OCRv4_rec_infer.onnx */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ch_PP-OCRv4_rec_infer.onnx"; sourceTree = "<group>"; };
+		1ADC65472BEA5FE10026B7CA /* ppocr_keys_v1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ppocr_keys_v1.txt; sourceTree = "<group>"; };
 		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-hello.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-hello.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C2E3173556A471DD304B334 /* Pods-hello.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hello.debug.xcconfig"; path = "Target Support Files/Pods-hello/Pods-hello.debug.xcconfig"; sourceTree = "<group>"; };
 		7A4D352CD337FB3A3BF06240 /* Pods-hello.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hello.release.xcconfig"; path = "Target Support Files/Pods-hello/Pods-hello.release.xcconfig"; sourceTree = "<group>"; };
@@ -65,6 +69,17 @@
 			name = hello;
 			sourceTree = "<group>";
 		};
+		1ADC65482BEA5FE10026B7CA /* resources */ = {
+			isa = PBXGroup;
+			children = (
+				1ADC65452BEA5FE10026B7CA /* ch_PP-OCRv4_det_infer.onnx */,
+				1ADC65462BEA5FE10026B7CA /* ch_PP-OCRv4_rec_infer.onnx */,
+				1ADC65472BEA5FE10026B7CA /* ppocr_keys_v1.txt */,
+			);
+			name = resources;
+			path = ../resources;
+			sourceTree = "<group>";
+		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -84,7 +99,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				1A6FAF8A2BEA537B00BEDEC5 /* resources */,
+				1ADC65482BEA5FE10026B7CA /* resources */,
 				13B07FAE1A68108700A75B9A /* hello */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
@@ -100,7 +115,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* ocr.app */,
+				13B07F961A680F5B00A75B9A /* OCRExample.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -161,7 +176,7 @@
 			);
 			name = hello;
 			productName = hello;
-			productReference = 13B07F961A680F5B00A75B9A /* ocr.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* OCRExample.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -200,10 +215,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1A6FAF8B2BEA537B00BEDEC5 /* resources in Resources */,
+				1ADC654B2BEA5FE10026B7CA /* ppocr_keys_v1.txt in Resources */,
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
+				1ADC654A2BEA5FE10026B7CA /* ch_PP-OCRv4_rec_infer.onnx in Resources */,
+				1ADC65492BEA5FE10026B7CA /* ch_PP-OCRv4_det_infer.onnx in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -333,6 +350,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = hello/hello.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 44A3HRA8P5;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -353,7 +371,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.anonymous.ocr;
-				PRODUCT_NAME = "OCRExample";
+				PRODUCT_NAME = OCRExample;
 				SWIFT_OBJC_BRIDGING_HEADER = "hello/hello-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -370,6 +388,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = hello/hello.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 44A3HRA8P5;
 				INFOPLIST_FILE = hello/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = OCR;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
@@ -385,7 +404,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.anonymous.ocr;
-				PRODUCT_NAME = "OCRExample";
+				PRODUCT_NAME = OCRExample;
 				SWIFT_OBJC_BRIDGING_HEADER = "hello/hello-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
