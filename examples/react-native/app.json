@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "example-react-native",
+    "name": "OCR Example",
     "slug": "ocr",
     "version": "1.0.0",
     "orientation": "portrait",

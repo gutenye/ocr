@@ -1,6 +1,5 @@
 import type { Tensor } from 'onnxruntime-common'
-import { ImageRaw, InferenceSession } from '#/backend'
-import { splitIntoLineImages } from '#/splitIntoLineImages'
+import { ImageRaw, InferenceSession, splitIntoLineImages } from '#/backend'
 import type { ModelBaseConstructorArgs, Size } from '#/types'
 import { ModelBase } from './ModelBase'
 

@@ -1,11 +1,11 @@
 import fs from 'node:fs/promises'
 
 const result = await Bun.build({
-  entrypoints: ['./ocr.ts'],
+  entrypoints: ['../../packages/react-native/src/index.ts'],
   outdir: './build',
-  target: 'browser',
+  target: 'node',
+  bundler
   sourcemap: 'external',
-  external: ['@techstark/opencv-js'],
 })
 
 if (result.success) {
@@ -14,4 +14,4 @@ if (result.success) {
   throw new AggregateError(result.logs, 'Build failed')
 }
 
-await fs.appendFile('./build/ocr.js', '//# sourceMappingURL=/ocr.js.map')
+await fs.appendFile('./build/index.js', '//# sourceMappingURL=index.js.map')
