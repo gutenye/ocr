@@ -5,15 +5,10 @@ alias pod-install = bun run pod-install
 
 def main [] {}
 
-def 'main build' [] {
-  chokidar '../../packages/**/*.ts' scripts/build.ts -c 'bun run scripts/build.ts' --initial
-}
-
 def 'main prebuild' [] {
   expo prebuild
   pod-install
 }
-
 
 def 'main start' [] {
   bun run start
