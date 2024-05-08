@@ -2,18 +2,21 @@
 
 def main [] {}
 
-def 'main build' [] {
-  bun run scripts/build.ts
+def 'main publish' [version: string] {
+  sed -i $'s/"version": ".*"/"version": "($version)"/' package.json
+  cd packages/browser
+  sed -i $'s/"version": ".*"/"version": "($version)"/' package.json
+  ./ake publish
 }
 
 # Run node example
-def --wrapped 'main node' [...args] {
+def --wrapped 'main example node' [...args] {
   cd examples/node
   ./ake start ...$args
 }
 
 # Run browser example
-def 'main browser' [] {
+def 'main example browser' [] {
   cd examples/browser
   ./ake start
 }
