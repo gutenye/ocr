@@ -16,7 +16,7 @@
   "files": ["src", "build", "tsconfig.json", "!**/__tests__"],
   "scripts": {
     "prepublishOnly": "cp ../../README.md . && ./ake build",
-    "postpublish": "rm README.md"
+    "postpublish": "rm README.md && rm -rf build"
   },
   "dependencies": {
     "@gutenye/ocr-common": "^1.2.0",
