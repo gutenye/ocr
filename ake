@@ -2,11 +2,12 @@
 
 def main [] {}
 
-def 'main publish' [version: string] {
-  sed -i $'s/"version": ".*"/"version": "($version)"/' package.json
-  cd packages/browser
-  sed -i $'s/"version": ".*"/"version": "($version)"/' package.json
-  ./ake publish
+def 'main publish' [version: string, packages?: string = 'common,node,browser'] {
+  update-version $version
+  let pkgs = ($packages | split row ',')
+  for pkg in $pkgs {
+    publish $pkg $version
+  }
 }
 
 # Run node example
@@ -19,4 +20,15 @@ def --wrapped 'main example node' [...args] {
 def 'main example browser' [] {
   cd examples/browser
   ./ake start
+}
+
+
+def publish [package: string, version: string] {
+  cd $'packages/($package)'
+  update-version $version
+  ./ake publish
+}
+
+def update-version [version: string] {
+  sed -i $'s/"version": ".*"/"version": "($version)"/' package.json
 }
