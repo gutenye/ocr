@@ -1,7 +1,7 @@
 {
   "name": "@gutenye/ocr-common",
   "description": "High accurate text detection (OCR) Javascript/Typescript library that runs on Node.js, Browser, and React Native. Based on PaddleOCR and ONNX runtime",
-  "version": "1.2.1",
+  "version": "1.2.3",
   "type": "module",
   "license": "MIT",
   "repository": {
@@ -10,20 +10,15 @@
     "directory": "packages/common"
   },
   "exports": {
-    ".": {
-      "bun": "./src/index.ts",
-      "node": "./build/index.js",
-      "react-native": "./src/index.ts",
-      "default": "./src/index.ts"
-    },
-    "./use-default-models.node": {
-      "bun": "./src/use-default-models.node.ts",
-      "default": "./build/use-default-models.node.js"
-    }
+    "bun": "./src/index.ts",
+    "node": "./build/index.js",
+    "react-native": "./src/index.ts",
+    "default": "./src/index.ts"
   },
-  "files": ["assets", "src", "build", "tsconfig.json", "!**/__tests__"],
+  "files": ["src", "build", "tsconfig.json", "!**/__tests__"],
   "scripts": {
-    "prepublishOnly": "./ake build"
+    "prepublishOnly": "cp ../../README.md . && ./ake build",
+    "postpublish": "rm README.md"
   },
   "dependencies": {
     "@techstark/opencv-js": "^4.9.0-release.3",
