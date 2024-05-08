@@ -1,26 +1,99 @@
 {
   "name": "@gutenye/ocr-react-native",
   "description": "High accurate text detection (OCR) Javascript/Typescript library that runs on Node.js, Browser, and React Native. Based on PaddleOCR and ONNX runtime",
-  "version": "1.2.1",
-  "type": "module",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gutenye/ocr.git",
-    "directory": "packages/react-native"
-  },
+  "keywords": ["ocr", "paddleocr", "typescript", "onnxruntime", "react-native", "ios", "android", "expo"],
+  "version": "1.0.0",
   "exports": {
-    "react-native": "./src/index.ts",
-    "default": "./build/index.js"
+    "react-native": "./src/index.tsx"
   },
-  "files": ["src", "build", "tsconfig.json", "!**/__tests__"],
+  "types": "lib/typescript/src/index.d.ts",
+  "files": [
+    "src",
+    "lib",
+    "android",
+    "ios",
+    "cpp",
+    "*.podspec",
+    "!ios/build",
+    "!android/build",
+    "!android/gradle",
+    "!android/gradlew",
+    "!android/gradlew.bat",
+    "!android/local.properties",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__",
+    "!**/.*"
+  ],
   "scripts": {
-    "prepublishOnly": "cp ../../README.md . && ./ake build",
-    "postpublish": "rm README.md && rm -rf build"
+    "test": "jest",
+    "typecheck": "tsc --noEmit",
+    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
+    "prepublishOnly": "bob build",
+    "release": "release-it"
   },
-  "dependencies": {
-    "@gutenye/ocr-common": "^1.2.0",
-    "@gutenye/ocr-models": "^1.2.2",
-    "onnxruntime-react-native": "^1.17.3"
+  "homepage": "https://github.com/gutenye/ocr",
+  "author": "Guten Ye <ywzhaifei@gmail.com> (https://github.com/gutenye)",
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "@commitlint/config-conventional": "^17.0.2",
+    "@evilmartians/lefthook": "^1.5.0",
+    "@release-it/conventional-changelog": "^5.0.0",
+    "@types/jest": "^29.5.5",
+    "@types/react": "18.2.0",
+    "commitlint": "^17.0.2",
+    "del-cli": "^5.1.0",
+    "react": "18.2.0",
+    "react-native": "0.73.6",
+    "react-native-builder-bob": "^0.20.0",
+    "release-it": "^15.0.0",
+    "turbo": "^1.10.7",
+    "typescript": "^5.2.2"
+  },
+  "jest": {
+    "preset": "react-native",
+    "modulePathIgnorePatterns": ["<rootDir>/example/node_modules", "<rootDir>/lib/"]
+  },
+  "commitlint": {
+    "extends": ["@commitlint/config-conventional"]
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore: release ${version}",
+      "tagName": "v${version}"
+    },
+    "npm": {
+      "publish": true
+    },
+    "github": {
+      "release": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "angular"
+      }
+    }
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
+  },
+  "codegenConfig": {
+    "name": "RNOcrSpec",
+    "type": "modules",
+    "jsSrcsDir": "src"
   }
 }
