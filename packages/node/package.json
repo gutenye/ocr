@@ -23,6 +23,8 @@
   "dependencies": {
     "@gutenye/ocr-common": "^1.2.0",
     "@gutenye/ocr-models": "^1.2.2",
+    "@techstark/opencv-js": "^4.9.0-release.3",
+    "js-clipper": "^1.0.1",
     "onnxruntime-node": "^1.17.3-rev.1",
     "sharp": "^0.33.3"
   }
