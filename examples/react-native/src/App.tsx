@@ -1,12 +1,13 @@
 import * as FileSystem from 'expo-file-system'
+import * as ocr from 'ocr'
 import { useEffect, useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { ImagePickerButton } from '#example-react-native/ImagePickerButton'
-import { recognize } from '#example-react-native/recognize'
+// import { recognize } from '#example-react-native/recognize'
 import type { ImageDetails } from '#example-react-native/types'
 
-globalThis.FileSystem = FileSystem
+console.log(':: ocr', ocr.multiply(2, 3))
 
 export default function App() {
   const [image, setImage] = useState<ImageDetails>()
@@ -17,8 +18,8 @@ export default function App() {
       if (!image) {
         return
       }
-      const resultText = await recognize(image)
-      setResultText(resultText)
+      // const resultText = await recognize(image)
+      // setResultText(resultText)
     })()
   }, [image])
 

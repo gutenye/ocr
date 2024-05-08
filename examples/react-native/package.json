@@ -9,7 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@gutenye/ocr-react-native": "^1.0.0",
+    "ocr": "*",
     "expo": "~50.0.14",
     "expo-file-system": "~16.0.9",
     "expo-image-manipulator": "~11.8.0",
