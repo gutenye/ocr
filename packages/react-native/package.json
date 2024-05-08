@@ -15,10 +15,12 @@
   },
   "files": ["src", "build", "tsconfig.json", "!**/__tests__"],
   "scripts": {
-    "prepublishOnly": "./ake build"
+    "prepublishOnly": "cp ../../README.md . && ./ake build",
+    "postpublish": "rm README.md"
   },
   "dependencies": {
     "@gutenye/ocr-common": "^1.2.0",
+    "@gutenye/ocr-models": "^1.2.2",
     "onnxruntime-react-native": "^1.17.3"
   }
 }
