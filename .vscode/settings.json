@@ -4,5 +4,12 @@
   "editor.codeActionsOnSave": {
     "source.organizeImports.biome": "explicit",
     "quickfix.biome": "explicit"
+  },
+  "files.associations": {
+    "babel.config.json": "json5",
+    "string": "cpp",
+    "vector": "cpp",
+    "algorithm": "cpp",
+    "map": "cpp"
   }
 }
