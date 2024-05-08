@@ -9,7 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "react-native-ocr": "*",
+    "@gutenye/ocr-react-native": "^1.0.0",
     "expo": "~50.0.14",
     "expo-file-system": "~16.0.9",
     "expo-image-manipulator": "~11.8.0",
@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
-    "@types/react": "~18.2.45",
+    "@types/react": "18.2.0",
     "pod-install": "^0.2.0",
     "typescript": "^5.1.3"
   },

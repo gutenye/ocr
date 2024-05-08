@@ -9,8 +9,7 @@
     "packages/node",
     "packages/node/example",
     "packages/react-native",
-    "packages/react-native/example",
-    "packages/ocr"
+    "packages/react-native/example"
   ],
   "devDependencies": {
     "@biomejs/biome": "1.7.3",

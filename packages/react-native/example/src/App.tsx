@@ -1,10 +1,10 @@
+import * as ocr from '@gutenye/ocr-react-native'
 import * as FileSystem from 'expo-file-system'
 import { useEffect, useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
-import * as ocr from 'react-native-ocr'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { ImagePickerButton } from './ImagePickerButton'
-// import { recognize } from './recognize'
+import { recognize } from './recognize'
 import type { ImageDetails } from './types'
 
 ocr.multiply(2, 3).then(console.log)

@@ -1,17 +1,15 @@
-# react-native-ocr
-
-ocr
+# @gutenye/ocr-react-native
 
 ## Installation
 
 ```sh
-npm install react-native-ocr
+npm install @gutenye/ocr-react-native
 ```
 
 ## Usage
 
 ```js
-import { multiply } from 'react-native-ocr';
+import { multiply } from '@gutenye/ocr-react-native'
 
 // ...
 
