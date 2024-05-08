@@ -1,7 +1,7 @@
 {
   "name": "@gutenye/ocr-common",
   "description": "High accurate text detection (OCR) Javascript/Typescript library that runs on Node.js, Browser, and React Native. Based on PaddleOCR and ONNX runtime",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "type": "module",
   "license": "MIT",
   "repository": {
