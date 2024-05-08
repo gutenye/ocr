@@ -1,0 +1,19 @@
+{
+  "name": "@gutenye/ocr-models",
+  "description": "High accurate text detection (OCR) Javascript/Typescript library that runs on Node.js, Browser, and React Native. Based on PaddleOCR and ONNX runtime",
+  "version": "1.2.2",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gutenye/ocr.git",
+    "directory": "packages/models"
+  },
+  "exports": {
+    "./node": "./node.js"
+  },
+  "scripts": {
+    "prepublishOnly": "cp ../../README.md .",
+    "postpublish": "rm README.md"
+  }
+}
