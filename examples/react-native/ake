@@ -1,13 +1,16 @@
 #!/usr/bin/env nu
 
 alias expo = bun run expo
-alias pod-install = bun run pod-install
 
 def main [] {}
 
+def 'main pod install' [] {
+  pod install --project-directory ios
+}
+
 def 'main prebuild' [] {
   expo prebuild
-  pod-install
+  main pod install
 }
 
 def 'main start' [] {
