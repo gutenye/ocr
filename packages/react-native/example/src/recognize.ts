@@ -1,6 +1,6 @@
 import { bundleDirectory } from 'expo-file-system'
-import Ocr from '#example-react-native/ocr-react-native'
-import type { ImageDetails } from '#example-react-native/types'
+import Ocr from './ocr-react-native'
+import type { ImageDetails } from './types'
 
 export async function recognize(image: ImageDetails) {
   const ocr = await Ocr.create({

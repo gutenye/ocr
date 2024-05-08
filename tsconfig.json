@@ -5,8 +5,7 @@
       "#common/*": ["./packages/common/src/*"],
       "#browser/*": ["./packages/browser/src/*"],
       "#node/*": ["./packages/node/src/*"],
-      "#react-native/*": ["./packages/react-native/src/*"],
-      "#example-react-native/*": ["./examples/react-native/src/*"]
+      "#react-native/*": ["./packages/react-native/src/*"]
     },
     "lib": ["ESNext", "DOM"],
     "target": "ESNext",
@@ -31,5 +30,6 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
   },
+  "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["ios", "android"]
 }

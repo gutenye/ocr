@@ -1,6 +1,6 @@
 import { Button } from 'react-native'
-import { pickImage } from '#example-react-native/pickImage'
-import type { ImageDetails } from '#example-react-native/types'
+import { pickImage } from './pickImage'
+import type { ImageDetails } from './types'
 
 export function ImagePickerButton({
   onChange,
