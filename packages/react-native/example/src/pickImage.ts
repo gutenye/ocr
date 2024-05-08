@@ -1,5 +1,5 @@
 import * as ImagePicker from 'expo-image-picker'
-import type { ImageDetails } from '#example-react-native/types'
+import type { ImageDetails } from './types'
 
 export async function pickImage() {
   const result = await ImagePicker.launchImageLibraryAsync()

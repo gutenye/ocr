@@ -2,6 +2,6 @@
 
 namespace ocr {
 	double multiply(double a, double b) {
-		return a;
+		return a + 4;
 	}
 }

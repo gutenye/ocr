@@ -1,13 +1,13 @@
 import * as FileSystem from 'expo-file-system'
-import * as ocr from 'ocr'
 import { useEffect, useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
+import * as ocr from 'react-native-ocr'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
-import { ImagePickerButton } from '#example-react-native/ImagePickerButton'
-// import { recognize } from '#example-react-native/recognize'
-import type { ImageDetails } from '#example-react-native/types'
+import { ImagePickerButton } from './ImagePickerButton'
+// import { recognize } from './recognize'
+import type { ImageDetails } from './types'
 
-console.log(':: ocr', ocr.multiply(2, 3))
+ocr.multiply(2, 3).then(console.log)
 
 export default function App() {
   const [image, setImage] = useState<ImageDetails>()
