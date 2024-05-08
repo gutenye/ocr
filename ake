@@ -11,14 +11,14 @@ def 'main publish' [version: string, packages?: string = 'common,node,browser'] 
 }
 
 # Run node example
-def --wrapped 'main example node' [...args] {
-  cd examples/node
+def --wrapped 'main node example' [...args] {
+  cd packages/node/example
   ./ake start ...$args
 }
 
 # Run browser example
-def 'main example browser' [] {
-  cd examples/browser
+def 'main browser example' [] {
+  cd packages/browser/example
   ./ake start
 }
 

@@ -1,7 +1,16 @@
 {
   "name": "@gutenye/ocr",
   "version": "1.2.4",
-  "workspaces": ["packages/*", "examples/*"],
+  "workspaces": [
+    "packages/browser",
+    "packages/browser/example",
+    "packages/common",
+    "packages/models",
+    "packages/node",
+    "packages/node/example",
+    "packages/react-native",
+    "packages/react-native/example"
+  ],
   "devDependencies": {
     "@biomejs/biome": "1.7.3",
     "@types/bun": "latest",
