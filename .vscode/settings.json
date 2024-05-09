@@ -10,6 +10,7 @@
     "string": "cpp",
     "vector": "cpp",
     "algorithm": "cpp",
-    "map": "cpp"
+    "map": "cpp",
+    "utility": "cpp"
   }
 }

@@ -22,10 +22,6 @@ const Ocr = OcrModule
       },
     )
 
-export function multiply(a: number, b: number): Promise<number> {
-  return Ocr.multiply(a, b)
-}
-
-export function ocr(imagePath: string): Promise<void> {
+export function ocr(imagePath: string): Promise<string> {
   return Ocr.ocr(imagePath)
 }
