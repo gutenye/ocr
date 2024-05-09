@@ -12,6 +12,7 @@
     "algorithm": "cpp",
     "map": "cpp",
     "utility": "cpp",
-    "iostream": "cpp"
+    "iostream": "cpp",
+    "iosfwd": "cpp"
   }
 }
