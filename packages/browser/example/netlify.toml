@@ -1,3 +1,3 @@
 [build]
-publish = "build"  
-command = "bash build.sh"
+publish = "build2"  
+command = "./netlify-build.sh"
