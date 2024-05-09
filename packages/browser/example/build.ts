@@ -1,6 +1,8 @@
 import fs from 'node:fs/promises'
 import { $ } from 'bun'
 
+console.log(process.env.DEFAULT_IMAGE_PATH)
+
 const result = await Bun.build({
   entrypoints: ['./browser.ts'],
   outdir: './build',
@@ -21,5 +23,3 @@ await fs.appendFile('./build/browser.js', '//# sourceMappingURL=browser.js.map')
 
 await $`cd build; ln -sf ../{index.html,index.css,assets} .`
 await $`cd build; ln -sf ../../../../node_modules/onnxruntime-web/dist/*.wasm .`
-
-await $`ls -l build`
