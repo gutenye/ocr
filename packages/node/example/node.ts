@@ -1,6 +1,5 @@
-import filePath from 'path'
+import fs from 'node:fs/promises'
 import Ocr from '@gutenye/ocr-node'
-import fs from 'fs/promises'
 
 async function main() {
   const ocr = await Ocr.create()
@@ -11,10 +10,6 @@ async function main() {
   console.timeEnd('ocr')
 
   console.log(result.map((v) => `${v.mean.toFixed(2)} ${v.text}`).join('\n'))
-
-  function r(path: string) {
-    return filePath.resolve(__dirname, path)
-  }
 }
 
 main()
