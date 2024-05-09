@@ -7,10 +7,6 @@ OnnxRunner::OnnxRunner(const std::string& model_path) : env(ORT_LOGGING_LEVEL_WA
     session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
     session = Ort::Session(env, model_path.c_str(), session_options);
     
-    setupInputOutputNames();
-}
-
-void OnnxRunner::setupInputOutputNames() {
     input_node_names.push_back(session.GetInputName(0, allocator));
     output_node_names.push_back(session.GetOutputName(0, allocator));
 }
