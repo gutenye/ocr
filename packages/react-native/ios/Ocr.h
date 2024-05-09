@@ -1,5 +1,4 @@
 #ifdef __cplusplus
-#import "react-native-ocr.h"
 #endif
 
 #ifdef RCT_NEW_ARCH_ENABLED
