@@ -1,4 +1,3 @@
 [build]
 publish = "build"  
-base = "."
 command = "bun run build.ts"
