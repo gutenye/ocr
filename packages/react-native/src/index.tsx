@@ -26,6 +26,6 @@ export function multiply(a: number, b: number): Promise<number> {
   return Ocr.multiply(a, b)
 }
 
-export function ocr(): Promise<void> {
-  return Ocr.ocr()
+export function ocr(imagePath: string): Promise<void> {
+  return Ocr.ocr(imagePath)
 }

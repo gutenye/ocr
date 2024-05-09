@@ -19,7 +19,7 @@
 #import "User.h"
 #include "pipeline.h"
 #include "timer.h"
-#include <arm_neon.h>
+// #include <arm_neon.h>
 #include <iostream>
 #include <mutex>
 #include <paddle_api.h>
@@ -38,13 +38,16 @@ Pipeline *pipe_;
 - (void) run {
   NSString *path = [[NSBundle mainBundle] bundlePath];
   std::string paddle_dir = std::string([path UTF8String]);
-  std::string det_model_file = paddle_dir + "/models/ch_PP-OCRv4_det_infer.onnx";
-  std::string rec_model_file = paddle_dir + "/models/ch_PP-OCRv4_rec_infer.onnx";
-  std::string cls_model_file = paddle_dir + "/models/ch_ppocr_mobile_v2.0_cls_infer.onnx";
-  std::string img_path = paddle_dir + "/models/cn-01.jpg";
+  std::string det_model_file = paddle_dir + "/resources.bundle/ch_ppocr_mobile_v2.0_det_slim_opt.nb";
+  std::string rec_model_file = paddle_dir + "/resources.bundle/ch_ppocr_mobile_v2.0_rec_slim_opt.nb";
+  std::string cls_model_file = paddle_dir + "/resources.bundle/ch_ppocr_mobile_v2.0_cls_slim_opt.nb";
+  // std::string det_model_file = paddle_dir + "/resources.bundle/ch_PP-OCRv4_det_infer.onnx";
+  // std::string rec_model_file = paddle_dir + "/resources.bundle/ch_PP-OCRv4_rec_infer.onnx";
+  // std::string cls_model_file = paddle_dir + "/resources.bundle/ch_ppocr_mobile_v2.0_cls_infer.onnx";
+  std::string img_path = paddle_dir + "/resources.bundle/cn-01.jpg";
   std::string output_img_path = paddle_dir + "/test_result.jpg";
-  std::string dict_path = paddle_dir + "/models/ppocr_keys_v1.txt";
-  std::string config_path = paddle_dir + "/models/config.txt";
+  std::string dict_path = paddle_dir + "/resources.bundle/ppocr_keys_v1.txt";
+  std::string config_path = paddle_dir + "/resources.bundle/config.txt";
 
   cv::Mat srcimg = imread(img_path);
   pipe_ = new Pipeline(det_model_file, cls_model_file, rec_model_file,

@@ -3,7 +3,7 @@ import { TurboModuleRegistry } from 'react-native'
 
 export interface Spec extends TurboModule {
   multiply(a: number, b: number): Promise<number>
-  ocr(): Promise<void>
+  ocr(imagePath: string): Promise<void>
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('Ocr')

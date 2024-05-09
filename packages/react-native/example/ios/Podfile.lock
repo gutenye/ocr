@@ -1307,7 +1307,7 @@ SPEC CHECKSUMS:
   glog: c5d68082e772fa1c511173d6b30a9de2c05a69a2
   hermes-engine: 9cecf9953a681df7556b8cc9c74905de8f3293c0
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  ocr-react-native: 2e9b6fd3939f44f7a3f8cef1790b1cb8bf27123b
+  ocr-react-native: 161944b07c31ab57e9596522e5f7aa5589da4b3c
   onnxruntime-c: 065a3ed478da911448ff72612e6a0aaf4cb10fae
   onnxruntime-react-native: f67db23dd90296c9cb1b3240dba1fc034727da10
   OpenCV: 681e0451c1e54c5930a8922277f817ed5d5ab459

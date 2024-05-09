@@ -7,7 +7,10 @@ import { ImagePickerButton } from './ImagePickerButton'
 import { recognize } from './recognize'
 import type { ImageDetails } from './types'
 
-ocr.ocr().then(console.log)
+// FileSystem.readDirectoryAsync(`${FileSystem.bundleDirectory}/models.bundle/ppocr_keys_v1.txt`).then(console.log)
+// FileSystem.readAsStringAsync(`${FileSystem.bundleDirectory}/models.bundle/ppocr_keys_v1.txt`).then(console.log)
+
+ocr.ocr('a.jpg').then(console.log)
 
 export default function App() {
   const [image, setImage] = useState<ImageDetails>()

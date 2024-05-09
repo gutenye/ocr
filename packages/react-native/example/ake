@@ -5,7 +5,7 @@ alias expo = bun run expo
 def main [] {}
 
 def 'main pod install' [] {
-  pod install --project-directory ios
+  pod install --project-directory=ios
 }
 
 def 'main prebuild' [] {
