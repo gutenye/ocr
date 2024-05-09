@@ -1,22 +1,11 @@
 #import "Ocr.h"
-#import <React/RCTLog.h>
+#import "pipeline.h"
 #import <opencv2/opencv.hpp>
-#import <opencv2/imgcodecs/ios.h>
-#import <opencv2/videoio/cap_ios.h>
-#include "pipeline.h"
-#include "timer.h"
-// #include <arm_neon.h>
-#include <iostream>
-#include <mutex>
-#include <paddle_api.h>
-#include <paddle_use_kernels.h>
-#include <paddle_use_ops.h>
-#include <string>
-#import <sys/timeb.h>
-#include <vector>
-
-using namespace paddle::lite_api;
-using namespace cv;
+#import <paddle_api.h>
+#import <paddle_use_kernels.h>
+#import <paddle_use_ops.h>
+#import <string>
+#import <vector>
 
 @implementation Ocr
 RCT_EXPORT_MODULE()
@@ -38,7 +27,7 @@ RCT_EXPORT_METHOD(ocr:(NSString *)img_path1
   std::string dict_path = paddle_dir + "/resources.bundle/ppocr_keys_v1.txt";
   std::string config_path = paddle_dir + "/resources.bundle/config.txt";
 
-  cv::Mat srcimg = imread(img_path);
+  cv::Mat srcimg = cv::imread(img_path);
   Pipeline *pipe_ = new Pipeline(det_model_file, cls_model_file, rec_model_file,
                        "LITE_POWER_HIGH", 1, config_path, dict_path);
   std::vector<std::string> res_txt;

@@ -11,7 +11,8 @@ import type { ImageDetails } from './types'
 // FileSystem.readAsStringAsync(`${FileSystem.bundleDirectory}/models.bundle/ppocr_keys_v1.txt`).then(console.log)
 
 // ocr.ocr('a.jpg').then((v) => console.log('js', v.split('\n')))
-ocr.ocr('a.jpg').then((v) => console.log('js', v))
+// ocr.ocr('a.jpg').then((v) => console.log('js', v))
+ocr.ocr('a.jpg')
 
 export default function App() {
   const [image, setImage] = useState<ImageDetails>()
