@@ -21,3 +21,5 @@ await fs.appendFile('./build/browser.js', '//# sourceMappingURL=browser.js.map')
 
 await $`cd build; ln -sf ../{index.html,index.css,assets} .`
 await $`cd build; ln -sf ../../../../node_modules/onnxruntime-web/dist/*.wasm .`
+
+await $`ls -l build`
