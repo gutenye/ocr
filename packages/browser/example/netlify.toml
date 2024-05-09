@@ -1,3 +1,4 @@
 [build]
 publish = "build2"  
+base = "packages/browser/example"
 command = "./netlify-build.sh"
