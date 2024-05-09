@@ -7,7 +7,7 @@ import { ImagePickerButton } from './ImagePickerButton'
 import { recognize } from './recognize'
 import type { ImageDetails } from './types'
 
-ocr.multiply(2, 3).then(console.log)
+ocr.ocr().then(console.log)
 
 export default function App() {
   const [image, setImage] = useState<ImageDetails>()

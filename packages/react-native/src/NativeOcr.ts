@@ -1,8 +1,9 @@
-import type { TurboModule } from 'react-native';
-import { TurboModuleRegistry } from 'react-native';
+import type { TurboModule } from 'react-native'
+import { TurboModuleRegistry } from 'react-native'
 
 export interface Spec extends TurboModule {
-  multiply(a: number, b: number): Promise<number>;
+  multiply(a: number, b: number): Promise<number>
+  ocr(): Promise<void>
 }
 
-export default TurboModuleRegistry.getEnforcing<Spec>('Ocr');
+export default TurboModuleRegistry.getEnforcing<Spec>('Ocr')

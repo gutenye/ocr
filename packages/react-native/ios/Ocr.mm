@@ -1,3 +1,4 @@
+#import "User.h"
 #import "Ocr.h"
 
 @implementation Ocr
@@ -14,6 +15,15 @@ RCT_EXPORT_METHOD(multiply:(double)a
 
     resolve(result);
 }
+
+
+RCT_EXPORT_METHOD(ocr:(NSString *)img_path1
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    [[User alloc] run];
+}
+
 
 // Don't compile this code when we build for the old architecture.
 #ifdef RCT_NEW_ARCH_ENABLED
