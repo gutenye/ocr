@@ -2,6 +2,8 @@
 
 > an OCR Javascript library runs on Node.js, Browser and React Native
 
+| [Demo](https://gutenye-ocr.netlify.app/) | 
+
 Based on [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR), supports PP-OCRv4 model
 
 ## Examples
