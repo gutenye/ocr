@@ -1,0 +1,1 @@
+../packages/models/ppocr_keys_v1.txt
