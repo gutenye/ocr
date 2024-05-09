@@ -47,3 +47,4 @@ Due to opencv does not work on React Native. You need to implement the [detectBo
 | [paddleocr-onnx](https://github.com/backrunner/paddleocr-onnx) | Node      | Recogination part is incomplete |
 | [ocrjs](https://github.com/SOVLOOKUP/ocrjs)                    | Node      | Recogination part is incomplete |
 
+
