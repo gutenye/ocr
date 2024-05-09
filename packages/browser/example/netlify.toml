@@ -1,3 +1,3 @@
 [build]
 publish = "build"  
-command = "bun run build.ts"
+command = "bash build.sh"
