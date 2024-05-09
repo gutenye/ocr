@@ -22,6 +22,12 @@ def 'main browser example' [] {
   ./ake start
 }
 
+# Run ReactNative example
+def 'main react-native example' [] {
+  cd packages/react-native/example
+  ./ake start
+}
+
 
 def publish [package: string, version: string] {
   cd $'packages/($package)'
