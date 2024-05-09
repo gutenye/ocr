@@ -2,7 +2,10 @@
   "configurations": [
     {
       "name": "Mac",
-      "includePath": ["packages/react-native/ios/inference_lite_lib.ios64.armv8/include"],
+      "includePath": [
+        "packages/react-native/example/ios/Pods/onnxruntime-mobile-c/Headers",
+        "packages/react-native/ios/inference_lite_lib.ios64.armv8/include"
+      ],
       "defines": [],
       "macFrameworkPath": [
         "packages/react-native/example/ios/Pods/OpenCV",

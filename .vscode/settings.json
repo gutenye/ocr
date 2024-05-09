@@ -11,6 +11,7 @@
     "vector": "cpp",
     "algorithm": "cpp",
     "map": "cpp",
-    "utility": "cpp"
+    "utility": "cpp",
+    "iostream": "cpp"
   }
 }
