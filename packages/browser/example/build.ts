@@ -1,8 +1,6 @@
 import fs from 'node:fs/promises'
 import { $ } from 'bun'
 
-console.log(process.env.DEFAULT_IMAGE_PATH)
-
 const result = await Bun.build({
   entrypoints: ['./browser.ts'],
   outdir: './build',
