@@ -1,3 +1,4 @@
+#import <onnxruntime_cxx_api.h>
 #import "Ocr.h"
 #import "pipeline.h"
 #import <opencv2/opencv.hpp>

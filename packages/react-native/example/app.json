@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymous.ocr"
@@ -28,9 +26,7 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "onnxruntime-react-native"
-    ],
+    "plugins": [],
     "extra": {
       "eas": {
         "projectId": "5b5102fb-199b-435f-90a4-eb4f931c64d4"
