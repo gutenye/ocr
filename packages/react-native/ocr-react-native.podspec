@@ -20,9 +20,8 @@ Pod::Spec.new do |s|
     'resources' => ['resources/*']
   }
 
+  s.dependency "onnxruntime-mobile-c", "~>1.14.0"
   s.dependency "OpenCV", "~>4.3.0" 
-
-  # s.vendored_frameworks = "ios/opencv2.framework"
 
   s.vendored_libraries = "ios/inference_lite_lib.ios64.armv8/lib/libpaddle_api_light_bundled.a"
 
