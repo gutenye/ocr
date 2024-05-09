@@ -46,7 +46,7 @@ function createApp(
     resultImageEl.setAttribute('src', imageUrl)
     const { text, duration } = await runOcr({ imageUrl })
     resultTextEl.textContent = text
-    performanceEl.textContent = `Performance: ${duration}ms (Close Chrome DevTools for better perlrmance)`
+    performanceEl.textContent = `Performance: ${duration}ms (Close Chrome DevTools to get accureate result)`
   }
 
   if (process.env.DEFAULT_IMAGE_PATH) {
