@@ -34,7 +34,7 @@ public:
           double *preprocessTime, double *predictTime, double *postprocessTime);
 
 private:
-  void Preprocess(const cv::Mat &img, const int max_side_len);
+  std::vector<float> Preprocess(const cv::Mat &img, const int max_side_len);
   std::vector<std::vector<std::vector<int>>>
   Postprocess(const cv::Mat srcimg, std::map<std::string, double> Config,
               int det_db_use_dilate);

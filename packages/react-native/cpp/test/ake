@@ -12,10 +12,10 @@ def 'main start' [] {
   cd build
   cmake ..
   make
-  cd ..
-  ./build/run_onnx
+  ./run_onnx
 }
 
 def 'main start watch' [] {
-  chokidar run_onnx* ../run_onnx* -c './ake start' --initial 
+  # chokidar run_onnx* ../run_onnx* -c './ake start' --initial 
+  chokidar *.cc *.h CMakeLists.txt -c './ake start' --initial 
 }

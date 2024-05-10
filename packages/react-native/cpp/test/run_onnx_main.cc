@@ -4,7 +4,7 @@
 
 int main()
 {
-	std::string asset_dir = "./assets";
+	std::string asset_dir = "../assets";
 	std::string det_model_file = asset_dir +
 															 "/ch_PP-OCRv4_det_infer.onnx";
 	std::string rec_model_file = asset_dir +
@@ -18,6 +18,8 @@ int main()
 
 	// run_onnx("./assets/ch_PP-OCRv4_rec_infer.onnx");
 	// onnx_run(rec_model_file2);
+
+	printf("Running\n");
 
 	cv::Mat srcimg = cv::imread(image_path);
 	Pipeline *pipe_ = new Pipeline(det_model_file, cls_model_file, rec_model_file,
