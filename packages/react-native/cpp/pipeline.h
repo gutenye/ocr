@@ -13,9 +13,9 @@
 // limitations under the License.
 
 #pragma once
-#include "cls_process.h"
+// #include "cls_process.h"
 #include "det_process.h"
-#include "paddle_api.h"
+// #include "paddle_api.h"
 #include "rec_process.h"
 #include <opencv2/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -23,23 +23,25 @@
 #include <opencv2/imgproc.hpp>
 #include <string>
 #include <vector>
+#include <map>
 
-using namespace paddle::lite_api; // NOLINT
+// using namespace paddle::lite_api; // NOLINT
 
-class Pipeline {
+class Pipeline
+{
 public:
   Pipeline(const std::string &detModelDir, const std::string &clsModelDir,
            const std::string &recModelDir, const std::string &cPUPowerMode,
            const int cPUThreadNum, const std::string &config_path,
            const std::string &dict_path);
 
-  cv::Mat Process(cv::Mat srcimg, std::string output_img_path,
-                  std::vector<std::string> &res_txt);
+  void Process(cv::Mat srcimg, std::string output_img_path,
+               std::vector<std::string> &res_txt);
 
 private:
   std::map<std::string, double> Config_;
   std::vector<std::string> charactor_dict_;
-  std::shared_ptr<ClsPredictor> clsPredictor_;
+  // std::shared_ptr<ClsPredictor> clsPredictor_;
   std::shared_ptr<DetPredictor> detPredictor_;
   std::shared_ptr<RecPredictor> recPredictor_;
 };
