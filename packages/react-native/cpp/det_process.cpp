@@ -144,12 +144,8 @@ DetPredictor::Postprocess(ModelOutput &model_output, const cv::Mat srcimg,
 }
 
 std::vector<std::vector<std::vector<int>>>
-DetPredictor::Predict(cv::Mat &img, std::map<std::string, double> Config,
-                      double *preprocessTime, double *predictTime,
-                      double *postprocessTime)
+DetPredictor::Predict(cv::Mat &img, std::map<std::string, double> Config)
 {
-  //  Timer tic;
-  //  tic.start();
   cv::Mat srcimg;
   img.copyTo(srcimg);
 
@@ -157,14 +153,13 @@ DetPredictor::Predict(cv::Mat &img, std::map<std::string, double> Config,
   int max_side_len = int(Config["max_side_len"]);           // NOLINT
   int det_db_use_dilate = int(Config["det_db_use_dilate"]); // NOLINT
 
+  Timer tic;
+  tic.start();
   auto image = Preprocess(img, max_side_len);
-  // std::cout << std::format("{}", data) << std::endl;
+  tic.end();
+  auto preprocessTime = tic.get_average_ms();
+  std::cout << "det predictor preprocess costs " << preprocessTime << std::endl;
 
-  // tic.end();
-  // *preprocessTime = tic.get_average_ms();
-  // std::cout << "det predictor preprocess costs" <<  *preprocessTime;
-
-  // tic.start();
   // Run predictor
   std::string asset_dir = "../assets";
   std::string det_model_file = asset_dir + "/ch_PP-OCRv4_det_infer.onnx";
@@ -173,17 +168,18 @@ DetPredictor::Predict(cv::Mat &img, std::map<std::string, double> Config,
   auto input_data{image.data};
   std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
   // input_tensor0->Resize({1, 3, img_fp.rows, img_fp.cols});
+  tic.start();
   auto model_output = run_onnx(det_model_file, input_data, input_shape);
-  // predictor_->Run();
-  //  tic.end();
-  //  *predictTime = tic.get_average_ms();
-  // std::cout << "det predictor predict costs" <<  *predictTime;
+  tic.end();
+  auto predictTime = tic.get_average_ms();
+  std::cout << "det predictor predict costs " << predictTime << std::endl;
 
   // Process Output
-  //  tic.start();
+  tic.start();
   auto filter_boxes = Postprocess(model_output, srcimg, Config, det_db_use_dilate);
-  //  tic.end();
-  //  *predictTime = tic.get_average_ms();
-  // std::cout << "det predictor postprocess costs" <<  *postprocessTime;
+  tic.end();
+  auto postprocessTime = tic.get_average_ms();
+  std::cout << "det predictor postprocess costs " << postprocessTime << std::endl;
+
   return filter_boxes;
 }

@@ -32,8 +32,7 @@ public:
                         const std::string &cpuPowerMode);
 
   std::vector<std::vector<std::vector<int>>>
-  Predict(cv::Mat &rgbImage, std::map<std::string, double> Config,
-          double *preprocessTime, double *predictTime, double *postprocessTime);
+  Predict(cv::Mat &rgbImage, std::map<std::string, double> Config);
 
 private:
   ImageRaw Preprocess(const cv::Mat &img, const int max_side_len);
