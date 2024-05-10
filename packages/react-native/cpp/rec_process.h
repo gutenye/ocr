@@ -30,8 +30,7 @@ public:
                         const std::string &cpuPowerMode);
 
   std::pair<std::string, float>
-  Predict(const cv::Mat &rgbaImage, double *preprocessTime, double *predictTime,
-          double *postprocessTime, std::vector<std::string> charactor_dict);
+  Predict(const cv::Mat &rgbaImage, std::vector<std::string> charactor_dict);
 
 private:
   ImageRaw Preprocess(const cv::Mat &rgbaImage);

@@ -95,7 +95,8 @@
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "cmake.sourceDirectory": "${workspaceFolder}/packages/react-native/cpp/test",
+  "cmake.sourceDirectory": "${workspaceFolder}/packages/react-native/cpp/example",
+  "cmake.buildDirectory": "${workspaceFolder}/packages/react-native/cpp/example/build",
   "cmake.debugConfig": {
     "externalConsole": true
   }

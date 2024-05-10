@@ -126,34 +126,31 @@ RecPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &rgbaImage,
 }
 
 std::pair<std::string, float>
-RecPredictor::Predict(const cv::Mat &rgbaImage, double *preprocessTime,
-                      double *predictTime, double *postprocessTime,
-                      std::vector<std::string> charactor_dict)
+RecPredictor::Predict(const cv::Mat &rgbaImage, std::vector<std::string> charactor_dict)
 {
-  //  Timer tic;
-  //  tic.start();
-  // Preprocess(rgbaImage);
+  Timer tic;
+  tic.start();
   auto image = Preprocess(rgbaImage);
-  // tic.end();
-  // *preprocessTime = tic.get_average_ms();
-  // std::cout << "rec predictor preprocess costs" <<  *preprocessTime;
+  tic.end();
+  auto preprocessTime = tic.get_average_ms();
+  std::cout << "rec predictor preprocess costs " << preprocessTime << std::endl;
 
-  //  tic.start();
-  // predictor_->Run();
-  // tic.end();
-  // *predictTime = tic.get_average_ms();
-  // std::cout << "rec predictor predict costs" <<  *predictTime;
   // Run predictor
   std::string asset_dir = "../assets";
   std::string rec_model_file = asset_dir + "/ch_PP-OCRv4_rec_infer.onnx";
   auto input_data{image.data};
   std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
+  tic.start();
   auto model_output = run_onnx(rec_model_file, input_data, input_shape);
+  tic.end();
+  auto predictTime = tic.get_average_ms();
+  std::cout << "rec predictor predict costs " << predictTime << std::endl;
 
-  //  tic.start();
+  tic.start();
   auto res = Postprocess(model_output, rgbaImage, charactor_dict);
-  // tic.end();
-  // *postprocessTime = tic.get_average_ms();
-  // std::cout << "rec predictor predict costs" <<  *postprocessTime;
+  tic.end();
+  auto postprocessTime = tic.get_average_ms();
+  std::cout << "rec predictor postprocess costs " << postprocessTime << std::endl;
+
   return res;
 }

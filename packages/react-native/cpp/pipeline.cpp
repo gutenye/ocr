@@ -188,14 +188,14 @@ Pipeline::Pipeline(const std::string &detModelDir,
 void Pipeline::Process(cv::Mat img, std::string output_img_path,
                        std::vector<std::string> &res_txt)
 {
-  //  Timer tic;
-  //  tic.start();
   int use_direction_classify = int(Config_["use_direction_classify"]); // NOLINT
   cv::Mat srcimg;
   img.copyTo(srcimg);
   // det predict
+  Timer tic;
+  tic.start();
   auto boxes =
-      detPredictor_->Predict(srcimg, Config_, nullptr, nullptr, nullptr);
+      detPredictor_->Predict(srcimg, Config_);
 
   std::vector<float> mean = {0.5f, 0.5f, 0.5f};
   std::vector<float> scale = {1 / 0.5f, 1 / 0.5f, 1 / 0.5f};
@@ -214,14 +214,13 @@ void Pipeline::Process(cv::Mat img, std::string output_img_path,
     //   crop_img =
     //       clsPredictor_->Predict(crop_img, nullptr, nullptr, nullptr, 0.9);
     // }
-    auto res = recPredictor_->Predict(crop_img, nullptr, nullptr, nullptr,
-                                      charactor_dict_);
+    auto res = recPredictor_->Predict(crop_img, charactor_dict_);
     rec_text.push_back(res.first);
     rec_text_score.push_back(res.second);
   }
-  // tic.end();
-  // *processTime = tic.get_average_ms();
-  // std::cout << "pipeline predict costs" <<  *processTime;
+  tic.end();
+  auto processTime = tic.get_average_ms();
+  std::cout << "pipeline predict costs " << processTime << std::endl;
 
   //// visualization
   // isDebug

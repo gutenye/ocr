@@ -9,7 +9,8 @@ int main()
 	std::string det_model_file = asset_dir + "/ch_PP-OCRv4_det_infer.onnx";
 	std::string rec_model_file = asset_dir + "/ch_PP-OCRv4_rec_infer.onnx";
 	std::string cls_model_file = asset_dir + "/ch_ppocr_mobile_v2";
-	std::string image_path = asset_dir + "/cn-01.jpg";
+	// std::string image_path = asset_dir + "/cn-01.jpg";
+	std::string image_path = "/Users/guten/data/dev/learn/ai/ocr/assets/menu.jpg";
 	std::string output_img_path = asset_dir + "/out.jpg";
 	std::string dict_path = asset_dir + "/ppocr_keys_v1.txt";
 	std::string config_path = asset_dir + "/config.txt";

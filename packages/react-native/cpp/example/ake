@@ -10,7 +10,8 @@ def main [] {}
 def 'main start' [] {
   mkdir build
   cd build
-  cmake ..
+  #cmake .. 
+   cmake ..  -DCMAKE_BUILD_TYPE=Release
   make
   ./run_onnx
 }
