@@ -8,11 +8,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 find_package(OpenCV REQUIRED)
 
-file(GLOB SOURCES "*.cc")
+file(GLOB SOURCES "*.cpp")
 
 add_executable(run_onnx ${SOURCES})
-# add_executable(run_onnx run_onnx_main.cc run_onnx.cc pipeline.cc det_process.cc utils.cc db_post_process.cc clipper.cpp)  
-# add_executable(run_onnx run_onnx_main.cc)
 
 include_directories(
 	${CMAKE_SOURCE_DIR}/onnxruntime/include
