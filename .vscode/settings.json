@@ -1,6 +1,12 @@
 {
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "biomejs.biome",
+  "[cpp]": {
+    "editor.defaultFormatter": "ms-vscode.cpptools"
+  },
+  "[objective-cpp]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
   "editor.codeActionsOnSave": {
     "source.organizeImports.biome": "explicit",
     "quickfix.biome": "explicit"
@@ -14,5 +20,8 @@
     "utility": "cpp",
     "iostream": "cpp",
     "iosfwd": "cpp"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

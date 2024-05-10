@@ -48,6 +48,8 @@ export class Recognition extends ModelBase {
       }),
     )
 
+
+
     const allLines: Line[] = []
     console.time('Recognition')
     for (const modelData of modelDatas) {
