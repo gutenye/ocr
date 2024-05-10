@@ -99,36 +99,36 @@ DetPredictor::Postprocess(const cv::Mat srcimg,
                           int det_db_use_dilate)
 {
   // Get output and post process
-  std::unique_ptr<const Tensor> output_tensor(
-      std::move(predictor_->GetOutput(0)));
-  auto *outptr = output_tensor->data<float>();
-  auto shape_out = output_tensor->shape();
+  // std::unique_ptr<const Tensor> output_tensor(
+  //     std::move(predictor_->GetOutput(0)));
+  // auto *outptr = output_tensor->data<float>();
+  // auto shape_out = output_tensor->shape();
 
-  int s2 = int(shape_out[2]); // NOLINT
-  int s3 = int(shape_out[3]); // NOLINT
-  cv::Mat pred_map = cv::Mat::zeros(s2, s3, CV_32F);
-  memcpy(pred_map.data, outptr, s2 * s3 * sizeof(float));
-  cv::Mat cbuf_map;
-  pred_map.convertTo(cbuf_map, CV_8UC1, 255.0f);
+  // int s2 = int(shape_out[2]); // NOLINT
+  // int s3 = int(shape_out[3]); // NOLINT
+  // cv::Mat pred_map = cv::Mat::zeros(s2, s3, CV_32F);
+  // memcpy(pred_map.data, outptr, s2 * s3 * sizeof(float));
+  // cv::Mat cbuf_map;
+  // pred_map.convertTo(cbuf_map, CV_8UC1, 255.0f);
 
-  const double threshold = double(Config["det_db_thresh"]) * 255; // NOLINT
-  const double max_value = 255;
-  cv::Mat bit_map;
-  cv::threshold(cbuf_map, bit_map, threshold, max_value, cv::THRESH_BINARY);
-  if (det_db_use_dilate == 1)
-  {
-    cv::Mat dilation_map;
-    cv::Mat dila_ele =
-        cv::getStructuringElement(cv::MORPH_RECT, cv::Size(2, 2));
-    cv::dilate(bit_map, dilation_map, dila_ele);
-    bit_map = dilation_map;
-  }
-  auto boxes = BoxesFromBitmap(pred_map, bit_map, Config);
+  // const double threshold = double(Config["det_db_thresh"]) * 255; // NOLINT
+  // const double max_value = 255;
+  // cv::Mat bit_map;
+  // cv::threshold(cbuf_map, bit_map, threshold, max_value, cv::THRESH_BINARY);
+  // if (det_db_use_dilate == 1)
+  // {
+  //   cv::Mat dilation_map;
+  //   cv::Mat dila_ele =
+  //       cv::getStructuringElement(cv::MORPH_RECT, cv::Size(2, 2));
+  //   cv::dilate(bit_map, dilation_map, dila_ele);
+  //   bit_map = dilation_map;
+  // }
+  // auto boxes = BoxesFromBitmap(pred_map, bit_map, Config);
 
-  std::vector<std::vector<std::vector<int>>> filter_boxes =
-      FilterTagDetRes(boxes, ratio_hw_[0], ratio_hw_[1], srcimg);
+  // std::vector<std::vector<std::vector<int>>> filter_boxes =
+  //     FilterTagDetRes(boxes, ratio_hw_[0], ratio_hw_[1], srcimg);
 
-  return filter_boxes;
+  // return filter_boxes;
 }
 
 std::vector<std::vector<std::vector<int>>>
@@ -152,7 +152,7 @@ DetPredictor::Predict(cv::Mat &img, std::map<std::string, double> Config,
 
   // tic.start();
   // Run predictor
-  predictor_->Run();
+  // predictor_->Run();
   //  tic.end();
   //  *predictTime = tic.get_average_ms();
   // std::cout << "det predictor predict costs" <<  *predictTime;
