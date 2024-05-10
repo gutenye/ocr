@@ -177,8 +177,8 @@ Pipeline::Pipeline(const std::string &detModelDir,
   //     new ClsPredictor(clsModelDir, cPUThreadNum, cPUPowerMode));
   detPredictor_.reset(
       new DetPredictor(detModelDir, cPUThreadNum, cPUPowerMode));
-  // recPredictor_.reset(
-  //     new RecPredictor(recModelDir, cPUThreadNum, cPUPowerMode));
+  recPredictor_.reset(
+      new RecPredictor(recModelDir, cPUThreadNum, cPUPowerMode));
   Config_ = LoadConfigTxt(config_path);
   charactor_dict_ = ReadDict(dict_path);
   charactor_dict_.insert(charactor_dict_.begin(), "#"); // NOLINT
@@ -214,10 +214,10 @@ void Pipeline::Process(cv::Mat img, std::string output_img_path,
     //   crop_img =
     //       clsPredictor_->Predict(crop_img, nullptr, nullptr, nullptr, 0.9);
     // }
-    // auto res = recPredictor_->Predict(crop_img, nullptr, nullptr, nullptr,
-    //                                   charactor_dict_);
-    // rec_text.push_back(res.first);
-    // rec_text_score.push_back(res.second);
+    auto res = recPredictor_->Predict(crop_img, nullptr, nullptr, nullptr,
+                                      charactor_dict_);
+    rec_text.push_back(res.first);
+    rec_text_score.push_back(res.second);
   }
   // tic.end();
   // *processTime = tic.get_average_ms();
@@ -230,8 +230,7 @@ void Pipeline::Process(cv::Mat img, std::string output_img_path,
   res_txt.resize(rec_text.size() * 2);
   for (int i = 0; i < rec_text.size(); i++)
   {
-    //    std::cout << i << "\t" << rec_text[i] << "\t" << rec_text_score[i]
-    //              << std::endl;
+    std::cout << i << "\t" << rec_text[i] << "\t" << rec_text_score[i] << std::endl;
     res_txt[2 * i] = rec_text[i];
     res_txt[2 * i + 1] = rec_text_score[i];
   }

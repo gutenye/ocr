@@ -20,12 +20,14 @@
 #include <map>
 #include <vector>
 
-#include "clipper.hpp"
+#include "clipper.h"
 #include "opencv2/core.hpp"
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/imgproc.hpp"
 
-template <class T> T clamp(T x, T min, T max) {
+template <class T>
+T clamp(T x, T min, T max)
+{
   if (x > max)
     return max;
   if (x < min)
