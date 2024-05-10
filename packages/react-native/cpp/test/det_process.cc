@@ -20,6 +20,7 @@
 #include <string>            // NOLINT
 #include <utility>           // NOLINT
 #include <vector>            // NOLINT
+#include <format>
 
 // resize image to a size multiple of 32 which is required by the network
 cv::Mat DetResizeImg(const cv::Mat img, int max_size_len,
@@ -57,6 +58,7 @@ cv::Mat DetResizeImg(const cv::Mat img, int max_size_len,
   else
     resize_w = (resize_w / 32 - 1) * 32;
   cv::Mat resize_img;
+
   cv::resize(img, resize_img, cv::Size(resize_w, resize_h));
 
   ratio_hw.push_back(static_cast<float>(resize_h) / static_cast<float>(h));
@@ -76,7 +78,7 @@ DetPredictor::DetPredictor(const std::string &modelDir, const int cpuThreadNum,
   //         config);
 }
 
-void DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len)
+std::vector<float> DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len)
 {
   cv::Mat img = DetResizeImg(srcimg, max_side_len, ratio_hw_);
   cv::Mat img_fp;
@@ -86,11 +88,14 @@ void DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len)
   // std::unique_ptr<Tensor> input_tensor0(std::move(predictor_->GetInput(0)));
   // input_tensor0->Resize({1, 3, img_fp.rows, img_fp.cols});
   // auto *data0 = input_tensor0->mutable_data<float>();
+  std::vector<float> data0(img_fp.rows * img_fp.cols * 3);
 
-  // std::vector<float> mean = {0.485f, 0.456f, 0.406f};
-  // std::vector<float> scale = {1 / 0.229f, 1 / 0.224f, 1 / 0.225f};
-  // const float *dimg = reinterpret_cast<const float *>(img_fp.data);
-  // NHWC3ToNC3HW(dimg, data0, img_fp.rows * img_fp.cols, mean, scale);
+  std::vector<float> mean = {0.485f, 0.456f, 0.406f};
+  std::vector<float> scale = {1 / 0.229f, 1 / 0.224f, 1 / 0.225f};
+  const float *dimg = reinterpret_cast<const float *>(img_fp.data);
+  NHWC3ToNC3HW(dimg, data0.data(), img_fp.rows * img_fp.cols, mean, scale);
+
+  return data0;
 }
 
 std::vector<std::vector<std::vector<int>>>
@@ -145,7 +150,10 @@ DetPredictor::Predict(cv::Mat &img, std::map<std::string, double> Config,
   int max_side_len = int(Config["max_side_len"]);           // NOLINT
   int det_db_use_dilate = int(Config["det_db_use_dilate"]); // NOLINT
 
-  Preprocess(img, max_side_len);
+  std::vector<float> data = Preprocess(img, max_side_len);
+
+  // std::cout << std::format("{}", data) << std::endl;
+
   // tic.end();
   // *preprocessTime = tic.get_average_ms();
   // std::cout << "det predictor preprocess costs" <<  *preprocessTime;
