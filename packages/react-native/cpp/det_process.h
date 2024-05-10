@@ -17,11 +17,16 @@
 #include "opencv2/core.hpp"
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/imgproc.hpp"
-#include "paddle_api.h"
+// #include "paddle_api.h"
 #include "utils.h"
-using namespace paddle::lite_api; // NOLINT
+#include "shared.h"
+#include "run_onnx.h"
+#include <map>
 
-class DetPredictor {
+// using namespace paddle::lite_api; // NOLINT
+
+class DetPredictor
+{
 public:
   explicit DetPredictor(const std::string &modelDir, const int cpuThreadNum,
                         const std::string &cpuPowerMode);
@@ -31,12 +36,13 @@ public:
           double *preprocessTime, double *predictTime, double *postprocessTime);
 
 private:
-  void Preprocess(const cv::Mat &img, const int max_side_len);
+  ImageRaw Preprocess(const cv::Mat &img, const int max_side_len);
   std::vector<std::vector<std::vector<int>>>
-  Postprocess(const cv::Mat srcimg, std::map<std::string, double> Config,
+  Postprocess(ModelOutput &model_output, const cv::Mat srcimg,
+              std::map<std::string, double> Config,
               int det_db_use_dilate);
 
 private:
   std::vector<float> ratio_hw_;
-  std::shared_ptr<paddle::lite_api::PaddlePredictor> predictor_;
+  // std::shared_ptr<paddle::lite_api::PaddlePredictor> predictor_;
 };

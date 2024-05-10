@@ -28,6 +28,12 @@ def 'main react-native example' [] {
   ./ake start
 }
 
+# Runc macOS example
+def 'main macos example' [] {
+  cd packages/react-native/cpp/example
+  ./ake start
+}
+
 
 def publish [package: string, version: string] {
   cd $'packages/($package)'

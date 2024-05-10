@@ -98,6 +98,8 @@ cv::Mat ClsPredictor::Postprocess(const cv::Mat &srcimg, const float thresh)
   //   cv::rotate(srcimg, srcimg, 1);
   // }
   // return srcimg;
+  cv::Mat a{};
+  return a;
 }
 
 cv::Mat ClsPredictor::Predict(const cv::Mat &img, double *preprocessTime,

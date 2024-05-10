@@ -17,11 +17,14 @@
 #include "opencv2/core.hpp"
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/imgproc.hpp"
-#include "paddle_api.h"
+// #include "paddle_api.h"
 #include "utils.h"
-using namespace paddle::lite_api; // NOLINT
+#include "run_onnx.h"
+#include "shared.h"
+// using namespace paddle::lite_api; // NOLINT
 
-class RecPredictor {
+class RecPredictor
+{
 public:
   explicit RecPredictor(const std::string &modelDir, const int cpuThreadNum,
                         const std::string &cpuPowerMode);
@@ -31,11 +34,11 @@ public:
           double *postprocessTime, std::vector<std::string> charactor_dict);
 
 private:
-  void Preprocess(const cv::Mat &rgbaImage);
+  ImageRaw Preprocess(const cv::Mat &rgbaImage);
   std::pair<std::string, float>
-  Postprocess(const cv::Mat &rgbaImage,
+  Postprocess(ModelOutput &model_output, const cv::Mat &rgbaImage,
               std::vector<std::string> charactor_dict);
 
 private:
-  std::shared_ptr<paddle::lite_api::PaddlePredictor> predictor_;
+  // std::shared_ptr<paddle::lite_api::PaddlePredictor> predictor_;
 };

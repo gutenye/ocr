@@ -14,25 +14,25 @@
 
 #pragma once
 
-#include "paddle_api.h"
+// #include "paddle_api.h"
 #include <fstream>
 #include <string>
 #include <vector>
 
-inline paddle::lite_api::PowerMode ParsePowerMode(std::string mode) {
-  if (mode == "LITE_POWER_HIGH") {
-    return paddle::lite_api::LITE_POWER_HIGH;
-  } else if (mode == "LITE_POWER_LOW") {
-    return paddle::lite_api::LITE_POWER_LOW;
-  } else if (mode == "LITE_POWER_FULL") {
-    return paddle::lite_api::LITE_POWER_FULL;
-  } else if (mode == "LITE_POWER_RAND_HIGH") {
-    return paddle::lite_api::LITE_POWER_RAND_HIGH;
-  } else if (mode == "LITE_POWER_RAND_LOW") {
-    return paddle::lite_api::LITE_POWER_RAND_LOW;
-  }
-  return paddle::lite_api::LITE_POWER_NO_BIND;
-}
+// inline paddle::lite_api::PowerMode ParsePowerMode(std::string mode) {
+//   if (mode == "LITE_POWER_HIGH") {
+//     return paddle::lite_api::LITE_POWER_HIGH;
+//   } else if (mode == "LITE_POWER_LOW") {
+//     return paddle::lite_api::LITE_POWER_LOW;
+//   } else if (mode == "LITE_POWER_FULL") {
+//     return paddle::lite_api::LITE_POWER_FULL;
+//   } else if (mode == "LITE_POWER_RAND_HIGH") {
+//     return paddle::lite_api::LITE_POWER_RAND_HIGH;
+//   } else if (mode == "LITE_POWER_RAND_LOW") {
+//     return paddle::lite_api::LITE_POWER_RAND_LOW;
+//   }
+//   return paddle::lite_api::LITE_POWER_NO_BIND;
+// }
 
 void NHWC3ToNC3HW(const float *src, float *dst, int size,
                   const std::vector<float> mean,
