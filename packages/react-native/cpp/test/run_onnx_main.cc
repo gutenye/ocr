@@ -1,6 +1,7 @@
 #include "pipeline.h"
 #include "run_onnx.h"
 #include <iostream>
+#include <format>
 
 int main()
 {
@@ -27,11 +28,14 @@ int main()
 	std::ostringstream result;
 	for (int i = 0; i < res_txt.size() / 2; i++)
 	{
+		auto text = res_txt[2 * i];
+		auto score = res_txt[2 * i + 1];
+		// std::cout << score << "\t" << text << std::endl;
 		//   result << i << "\t" << res_txt[2*i] << "\t" << res_txt[2*i + 1] <<
 		//   "\t";
 		result << res_txt[2 * i] << "\n";
 	}
-	std::cout << result.str().c_str() << std::endl;
+	// std::cout << result.str().c_str() << std::endl;
 
 	return 0;
 }

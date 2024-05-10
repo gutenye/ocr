@@ -90,7 +90,6 @@ ImageRaw DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len)
   // input_tensor0->Resize({1, 3, img_fp.rows, img_fp.cols});
   // auto *data0 = input_tensor0->mutable_data<float>();
   std::vector<float> data0(img_fp.rows * img_fp.cols * 3);
-
   std::vector<float> mean = {0.485f, 0.456f, 0.406f};
   std::vector<float> scale = {1 / 0.229f, 1 / 0.224f, 1 / 0.225f};
   const float *dimg = reinterpret_cast<const float *>(img_fp.data);
@@ -123,13 +122,6 @@ DetPredictor::Postprocess(ModelOutput &model_output, const cv::Mat srcimg,
   cv::Mat pred_map = cv::Mat(height, width, CV_32F, model_output.data.data());
   cv::Mat cbuf_map;
   pred_map.convertTo(cbuf_map, CV_8UC1, 255.0f);
-
-  // ImageRaw image{
-  //     .data = model_output.data,
-  //     .channels = model_output.shape[1],
-  //     .height = model_output.shape[2],
-  //     .width = model_output.shape[3],
-  // };
 
   const double threshold = double(Config["det_db_thresh"]) * 255; // NOLINT
   const double max_value = 255;

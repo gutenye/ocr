@@ -48,7 +48,17 @@ ModelOutput run_onnx(const std::string &model_path, std::vector<float> &input, s
 
 	// Convert float* to vector<float>
 	auto *floatarr = output_tensor.GetTensorMutableData<float>();
-	auto size = shape[1] * shape[2] * shape[3];
+	int64_t size;
+	// det
+	if (shape.size() == 4)
+	{
+		size = shape[0] * shape[1] * shape[2] * shape[3];
+	}
+	else
+	// rec
+	{
+		size = shape[0] * shape[1] * shape[2];
+	}
 	std::vector<float> data(floatarr, floatarr + size);
 
 	ModelOutput model_output{.data = data, .shape = shape};

@@ -15,8 +15,11 @@
 #include "rec_process.h"
 #include "timer.h"
 #include "utils.h"
+#include "shared.h"
+#include <iostream>
+#include <format>
 
-const std::vector<int> rec_image_shape{3, 32, 320};
+const std::vector<int> rec_image_shape{3, 48, 320};
 
 cv::Mat CrnnResizeImg(cv::Mat img, float wh_ratio)
 {
@@ -25,7 +28,8 @@ cv::Mat CrnnResizeImg(cv::Mat img, float wh_ratio)
   imgW = rec_image_shape[2];
   imgH = rec_image_shape[1];
 
-  imgW = int(32 * wh_ratio);
+  // imgW = int(32 * wh_ratio);
+  imgW = int(48 * wh_ratio);
 
   float ratio = static_cast<float>(img.cols) / static_cast<float>(img.rows);
   int resize_w, resize_h;
@@ -49,16 +53,16 @@ inline size_t Argmax(ForwardIterator first, ForwardIterator last)
 RecPredictor::RecPredictor(const std::string &modelDir, const int cpuThreadNum,
                            const std::string &cpuPowerMode)
 {
-  paddle::lite_api::MobileConfig config;
-  config.set_model_from_file(modelDir);
-  config.set_threads(cpuThreadNum);
-  config.set_power_mode(ParsePowerMode(cpuPowerMode));
-  predictor_ =
-      paddle::lite_api::CreatePaddlePredictor<paddle::lite_api::MobileConfig>(
-          config);
+  // paddle::lite_api::MobileConfig config;
+  // config.set_model_from_file(modelDir);
+  // config.set_threads(cpuThreadNum);
+  // config.set_power_mode(ParsePowerMode(cpuPowerMode));
+  // predictor_ =
+  //     paddle::lite_api::CreatePaddlePredictor<paddle::lite_api::MobileConfig>(
+  //         config);
 }
 
-void RecPredictor::Preprocess(const cv::Mat &srcimg)
+ImageRaw RecPredictor::Preprocess(const cv::Mat &srcimg)
 {
   float wh_ratio =
       static_cast<float>(srcimg.cols) / static_cast<float>(srcimg.rows);
@@ -69,21 +73,30 @@ void RecPredictor::Preprocess(const cv::Mat &srcimg)
 
   const float *dimg = reinterpret_cast<const float *>(resize_img.data);
 
-  std::unique_ptr<Tensor> input_tensor0(std::move(predictor_->GetInput(0)));
-  input_tensor0->Resize({1, 3, resize_img.rows, resize_img.cols});
-  auto *data0 = input_tensor0->mutable_data<float>();
-  NHWC3ToNC3HW(dimg, data0, resize_img.rows * resize_img.cols, mean, scale);
+  // std::unique_ptr<Tensor> input_tensor0(std::move(predictor_->GetInput(0)));
+  // input_tensor0->Resize({1, 3, resize_img.rows, resize_img.cols});
+  // auto *data0 = input_tensor0->mutable_data<float>();
+  // NHWC3ToNC3HW(dimg, data0, resize_img.rows * resize_img.cols, mean, scale);
+
+  std::vector<float> data0(resize_img.rows * resize_img.cols * 3);
+  NHWC3ToNC3HW(dimg, data0.data(), resize_img.rows * resize_img.cols, mean, scale);
+
+  ImageRaw image_raw{.data = data0, .width = resize_img.cols, .height = resize_img.rows, .channels = 3};
+
+  return image_raw;
 }
 
 std::pair<std::string, float>
-RecPredictor::Postprocess(const cv::Mat &rgbaImage,
+RecPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &rgbaImage,
                           std::vector<std::string> charactor_dict)
 {
   // Get output and run postprocess
-  std::unique_ptr<const Tensor> output_tensor0(
-      std::move(predictor_->GetOutput(0)));
-  auto *predict_batch = output_tensor0->data<float>();
-  auto predict_shape = output_tensor0->shape();
+  // std::unique_ptr<const Tensor> output_tensor0(
+  //     std::move(predictor_->GetOutput(0)));
+  // auto *predict_batch = output_tensor0->data<float>();
+  // auto predict_shape = output_tensor0->shape();
+  auto predict_batch = model_output.data;
+  auto predict_shape = model_output.shape;
 
   // ctc decode
   std::string str_res;
@@ -119,19 +132,26 @@ RecPredictor::Predict(const cv::Mat &rgbaImage, double *preprocessTime,
 {
   //  Timer tic;
   //  tic.start();
-  Preprocess(rgbaImage);
+  // Preprocess(rgbaImage);
+  auto image = Preprocess(rgbaImage);
   // tic.end();
   // *preprocessTime = tic.get_average_ms();
   // std::cout << "rec predictor preprocess costs" <<  *preprocessTime;
 
   //  tic.start();
-  predictor_->Run();
+  // predictor_->Run();
   // tic.end();
   // *predictTime = tic.get_average_ms();
   // std::cout << "rec predictor predict costs" <<  *predictTime;
+  // Run predictor
+  std::string asset_dir = "../assets";
+  std::string rec_model_file = asset_dir + "/ch_PP-OCRv4_rec_infer.onnx";
+  auto input_data{image.data};
+  std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
+  auto model_output = run_onnx(rec_model_file, input_data, input_shape);
 
   //  tic.start();
-  auto res = Postprocess(rgbaImage, charactor_dict);
+  auto res = Postprocess(model_output, rgbaImage, charactor_dict);
   // tic.end();
   // *postprocessTime = tic.get_average_ms();
   // std::cout << "rec predictor predict costs" <<  *postprocessTime;
