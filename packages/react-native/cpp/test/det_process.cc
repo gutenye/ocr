@@ -15,11 +15,12 @@
 #include "det_process.h"     // NOLINT
 #include "db_post_process.h" // NOLINT
 #include "timer.h"           // NOLINT
-#include <map>               // NOLINT
-#include <memory>            // NOLINT
-#include <string>            // NOLINT
-#include <utility>           // NOLINT
-#include <vector>            // NOLINT
+#include "run_onnx.h"
+#include <map>     // NOLINT
+#include <memory>  // NOLINT
+#include <string>  // NOLINT
+#include <utility> // NOLINT
+#include <vector>  // NOLINT
 #include <format>
 
 // resize image to a size multiple of 32 which is required by the network
@@ -78,7 +79,7 @@ DetPredictor::DetPredictor(const std::string &modelDir, const int cpuThreadNum,
   //         config);
 }
 
-std::vector<float> DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len)
+ImageRaw DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len)
 {
   cv::Mat img = DetResizeImg(srcimg, max_side_len, ratio_hw_);
   cv::Mat img_fp;
@@ -95,11 +96,13 @@ std::vector<float> DetPredictor::Preprocess(const cv::Mat &srcimg, const int max
   const float *dimg = reinterpret_cast<const float *>(img_fp.data);
   NHWC3ToNC3HW(dimg, data0.data(), img_fp.rows * img_fp.cols, mean, scale);
 
-  return data0;
+  ImageRaw image_raw{.data = data0, .width = img_fp.cols, .height = img_fp.rows, .channels = 3};
+
+  return image_raw;
 }
 
 std::vector<std::vector<std::vector<int>>>
-DetPredictor::Postprocess(const cv::Mat srcimg,
+DetPredictor::Postprocess(ModelOutput &model_output, const cv::Mat srcimg,
                           std::map<std::string, double> Config,
                           int det_db_use_dilate)
 {
@@ -108,32 +111,44 @@ DetPredictor::Postprocess(const cv::Mat srcimg,
   //     std::move(predictor_->GetOutput(0)));
   // auto *outptr = output_tensor->data<float>();
   // auto shape_out = output_tensor->shape();
-
   // int s2 = int(shape_out[2]); // NOLINT
   // int s3 = int(shape_out[3]); // NOLINT
+
   // cv::Mat pred_map = cv::Mat::zeros(s2, s3, CV_32F);
   // memcpy(pred_map.data, outptr, s2 * s3 * sizeof(float));
   // cv::Mat cbuf_map;
   // pred_map.convertTo(cbuf_map, CV_8UC1, 255.0f);
+  auto height = model_output.shape[2];
+  auto width = model_output.shape[3];
+  cv::Mat pred_map = cv::Mat(height, width, CV_32F, model_output.data.data());
+  cv::Mat cbuf_map;
+  pred_map.convertTo(cbuf_map, CV_8UC1, 255.0f);
 
-  // const double threshold = double(Config["det_db_thresh"]) * 255; // NOLINT
-  // const double max_value = 255;
-  // cv::Mat bit_map;
-  // cv::threshold(cbuf_map, bit_map, threshold, max_value, cv::THRESH_BINARY);
-  // if (det_db_use_dilate == 1)
-  // {
-  //   cv::Mat dilation_map;
-  //   cv::Mat dila_ele =
-  //       cv::getStructuringElement(cv::MORPH_RECT, cv::Size(2, 2));
-  //   cv::dilate(bit_map, dilation_map, dila_ele);
-  //   bit_map = dilation_map;
-  // }
-  // auto boxes = BoxesFromBitmap(pred_map, bit_map, Config);
+  // ImageRaw image{
+  //     .data = model_output.data,
+  //     .channels = model_output.shape[1],
+  //     .height = model_output.shape[2],
+  //     .width = model_output.shape[3],
+  // };
 
-  // std::vector<std::vector<std::vector<int>>> filter_boxes =
-  //     FilterTagDetRes(boxes, ratio_hw_[0], ratio_hw_[1], srcimg);
+  const double threshold = double(Config["det_db_thresh"]) * 255; // NOLINT
+  const double max_value = 255;
+  cv::Mat bit_map;
+  cv::threshold(cbuf_map, bit_map, threshold, max_value, cv::THRESH_BINARY);
+  if (det_db_use_dilate == 1)
+  {
+    cv::Mat dilation_map;
+    cv::Mat dila_ele =
+        cv::getStructuringElement(cv::MORPH_RECT, cv::Size(2, 2));
+    cv::dilate(bit_map, dilation_map, dila_ele);
+    bit_map = dilation_map;
+  }
+  auto boxes = BoxesFromBitmap(pred_map, bit_map, Config);
 
-  // return filter_boxes;
+  std::vector<std::vector<std::vector<int>>> filter_boxes =
+      FilterTagDetRes(boxes, ratio_hw_[0], ratio_hw_[1], srcimg);
+
+  return filter_boxes;
 }
 
 std::vector<std::vector<std::vector<int>>>
@@ -150,8 +165,7 @@ DetPredictor::Predict(cv::Mat &img, std::map<std::string, double> Config,
   int max_side_len = int(Config["max_side_len"]);           // NOLINT
   int det_db_use_dilate = int(Config["det_db_use_dilate"]); // NOLINT
 
-  std::vector<float> data = Preprocess(img, max_side_len);
-
+  auto image = Preprocess(img, max_side_len);
   // std::cout << std::format("{}", data) << std::endl;
 
   // tic.end();
@@ -160,13 +174,22 @@ DetPredictor::Predict(cv::Mat &img, std::map<std::string, double> Config,
 
   // tic.start();
   // Run predictor
+  std::string asset_dir = "../assets";
+  std::string det_model_file = asset_dir + "/ch_PP-OCRv4_det_infer.onnx";
+  // std::vector<float> input = {1.0f, 2.0f, 3.0f};
+  // std::vector<int64_t> input_shape = {1, 3, 1, 1};
+  auto input_data{image.data};
+  std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
+  // input_tensor0->Resize({1, 3, img_fp.rows, img_fp.cols});
+  auto model_output = run_onnx(det_model_file, input_data, input_shape);
   // predictor_->Run();
   //  tic.end();
   //  *predictTime = tic.get_average_ms();
   // std::cout << "det predictor predict costs" <<  *predictTime;
 
+  // Process Output
   //  tic.start();
-  auto filter_boxes = Postprocess(srcimg, Config, det_db_use_dilate);
+  auto filter_boxes = Postprocess(model_output, srcimg, Config, det_db_use_dilate);
   //  tic.end();
   //  *predictTime = tic.get_average_ms();
   // std::cout << "det predictor postprocess costs" <<  *postprocessTime;

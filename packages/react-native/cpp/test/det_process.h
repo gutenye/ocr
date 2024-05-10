@@ -19,6 +19,8 @@
 #include "opencv2/imgproc.hpp"
 // #include "paddle_api.h"
 #include "utils.h"
+#include "shared.h"
+#include "run_onnx.h"
 #include <map>
 
 // using namespace paddle::lite_api; // NOLINT
@@ -34,9 +36,10 @@ public:
           double *preprocessTime, double *predictTime, double *postprocessTime);
 
 private:
-  std::vector<float> Preprocess(const cv::Mat &img, const int max_side_len);
+  ImageRaw Preprocess(const cv::Mat &img, const int max_side_len);
   std::vector<std::vector<std::vector<int>>>
-  Postprocess(const cv::Mat srcimg, std::map<std::string, double> Config,
+  Postprocess(ModelOutput &model_output, const cv::Mat srcimg,
+              std::map<std::string, double> Config,
               int det_db_use_dilate);
 
 private:
