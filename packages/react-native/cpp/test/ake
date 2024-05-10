@@ -1,0 +1,18 @@
+#!/usr/bin/env nu
+
+# Downoad onnxruntime from https://github.com/microsoft/onnxruntime/releases
+
+def main [] {}
+
+def 'main start' [] {
+  mkdir build
+  cd build
+  cmake ..
+  make
+  cd ..
+  ./build/run_onnx
+}
+
+def 'main start watch' [] {
+  chokidar run_onnx* ../run_onnx* -c './ake start' --initial 
+}

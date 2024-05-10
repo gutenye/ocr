@@ -18,7 +18,8 @@
 
 const std::vector<int> rec_image_shape{3, 32, 320};
 
-cv::Mat CrnnResizeImg(cv::Mat img, float wh_ratio) {
+cv::Mat CrnnResizeImg(cv::Mat img, float wh_ratio)
+{
   int imgC, imgH, imgW;
   imgC = rec_image_shape[0];
   imgW = rec_image_shape[2];
@@ -40,12 +41,14 @@ cv::Mat CrnnResizeImg(cv::Mat img, float wh_ratio) {
 }
 
 template <class ForwardIterator>
-inline size_t Argmax(ForwardIterator first, ForwardIterator last) {
+inline size_t Argmax(ForwardIterator first, ForwardIterator last)
+{
   return std::distance(first, std::max_element(first, last));
 }
 
 RecPredictor::RecPredictor(const std::string &modelDir, const int cpuThreadNum,
-                           const std::string &cpuPowerMode) {
+                           const std::string &cpuPowerMode)
+{
   paddle::lite_api::MobileConfig config;
   config.set_model_from_file(modelDir);
   config.set_threads(cpuThreadNum);
@@ -55,7 +58,8 @@ RecPredictor::RecPredictor(const std::string &modelDir, const int cpuThreadNum,
           config);
 }
 
-void RecPredictor::Preprocess(const cv::Mat &srcimg) {
+void RecPredictor::Preprocess(const cv::Mat &srcimg)
+{
   float wh_ratio =
       static_cast<float>(srcimg.cols) / static_cast<float>(srcimg.rows);
   std::vector<float> mean = {0.5f, 0.5f, 0.5f};
@@ -73,7 +77,8 @@ void RecPredictor::Preprocess(const cv::Mat &srcimg) {
 
 std::pair<std::string, float>
 RecPredictor::Postprocess(const cv::Mat &rgbaImage,
-                          std::vector<std::string> charactor_dict) {
+                          std::vector<std::string> charactor_dict)
+{
   // Get output and run postprocess
   std::unique_ptr<const Tensor> output_tensor0(
       std::move(predictor_->GetOutput(0)));
@@ -88,13 +93,15 @@ RecPredictor::Postprocess(const cv::Mat &rgbaImage,
   int count = 0;
   float max_value = 0.0f;
 
-  for (int n = 0; n < predict_shape[1]; n++) {
+  for (int n = 0; n < predict_shape[1]; n++)
+  {
     argmax_idx = int(Argmax(&predict_batch[n * predict_shape[2]],
                             &predict_batch[(n + 1) * predict_shape[2]]));
     max_value =
         float(*std::max_element(&predict_batch[n * predict_shape[2]],
                                 &predict_batch[(n + 1) * predict_shape[2]]));
-    if (argmax_idx > 0 && (!(n > 0 && argmax_idx == last_index))) {
+    if (argmax_idx > 0 && (!(n > 0 && argmax_idx == last_index)))
+    {
       score += max_value;
       count += 1;
       str_res += charactor_dict[argmax_idx];
@@ -108,7 +115,8 @@ RecPredictor::Postprocess(const cv::Mat &rgbaImage,
 std::pair<std::string, float>
 RecPredictor::Predict(const cv::Mat &rgbaImage, double *preprocessTime,
                       double *predictTime, double *postprocessTime,
-                      std::vector<std::string> charactor_dict) {
+                      std::vector<std::string> charactor_dict)
+{
   //  Timer tic;
   //  tic.start();
   Preprocess(rgbaImage);
