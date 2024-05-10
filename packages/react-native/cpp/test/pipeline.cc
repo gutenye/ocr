@@ -185,8 +185,8 @@ Pipeline::Pipeline(const std::string &detModelDir,
   charactor_dict_.push_back(" ");
 }
 
-cv::Mat Pipeline::Process(cv::Mat img, std::string output_img_path,
-                          std::vector<std::string> &res_txt)
+void Pipeline::Process(cv::Mat img, std::string output_img_path,
+                       std::vector<std::string> &res_txt)
 {
   //  Timer tic;
   //  tic.start();
@@ -224,7 +224,8 @@ cv::Mat Pipeline::Process(cv::Mat img, std::string output_img_path,
   // std::cout << "pipeline predict costs" <<  *processTime;
 
   //// visualization
-  auto img_vis = Visualization(img, boxes, output_img_path);
+  // isDebug
+  // auto img_vis = Visualization(img, boxes, output_img_path);
   // print recognized text
   res_txt.resize(rec_text.size() * 2);
   for (int i = 0; i < rec_text.size(); i++)
@@ -234,5 +235,4 @@ cv::Mat Pipeline::Process(cv::Mat img, std::string output_img_path,
     res_txt[2 * i] = rec_text[i];
     res_txt[2 * i + 1] = rec_text_score[i];
   }
-  return img_vis;
 }

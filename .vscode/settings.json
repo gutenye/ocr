@@ -89,7 +89,8 @@
     "unordered_set": "cpp",
     "valarray": "cpp",
     "variant": "cpp",
-    "*.ipp": "cpp"
+    "*.ipp": "cpp",
+    "format": "cpp"
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

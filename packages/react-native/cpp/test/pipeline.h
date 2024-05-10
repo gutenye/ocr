@@ -35,8 +35,8 @@ public:
            const int cPUThreadNum, const std::string &config_path,
            const std::string &dict_path);
 
-  cv::Mat Process(cv::Mat srcimg, std::string output_img_path,
-                  std::vector<std::string> &res_txt);
+  void Process(cv::Mat srcimg, std::string output_img_path,
+               std::vector<std::string> &res_txt);
 
 private:
   std::map<std::string, double> Config_;

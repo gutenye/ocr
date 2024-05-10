@@ -1,13 +1,11 @@
 #include "run_onnx.h"
 #include <iostream>
+#include <format>
 
-void run_onnx(const std::string &model_path)
+ModelOutput run_onnx(const std::string &model_path, std::vector<float> &input, std::vector<int64_t> &input_shape)
 {
-
-	Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "test");
-
+	Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "ocr");
 	Ort::SessionOptions session_options;
-
 	Ort::Session session(env, model_path.c_str(), session_options);
 
 	// Get input/output node names
@@ -32,29 +30,28 @@ void run_onnx(const std::string &model_path)
 		output_names.emplace_back(outputNodeNameAllocatedStrings.back().get());
 	}
 
-	// Get input_tensors
-	std::vector<float> input_values_1 = {1.0f, 2.0f, 3.0f};
-	std::vector<int64_t> input_shape = {1, 3, 224, 224};
-	auto memory_info =
-			Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
-	Ort::Value input_tensor_1 = Ort::Value::CreateTensor<float>(
-			memory_info, input_values_1.data(), input_values_1.size(),
-			input_shape.data(), input_shape.size());
+	// Get input
+	auto memory_info = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
+	Ort::Value iput_tensor = Ort::Value::CreateTensor<float>(memory_info, input.data(), input.size(), input_shape.data(), input_shape.size());
 	std::vector<Ort::Value> input_tensors;
-	input_tensors.emplace_back(std::move(input_tensor_1));
+	input_tensors.emplace_back(std::move(iput_tensor));
 
+	// Run model
 	std::vector<Ort::Value> output_tensors =
 			session.Run(Ort::RunOptions{nullptr}, input_names.data(),
-									input_tensors.data(), 2, output_names.data(), 1);
+									input_tensors.data(), input_names.size(), output_names.data(), output_names.size());
 
-	std::cout << std::fixed;
-	for (auto j = 0; j < output_tensors.size(); j++)
-	{
-		const float *floatarr = output_tensors[j].GetTensorMutableData<float>();
-		for (int i = 0; i < 3; i++)
-		{
-			std::cout << floatarr[i] << " ";
-		}
-		std::cout << std::endl;
-	}
+	// Return output
+	auto &output_tensor = output_tensors.front();
+	auto tensor_info = output_tensor.GetTensorTypeAndShapeInfo();
+	auto shape = tensor_info.GetShape();
+
+	// Convert float* to vector<float>
+	auto *floatarr = output_tensor.GetTensorMutableData<float>();
+	auto size = shape[1] * shape[2] * shape[3];
+	std::vector<float> data(floatarr, floatarr + size);
+
+	ModelOutput model_output{.data = data, .shape = shape};
+
+	return model_output;
 }
