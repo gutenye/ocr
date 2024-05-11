@@ -1300,7 +1300,7 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 11c76c87794f8f2563f4d6523e86091fc94d654b
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: c5d68082e772fa1c511173d6b30a9de2c05a69a2
-  gutenye-ocr-react-native: 67aab233bdfcff7ce61d0afe891a7651c58f0c78
+  gutenye-ocr-react-native: 57c8f451c69474fa4858d2e66f80a0aded01bb15
   hermes-engine: 9cecf9953a681df7556b8cc9c74905de8f3293c0
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   onnxruntime-mobile-c: 9b5c011b8484cdfe4ec5463ef66e3ac192fe1977
