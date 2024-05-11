@@ -14,14 +14,12 @@
 
 #pragma once
 
+#include "onnx.h"
 #include "opencv2/core.hpp"
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/imgproc.hpp"
-// #include "paddle_api.h"
-#include "onnx.h"
 #include "shared.h"
 #include "utils.h"
-// using namespace paddle::lite_api; // NOLINT
 
 class RecPredictor {
 public:
@@ -34,7 +32,4 @@ private:
   ImageRaw Preprocess(const cv::Mat &rgbaImage);
   std::pair<std::string, float> Postprocess(ModelOutput &model_output, const cv::Mat &rgbaImage,
                                             std::vector<std::string> charactor_dict);
-
-private:
-  // std::shared_ptr<paddle::lite_api::PaddlePredictor> predictor_;
 };
