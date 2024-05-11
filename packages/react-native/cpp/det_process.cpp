@@ -63,25 +63,13 @@ cv::Mat DetResizeImg(const cv::Mat img, int max_size_len,
 }
 
 DetPredictor::DetPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode)
-    : m_model_path{modelDir} {
-  // paddle::lite_api::MobileConfig config;
-  // config.set_model_from_file(modelDir);
-  // config.set_threads(cpuThreadNum);
-  // config.set_power_mode(ParsePowerMode(cpuPowerMode));
-  // predictor_ =
-  //     paddle::lite_api::CreatePaddlePredictor<paddle::lite_api::MobileConfig>(
-  //         config);
-}
+    : m_model_path{modelDir} {}
 
 ImageRaw DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len) {
   cv::Mat img = DetResizeImg(srcimg, max_side_len, ratio_hw_);
   cv::Mat img_fp;
   img.convertTo(img_fp, CV_32FC3, 1.0 / 255.f);
 
-  // Prepare input data from image
-  // std::unique_ptr<Tensor> input_tensor0(std::move(predictor_->GetInput(0)));
-  // input_tensor0->Resize({1, 3, img_fp.rows, img_fp.cols});
-  // auto *data0 = input_tensor0->mutable_data<float>();
   std::vector<float> data0(img_fp.rows * img_fp.cols * 3);
   std::vector<float> mean = {0.485f, 0.456f, 0.406f};
   std::vector<float> scale = {1 / 0.229f, 1 / 0.224f, 1 / 0.225f};
@@ -96,18 +84,6 @@ ImageRaw DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len)
 std::vector<std::vector<std::vector<int>>> DetPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &srcimg,
                                                                      std::map<std::string, double> Config,
                                                                      int det_db_use_dilate) {
-  // Get output and post process
-  // std::unique_ptr<const Tensor> output_tensor(
-  //     std::move(predictor_->GetOutput(0)));
-  // auto *outptr = output_tensor->data<float>();
-  // auto shape_out = output_tensor->shape();
-  // int s2 = int(shape_out[2]); // NOLINT
-  // int s3 = int(shape_out[3]); // NOLINT
-
-  // cv::Mat pred_map = cv::Mat::zeros(s2, s3, CV_32F);
-  // memcpy(pred_map.data, outptr, s2 * s3 * sizeof(float));
-  // cv::Mat cbuf_map;
-  // pred_map.convertTo(cbuf_map, CV_8UC1, 255.0f);
   auto height = model_output.shape[2];
   auto width = model_output.shape[3];
   cv::Mat pred_map = cv::Mat(height, width, CV_32F, model_output.data.data());
@@ -147,11 +123,8 @@ std::vector<std::vector<std::vector<int>>> DetPredictor::Predict(cv::Mat &img, s
   std::cout << "det predictor preprocess costs " << preprocessTime << std::endl;
 
   // Run predictor
-  // std::vector<float> input = {1.0f, 2.0f, 3.0f};
-  // std::vector<int64_t> input_shape = {1, 3, 1, 1};
   std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
 
-  // input_tensor0->Resize({1, 3, img_fp.rows, img_fp.cols});
   Onnx onnx{m_model_path};
   tic.start();
   auto model_output = onnx.run(image.data, input_shape);

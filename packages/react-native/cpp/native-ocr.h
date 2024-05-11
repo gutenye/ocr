@@ -24,8 +24,6 @@
 #include "det_process.h"
 #include "rec_process.h"
 
-// using namespace paddle::lite_api; // NOLINT
-
 class NativeOcr {
 public:
   NativeOcr(const std::string &detModelDir, const std::string &clsModelDir, const std::string &recModelDir,

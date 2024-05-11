@@ -37,15 +37,7 @@ cv::Mat ClsResizeImg(cv::Mat img) {
   return resize_img;
 }
 
-ClsPredictor::ClsPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode) {
-  // paddle::lite_api::MobileConfig config;
-  // config.set_model_from_file(modelDir);
-  // config.set_threads(cpuThreadNum);
-  // config.set_power_mode(ParsePowerMode(cpuPowerMode));
-  // predictor_ =
-  //     paddle::lite_api::CreatePaddlePredictor<paddle::lite_api::MobileConfig>(
-  //         config);
-}
+ClsPredictor::ClsPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode) {}
 
 void ClsPredictor::Preprocess(const cv::Mat &img) {
   std::vector<float> mean = {0.5f, 0.5f, 0.5f};
@@ -61,11 +53,6 @@ void ClsPredictor::Preprocess(const cv::Mat &img) {
   resize_img.convertTo(resize_img, CV_32FC3, 1 / 255.f);
 
   const float *dimg = reinterpret_cast<const float *>(resize_img.data);
-
-  // std::unique_ptr<Tensor> input_tensor0(std::move(predictor_->GetInput(0)));
-  // input_tensor0->Resize({1, 3, resize_img.rows, resize_img.cols});
-  // auto *data0 = input_tensor0->mutable_data<float>();
-  // NHWC3ToNC3HW(dimg, data0, resize_img.rows * resize_img.cols, mean, scale);
 }
 
 cv::Mat ClsPredictor::Postprocess(const cv::Mat &srcimg, const float thresh) {

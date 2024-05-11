@@ -14,16 +14,13 @@
 
 #pragma once
 
+#include <map>
+#include "onnx.h"
 #include "opencv2/core.hpp"
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/imgproc.hpp"
-// #include "paddle_api.h"
-#include <map>
-#include "onnx.h"
 #include "shared.h"
 #include "utils.h"
-
-// using namespace paddle::lite_api; // NOLINT
 
 class DetPredictor {
 public:
@@ -39,5 +36,4 @@ private:
 
 private:
   std::vector<float> ratio_hw_;
-  // std::shared_ptr<paddle::lite_api::PaddlePredictor> predictor_;
 };
