@@ -1,23 +1,24 @@
 #include "onnx.h"
+#include <onnxruntime_cxx_api.h>
 #include <format>
 #include <iostream>
 #include "timer.h"
 
-Onnx::Onnx(const std::string &model_path) {
-  // : env(ORT_LOGGING_LEVEL_WARNING, "ocr"), m_session{env, model_path.c_str(), Ort::SessionOptions()} {
-  // Get input/output node names
-  // size_t numInputNodes = m_session.GetInputCount();
-  // for (int i = 0; i < numInputNodes; i++) {
-  //   auto input_name = m_session.GetInputNameAllocated(i, m_allocator);
-  //   m_input_name_allocated.push_back(std::move(input_name));
-  //   m_input_names.emplace_back(m_input_name_allocated.back().get());
-  // }
-  // size_t numOutputNodes = m_session.GetOutputCount();
-  // for (int i = 0; i < numOutputNodes; i++) {
-  //   auto output_name = m_session.GetOutputNameAllocated(i, m_allocator);
-  //   m_output_name_allocated.push_back(std::move(output_name));
-  //   m_output_names.emplace_back(m_output_name_allocated.back().get());
-  // }
+Onnx::Onnx(const std::string &model_path)
+    : env(ORT_LOGGING_LEVEL_WARNING, "ocr"), m_session{env, model_path.c_str(), Ort::SessionOptions()} {
+  // Get input / output node names
+  size_t numInputNodes = m_session.GetInputCount();
+  for (int i = 0; i < numInputNodes; i++) {
+    auto input_name = m_session.GetInputNameAllocated(i, m_allocator);
+    m_input_name_allocated.push_back(std::move(input_name));
+    m_input_names.emplace_back(m_input_name_allocated.back().get());
+  }
+  size_t numOutputNodes = m_session.GetOutputCount();
+  for (int i = 0; i < numOutputNodes; i++) {
+    auto output_name = m_session.GetOutputNameAllocated(i, m_allocator);
+    m_output_name_allocated.push_back(std::move(output_name));
+    m_output_names.emplace_back(m_output_name_allocated.back().get());
+  }
 }
 
 ModelOutput Onnx::run(std::vector<float> &input, const std::vector<int64_t> &input_shape) {

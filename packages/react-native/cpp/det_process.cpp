@@ -157,7 +157,7 @@ std::vector<std::vector<std::vector<int>>> DetPredictor::Predict(cv::Mat &img, s
   auto model_output = onnx.run(image.data, input_shape);
   tic.end();
   auto predictTime = tic.get_average_ms();
-  // std::cout << "det predictor predict costs " << predictTime << std::endl;
+  std::cout << "det predictor predict costs " << predictTime << std::endl;
 
   // Process Output
   tic.start();
