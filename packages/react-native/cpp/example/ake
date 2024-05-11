@@ -13,7 +13,7 @@ def 'main start' [] {
   #cmake .. 
    cmake ..  -DCMAKE_BUILD_TYPE=Release
   make
-  ./ocr
+  ./ocr_example
 }
 
 def 'main start watch' [] {
