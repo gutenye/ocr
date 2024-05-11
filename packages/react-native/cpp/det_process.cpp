@@ -101,7 +101,7 @@ ImageRaw DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len)
 }
 
 std::vector<std::vector<std::vector<int>>>
-DetPredictor::Postprocess(ModelOutput &model_output, const cv::Mat srcimg,
+DetPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &srcimg,
                           std::map<std::string, double> Config,
                           int det_db_use_dilate)
 {
