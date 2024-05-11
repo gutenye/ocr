@@ -32,6 +32,7 @@ public:
   std::vector<std::vector<std::vector<int>>> Predict(cv::Mat &rgbImage, std::map<std::string, double> Config);
 
 private:
+  std::string m_model_path;
   ImageRaw Preprocess(const cv::Mat &img, const int max_side_len);
   std::vector<std::vector<std::vector<int>>> Postprocess(ModelOutput &model_output, const cv::Mat &srcimg,
                                                          std::map<std::string, double> Config, int det_db_use_dilate);
