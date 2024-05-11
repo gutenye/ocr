@@ -13,30 +13,26 @@
 // limitations under the License.
 
 #pragma once
-// #include "cls_process.h"
-#include "det_process.h"
-// #include "paddle_api.h"
-#include "rec_process.h"
+
+#include <map>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 #include <string>
 #include <vector>
-#include <map>
+#include "det_process.h"
+#include "rec_process.h"
 
 // using namespace paddle::lite_api; // NOLINT
 
-class Pipeline
-{
+class Pipeline {
 public:
-  Pipeline(const std::string &detModelDir, const std::string &clsModelDir,
-           const std::string &recModelDir, const std::string &cPUPowerMode,
-           const int cPUThreadNum, const std::string &config_path,
+  Pipeline(const std::string &detModelDir, const std::string &clsModelDir, const std::string &recModelDir,
+           const std::string &cPUPowerMode, const int cPUThreadNum, const std::string &config_path,
            const std::string &dict_path);
 
-  void Process(cv::Mat srcimg, std::string output_img_path,
-               std::vector<std::string> &res_txt);
+  void Process(cv::Mat srcimg, std::string output_img_path, std::vector<std::string> &res_txt);
 
 private:
   std::map<std::string, double> Config_;

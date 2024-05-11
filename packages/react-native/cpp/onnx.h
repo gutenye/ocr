@@ -1,6 +1,7 @@
 #pragma once
 
 #include <onnxruntime_cxx_api.h>
+
 #include <vector>
 
 struct ModelOutput {
@@ -14,7 +15,7 @@ public:
   ModelOutput run(std::vector<float> &input, const std::vector<int64_t> &input_shape);
 
 private:
-  Ort::Env env; // Declare environment as a member if needed for the lifetime of Onnx class
+  Ort::Env env;  // Declare environment as a member if needed for the lifetime of Onnx class
   Ort::SessionOptions session_options;
   Ort::Session m_session;
 
