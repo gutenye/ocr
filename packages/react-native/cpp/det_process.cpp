@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "det_process.h"  // NOLINT
-#include <onnxruntime_cxx_api.h>
+// #include <onnxruntime_cxx_api.h>
 #include <format>
 #include <map>                // NOLINT
 #include <memory>             // NOLINT
