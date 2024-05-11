@@ -3,8 +3,7 @@
     {
       "name": "Mac",
       "includePath": [
-        "packages/react-native/example/ios/Pods/onnxruntime-mobile-c/Headers",
-        "packages/react-native/ios/inference_lite_lib.ios64.armv8/include"
+        "packages/react-native/example/ios/Pods/onnxruntime-c/Headers"
       ],
       "defines": [],
       "macFrameworkPath": [

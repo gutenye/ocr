@@ -14,10 +14,13 @@
 
 #include "native-ocr.h"  // NOLINT
 #include <algorithm>     // NOLINT
+#include <format>
 #include <fstream>
 #include <iostream>  // NOLINT
 #include <map>       // NOLINT
-#include "timer.h"   // NOLINT
+#include <sstream>
+#include <stdexcept>
+#include "timer.h"  // NOLINT
 
 cv::Mat GetRotateCropImage(cv::Mat srcimage, std::vector<std::vector<int>> box) {
   cv::Mat image;
@@ -77,12 +80,11 @@ std::vector<std::string> ReadDict(std::string path) {
   std::string filename;
   std::string line;
   std::vector<std::string> m_vec;
-  if (in) {
-    while (getline(in, line)) {
-      m_vec.push_back(line);
-    }
-  } else {
-    std::cout << "no such file" << std::endl;
+  if (!in) {
+    throw std::string("Error: ReadDict file not found '") + path + "'";
+  }
+  while (getline(in, line)) {
+    m_vec.push_back(line);
   }
   return m_vec;
 }
@@ -140,61 +142,69 @@ cv::Mat Visualization(cv::Mat srcimg, std::vector<std::vector<std::vector<int>>>
 NativeOcr::NativeOcr(const std::string &detModelDir, const std::string &clsModelDir, const std::string &recModelDir,
                      const std::string &cPUPowerMode, const int cPUThreadNum, const std::string &config_path,
                      const std::string &dict_path) {
-  // clsPredictor_.reset(
-  //     new ClsPredictor(clsModelDir, cPUThreadNum, cPUPowerMode));
-  detPredictor_.reset(new DetPredictor(detModelDir, cPUThreadNum, cPUPowerMode));
-  recPredictor_.reset(new RecPredictor(recModelDir, cPUThreadNum, cPUPowerMode));
-  Config_ = LoadConfigTxt(config_path);
-  charactor_dict_ = ReadDict(dict_path);
-  charactor_dict_.insert(charactor_dict_.begin(), "#");  // NOLINT
-  charactor_dict_.push_back(" ");
+  try {
+    // clsPredictor_.reset(
+    //     new ClsPredictor(clsModelDir, cPUThreadNum, cPUPowerMode));
+    detPredictor_.reset(new DetPredictor(detModelDir, cPUThreadNum, cPUPowerMode));
+    recPredictor_.reset(new RecPredictor(recModelDir, cPUThreadNum, cPUPowerMode));
+    Config_ = LoadConfigTxt(config_path);
+    charactor_dict_ = ReadDict(dict_path);
+    charactor_dict_.insert(charactor_dict_.begin(), "#");  // NOLINT
+    charactor_dict_.push_back(" ");
+  } catch (std::string &error) {
+    std::cerr << error << std::endl;
+  }
 }
 
 void NativeOcr::Process(std::string &image_path, std::string output_img_path, std::vector<std::string> &res_txt) {
-  auto img = cv::imread(image_path);
-  int use_direction_classify = int(Config_["use_direction_classify"]);  // NOLINT
-  cv::Mat srcimg;
-  img.copyTo(srcimg);
+  try {
+    auto img = cv::imread(image_path);
+    int use_direction_classify = int(Config_["use_direction_classify"]);  // NOLINT
+    cv::Mat srcimg;
+    img.copyTo(srcimg);
 
-  printf("Run Detection\n");
-  // det predict
-  Timer tic;
-  tic.start();
-  auto boxes = detPredictor_->Predict(srcimg, Config_);
+    printf("Run Detection\n");
+    // det predict
+    Timer tic;
+    tic.start();
+    auto boxes = detPredictor_->Predict(srcimg, Config_);
 
-  std::vector<float> mean = {0.5f, 0.5f, 0.5f};
-  std::vector<float> scale = {1 / 0.5f, 1 / 0.5f, 1 / 0.5f};
+    std::vector<float> mean = {0.5f, 0.5f, 0.5f};
+    std::vector<float> scale = {1 / 0.5f, 1 / 0.5f, 1 / 0.5f};
 
-  cv::Mat img_copy;
-  img.copyTo(img_copy);
-  cv::Mat crop_img;
+    cv::Mat img_copy;
+    img.copyTo(img_copy);
+    cv::Mat crop_img;
 
-  printf("Run Recognition\n");
-  std::vector<std::string> rec_text;
-  std::vector<float> rec_text_score;
-  for (int i = boxes.size() - 1; i >= 0; i--) {
-    crop_img = GetRotateCropImage(img_copy, boxes[i]);
-    // if (use_direction_classify >= 1)
-    // {
-    //   crop_img =
-    //       clsPredictor_->Predict(crop_img, nullptr, nullptr, nullptr, 0.9);
-    // }
-    auto res = recPredictor_->Predict(crop_img, charactor_dict_);
-    rec_text.push_back(res.first);
-    rec_text_score.push_back(res.second);
-  }
-  tic.end();
-  auto processTime = tic.get_average_ms();
-  std::cout << "pipeline predict costs " << processTime << std::endl;
+    printf("Run Recognition\n");
+    std::vector<std::string> rec_text;
+    std::vector<float> rec_text_score;
+    for (int i = boxes.size() - 1; i >= 0; i--) {
+      crop_img = GetRotateCropImage(img_copy, boxes[i]);
+      // if (use_direction_classify >= 1)
+      // {
+      //   crop_img =
+      //       clsPredictor_->Predict(crop_img, nullptr, nullptr, nullptr, 0.9);
+      // }
+      auto res = recPredictor_->Predict(crop_img, charactor_dict_);
+      rec_text.push_back(res.first);
+      rec_text_score.push_back(res.second);
+    }
+    tic.end();
+    auto processTime = tic.get_average_ms();
+    std::cout << "pipeline predict costs " << processTime << std::endl;
 
-  //// visualization
-  // isDebug
-  // auto img_vis = Visualization(img, boxes, output_img_path);
-  // print recognized text
-  res_txt.resize(rec_text.size() * 2);
-  for (int i = 0; i < rec_text.size(); i++) {
-    std::cout << i << "\t" << rec_text[i] << "\t" << rec_text_score[i] << std::endl;
-    res_txt[2 * i] = rec_text[i];
-    res_txt[2 * i + 1] = rec_text_score[i];
+    //// visualization
+    // isDebug
+    // auto img_vis = Visualization(img, boxes, output_img_path);
+    // print recognized text
+    res_txt.resize(rec_text.size() * 2);
+    for (int i = 0; i < rec_text.size(); i++) {
+      std::cout << i << "\t" << rec_text[i] << "\t" << rec_text_score[i] << std::endl;
+      res_txt[2 * i] = rec_text[i];
+      res_txt[2 * i + 1] = rec_text_score[i];
+    }
+  } catch (std::string &error) {
+    std::cerr << error << std::endl;
   }
 }
