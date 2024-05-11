@@ -1,6 +1,7 @@
 #include "run_onnx.h"
 #include <iostream>
 #include <format>
+#include "timer.h"
 
 ModelOutput run_onnx(const std::string &model_path, std::vector<float> &input, const std::vector<int64_t> &input_shape)
 {
@@ -37,9 +38,14 @@ ModelOutput run_onnx(const std::string &model_path, std::vector<float> &input, c
 	input_tensors.emplace_back(std::move(iput_tensor));
 
 	// Run model
+	Timer tic;
+	tic.start();
 	std::vector<Ort::Value> output_tensors =
 			session.Run(Ort::RunOptions{nullptr}, input_names.data(),
 									input_tensors.data(), input_names.size(), output_names.data(), output_names.size());
+	tic.end();
+	auto runTime = tic.get_average_ms();
+	std::cout << "onnx run costs " << runTime << std::endl;
 
 	// Return output
 	auto &output_tensor = output_tensors.front();
