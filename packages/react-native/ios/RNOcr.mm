@@ -7,7 +7,7 @@
 #import <opencv2/opencv.hpp>
 #import <string>
 #import <vector>
-// #import "native-ocr.h"
+#import "native-ocr.h"
 
 void onnx_run(const std::string &model_path);
 
