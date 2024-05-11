@@ -1,6 +1,8 @@
 #ifdef __cplusplus
 #endif
 
+#import <memory>
+
 #ifdef RCT_NEW_ARCH_ENABLED
 #import "RNOcrSpec.h"
 

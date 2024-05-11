@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { ImagePickerButton } from './ImagePickerButton'
-import { recognize } from './recognize'
+// import { recognize } from './recognize'
 import type { ImageDetails } from './types'
 
 // FileSystem.readDirectoryAsync(`${FileSystem.bundleDirectory}/resources.bundle`).then(console.log)
@@ -13,7 +13,12 @@ import type { ImageDetails } from './types'
 
 // ocr.ocr('a.jpg').then((v) => console.log('js', v.split('\n')))
 // ocr.ocr('a.jpg').then((v) => console.log('js', v))
-// new Ocr().ocr('a.jpg')
+async function main() {
+  const ocr = await Ocr.create()
+  const result = await ocr.detect('a.jpg')
+  return result
+}
+main()
 
 export default function App() {
   const [image, setImage] = useState<ImageDetails>()
