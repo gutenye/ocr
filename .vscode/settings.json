@@ -9,6 +9,7 @@
     "quickfix.biome": "explicit"
   },
   "files.associations": {
+    "**/ios/*.h": "objective-cpp",
     "babel.config.json": "json5",
     "string": "cpp",
     "vector": "cpp",
