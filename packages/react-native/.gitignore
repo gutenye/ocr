@@ -1,6 +1,6 @@
 resources/*.nb
 ios/inference_lite_lib.ios64.armv8
-cpp/test/onnxruntime
+cpp/example/onnxruntime
 
 # OSX
 #

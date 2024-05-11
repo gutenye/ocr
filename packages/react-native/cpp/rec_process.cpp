@@ -13,16 +13,15 @@
 // limitations under the License.
 
 #include "rec_process.h"
+#include <format>
+#include <iostream>
+#include "shared.h"
 #include "timer.h"
 #include "utils.h"
-#include "shared.h"
-#include <iostream>
-#include <format>
 
 const std::vector<int> rec_image_shape{3, 48, 320};
 
-cv::Mat CrnnResizeImg(cv::Mat img, float wh_ratio)
-{
+cv::Mat CrnnResizeImg(cv::Mat img, float wh_ratio) {
   int imgC, imgH, imgW;
   imgC = rec_image_shape[0];
   imgW = rec_image_shape[2];
@@ -38,21 +37,17 @@ cv::Mat CrnnResizeImg(cv::Mat img, float wh_ratio)
   else
     resize_w = static_cast<int>(ceilf(imgH * ratio));
   cv::Mat resize_img;
-  cv::resize(img, resize_img, cv::Size(resize_w, imgH), 0.f, 0.f,
-             cv::INTER_LINEAR);
+  cv::resize(img, resize_img, cv::Size(resize_w, imgH), 0.f, 0.f, cv::INTER_LINEAR);
 
   return resize_img;
 }
 
 template <class ForwardIterator>
-inline size_t Argmax(ForwardIterator first, ForwardIterator last)
-{
+inline size_t Argmax(ForwardIterator first, ForwardIterator last) {
   return std::distance(first, std::max_element(first, last));
 }
 
-RecPredictor::RecPredictor(const std::string &modelDir, const int cpuThreadNum,
-                           const std::string &cpuPowerMode)
-{
+RecPredictor::RecPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode) {
   // paddle::lite_api::MobileConfig config;
   // config.set_model_from_file(modelDir);
   // config.set_threads(cpuThreadNum);
@@ -62,10 +57,8 @@ RecPredictor::RecPredictor(const std::string &modelDir, const int cpuThreadNum,
   //         config);
 }
 
-ImageRaw RecPredictor::Preprocess(const cv::Mat &srcimg)
-{
-  float wh_ratio =
-      static_cast<float>(srcimg.cols) / static_cast<float>(srcimg.rows);
+ImageRaw RecPredictor::Preprocess(const cv::Mat &srcimg) {
+  float wh_ratio = static_cast<float>(srcimg.cols) / static_cast<float>(srcimg.rows);
   std::vector<float> mean = {0.5f, 0.5f, 0.5f};
   std::vector<float> scale = {1 / 0.5f, 1 / 0.5f, 1 / 0.5f};
   cv::Mat resize_img = CrnnResizeImg(srcimg, wh_ratio);
@@ -86,10 +79,8 @@ ImageRaw RecPredictor::Preprocess(const cv::Mat &srcimg)
   return image_raw;
 }
 
-std::pair<std::string, float>
-RecPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &rgbaImage,
-                          std::vector<std::string> charactor_dict)
-{
+std::pair<std::string, float> RecPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &rgbaImage,
+                                                        std::vector<std::string> charactor_dict) {
   // Get output and run postprocess
   // std::unique_ptr<const Tensor> output_tensor0(
   //     std::move(predictor_->GetOutput(0)));
@@ -106,15 +97,11 @@ RecPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &rgbaImage,
   int count = 0;
   float max_value = 0.0f;
 
-  for (int n = 0; n < predict_shape[1]; n++)
-  {
-    argmax_idx = int(Argmax(&predict_batch[n * predict_shape[2]],
-                            &predict_batch[(n + 1) * predict_shape[2]]));
+  for (int n = 0; n < predict_shape[1]; n++) {
+    argmax_idx = int(Argmax(&predict_batch[n * predict_shape[2]], &predict_batch[(n + 1) * predict_shape[2]]));
     max_value =
-        float(*std::max_element(&predict_batch[n * predict_shape[2]],
-                                &predict_batch[(n + 1) * predict_shape[2]]));
-    if (argmax_idx > 0 && (!(n > 0 && argmax_idx == last_index)))
-    {
+        float(*std::max_element(&predict_batch[n * predict_shape[2]], &predict_batch[(n + 1) * predict_shape[2]]));
+    if (argmax_idx > 0 && (!(n > 0 && argmax_idx == last_index))) {
       score += max_value;
       count += 1;
       str_res += charactor_dict[argmax_idx];
@@ -125,9 +112,7 @@ RecPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &rgbaImage,
   return std::make_pair(str_res, score);
 }
 
-std::pair<std::string, float>
-RecPredictor::Predict(const cv::Mat &rgbaImage, std::vector<std::string> charactor_dict)
-{
+std::pair<std::string, float> RecPredictor::Predict(const cv::Mat &rgbaImage, std::vector<std::string> charactor_dict) {
   Timer tic;
   tic.start();
   auto image = Preprocess(rgbaImage);

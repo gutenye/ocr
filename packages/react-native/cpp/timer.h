@@ -17,7 +17,6 @@
 #include <chrono>
 #include <list>
 class Timer final {
-
 public:
   Timer() {}
 
@@ -29,11 +28,9 @@ public:
 
   void end() {
     tend = std::chrono::system_clock::now();
-    auto ts =
-        std::chrono::duration_cast<std::chrono::microseconds>(tend - tstart);
-    float elapse_ms = 1000.f * float(ts.count()) *
-                      std::chrono::microseconds::period::num /
-                      std::chrono::microseconds::period::den;
+    auto ts = std::chrono::duration_cast<std::chrono::microseconds>(tend - tstart);
+    float elapse_ms =
+        1000.f * float(ts.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den;
     ms_time.push_back(elapse_ms);
   }
 
@@ -61,7 +58,6 @@ public:
 
   // return tile (0-99) time.
   float get_tile_time(float tile) {
-
     if (tile < 0 || tile > 100) {
       return -1.f;
     }
