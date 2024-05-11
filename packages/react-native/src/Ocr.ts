@@ -1,7 +1,11 @@
 import OcrModule from './OcrModule'
 
 export class Ocr {
-  ocr(imagePath: string): Promise<string> {
-    return OcrModule.ocr(imagePath)
+  static async create(): Promise<Ocr> {
+    return new Ocr()
+  }
+
+  detect(imagePath: string, options: { isDebug?: boolean } = {}): Promise<string> {
+    return OcrModule.detect(imagePath, options)
   }
 }

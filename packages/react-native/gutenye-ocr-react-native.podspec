@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   # }
 
   s.resource_bundles = {
-    'resources' => ['resources/*']
+    'gutenye-ocr-react-native' => ['resources/*']
   }
 
   # s.dependency "onnxruntime-mobile-c", "~>1.14.0"
