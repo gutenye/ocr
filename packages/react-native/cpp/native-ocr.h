@@ -27,8 +27,7 @@
 class NativeOcr {
 public:
   NativeOcr(const std::string &detModelDir, const std::string &clsModelDir, const std::string &recModelDir,
-            const std::string &cPUPowerMode, const int cPUThreadNum, const std::string &config_path,
-            const std::string &dict_path);
+            const std::string &config_path, const std::string &dict_path);
 
   std::vector<std::string> Process(std::string &image_path);
 

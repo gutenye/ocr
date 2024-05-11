@@ -1,4 +1,5 @@
 #ifdef __cplusplus
+#include <unordered_map>
 #endif
 
 #import <memory>
@@ -14,3 +15,10 @@
 #endif
 
 @end
+
+std::string convertNSString(NSString *nsString);
+
+using MapValue = std::variant<std::string, double, bool>;
+std::unordered_map<std::string, MapValue> convertNSDictionary(NSDictionary *nsDictionary);
+
+NSArray<NSString *> *convertStdVector(const std::vector<std::string> &stdVector);

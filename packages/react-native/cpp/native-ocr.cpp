@@ -22,10 +22,14 @@
 #include <stdexcept>
 #include "timer.h"
 
+std::map<std::string, double> LoadConfigTxt(std::string config_path);
+std::vector<std::string> ReadDict(std::string path);
+cv::Mat GetRotateCropImage(cv::Mat srcimage, std::vector<std::vector<int>> box);
+
 NativeOcr::NativeOcr(const std::string &detModelDir, const std::string &clsModelDir, const std::string &recModelDir,
-                     const std::string &cPUPowerMode, const int cPUThreadNum, const std::string &config_path,
-                     const std::string &dict_path) {
-  // "LITE_POWER_HIGH", 1,
+                     const std::string &config_path, const std::string &dict_path) {
+  auto cPUThreadNum = 1;
+  auto cPUPowerMode = "LITE_POWER_HIGH";
   try {
     // clsPredictor_.reset(
     //     new ClsPredictor(clsModelDir, cPUThreadNum, cPUPowerMode));
@@ -82,16 +86,16 @@ std::vector<std::string> NativeOcr::Process(std::string &image_path) {
     // isDebug
     // auto img_vis = Visualization(img, boxes, output_img_path);
     // print recognized text
-    std::vector<std::string> res_txt{};
-    res_txt.resize(rec_text.size() * 2);
-    for (int i = 0; i < rec_text.size(); i++) {
-      std::cout << i << "\t" << rec_text[i] << "\t" << rec_text_score[i] << std::endl;
-      res_txt[2 * i] = rec_text[i];
-      res_txt[2 * i + 1] = rec_text_score[i];
+    std::vector<std::string> lines(rec_text.size());
+    for (int i = 0; i < lines.size(); i++) {
+      // DEBUG
+      std::cout << i << "\t" << rec_text_score[i] << rec_text[i] << std::endl;
+      lines[i] = rec_text[i];
     }
-    return res_text;
+    return lines;
   } catch (std::string &error) {
     std::cerr << error << std::endl;
+    return std::vector<std::string>{};
   }
 }
 
