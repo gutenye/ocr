@@ -1,5 +1,6 @@
 # @gutenye/ocr-react-native
 
+
 ## Installation
 
 ```sh
@@ -15,6 +16,10 @@ import { multiply } from '@gutenye/ocr-react-native'
 
 const result = await multiply(3, 7);
 ```
+
+## Development
+
+- [Development](./docs/Development.md)
 
 ## Contributing
 

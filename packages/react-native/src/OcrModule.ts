@@ -9,7 +9,7 @@ const LINKING_ERROR =
 // @ts-expect-error
 const isTurboModuleEnabled = global.__turboModuleProxy != null
 
-const OcrModule = isTurboModuleEnabled ? require('./NativeOcr').default : NativeModules.Ocr
+const OcrModule = isTurboModuleEnabled ? require('./NativeOcr').default : NativeModules.RNOcr
 
 const Ocr = OcrModule
   ? OcrModule
@@ -22,6 +22,4 @@ const Ocr = OcrModule
       },
     )
 
-export function ocr(imagePath: string): Promise<string> {
-  return Ocr.ocr(imagePath)
-}
+export default Ocr

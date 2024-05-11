@@ -36,16 +36,16 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.73.6)
   - fmt (6.2.1)
   - glog (0.3.5)
-  - hermes-engine (0.73.6):
-    - hermes-engine/Pre-built (= 0.73.6)
-  - hermes-engine/Pre-built (0.73.6)
-  - libevent (2.1.12)
-  - ocr-react-native (1.0.0):
+  - gutenye-ocr-react-native (1.0.0):
     - glog
     - onnxruntime-mobile-c (~> 1.14.0)
     - OpenCV (~> 4.3.0)
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
+  - hermes-engine (0.73.6):
+    - hermes-engine/Pre-built (= 0.73.6)
+  - hermes-engine/Pre-built (0.73.6)
+  - libevent (2.1.12)
   - onnxruntime-mobile-c (1.14.0)
   - OpenCV (4.3.0)
   - RCT-Folly (2022.05.16.00):
@@ -1106,9 +1106,9 @@ DEPENDENCIES:
   - FBLazyVector (from `../../../../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../../../../node_modules/react-native/React/FBReactNativeSpec`)
   - glog (from `../../../../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - "gutenye-ocr-react-native (from `../../../../node_modules/@gutenye/ocr-react-native`)"
   - hermes-engine (from `../../../../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
   - libevent (~> 2.1.12)
-  - "ocr-react-native (from `../../../../node_modules/@gutenye/ocr-react-native`)"
   - RCT-Folly (from `../../../../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../../../../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../../../../node_modules/react-native/Libraries/RCTRequired`)
@@ -1192,11 +1192,11 @@ EXTERNAL SOURCES:
     :path: "../../../../node_modules/react-native/React/FBReactNativeSpec"
   glog:
     :podspec: "../../../../node_modules/react-native/third-party-podspecs/glog.podspec"
+  gutenye-ocr-react-native:
+    :path: "../../../../node_modules/@gutenye/ocr-react-native"
   hermes-engine:
     :podspec: "../../../../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-2024-02-20-RNv0.73.5-18f99ace4213052c5e7cdbcd39ee9766cd5df7e4
-  ocr-react-native:
-    :path: "../../../../node_modules/@gutenye/ocr-react-native"
   RCT-Folly:
     :podspec: "../../../../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -1300,9 +1300,9 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 11c76c87794f8f2563f4d6523e86091fc94d654b
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: c5d68082e772fa1c511173d6b30a9de2c05a69a2
+  gutenye-ocr-react-native: ed8017fd5b91d8e23ca85faa8bb00df0f4e144b2
   hermes-engine: 9cecf9953a681df7556b8cc9c74905de8f3293c0
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  ocr-react-native: dc1fb1f274f0a4475195ace88f622721d175b7b6
   onnxruntime-mobile-c: 9b5c011b8484cdfe4ec5463ef66e3ac192fe1977
   OpenCV: 681e0451c1e54c5930a8922277f817ed5d5ab459
   RCT-Folly: 7169b2b1c44399c76a47b5deaaba715eeeb476c0

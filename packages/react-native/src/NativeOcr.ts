@@ -5,4 +5,4 @@ export interface Spec extends TurboModule {
   ocr(imagePath: string): Promise<string>
 }
 
-export default TurboModuleRegistry.getEnforcing<Spec>('Ocr')
+export default TurboModuleRegistry.getEnforcing<Spec>('RNOcr')

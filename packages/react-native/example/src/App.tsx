@@ -1,4 +1,4 @@
-// import * as ocr from '@gutenye/ocr-react-native'
+import Ocr from '@gutenye/ocr-react-native'
 import * as FileSystem from 'expo-file-system'
 import { useEffect, useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
@@ -12,7 +12,7 @@ import type { ImageDetails } from './types'
 
 // ocr.ocr('a.jpg').then((v) => console.log('js', v.split('\n')))
 // ocr.ocr('a.jpg').then((v) => console.log('js', v))
-ocr.ocr('a.jpg')
+new Ocr().ocr('a.jpg')
 
 export default function App() {
   const [image, setImage] = useState<ImageDetails>()
