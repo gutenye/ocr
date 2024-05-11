@@ -10,7 +10,7 @@ find_package(OpenCV REQUIRED)
 
 file(GLOB SOURCES "../*.cpp")
 
-add_executable(ocr ocr.cpp ${SOURCES})
+add_executable(ocr ocr_example.cpp ${SOURCES})
 
 include_directories(
 	${CMAKE_SOURCE_DIR}/..
