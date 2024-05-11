@@ -119,23 +119,22 @@ std::pair<std::string, float> RecPredictor::Predict(const cv::Mat &rgbaImage, st
   auto image = Preprocess(rgbaImage);
   tic.end();
   auto preprocessTime = tic.get_average_ms();
-  std::cout << "rec predictor preprocess costs " << preprocessTime << std::endl;
+  // std::cout << "rec predictor preprocess costs " << preprocessTime << std::endl;
 
   // Run predictor
-  auto input_data{image.data};
   std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
   Onnx onnx{m_model_path};
   tic.start();
-  auto model_output = onnx.run(input_data, input_shape);
+  auto model_output = onnx.run(image.data, input_shape);
   tic.end();
   auto predictTime = tic.get_average_ms();
-  std::cout << "rec predictor predict costs " << predictTime << std::endl;
+  // std::cout << "rec predictor predict costs " << predictTime << std::endl;
 
   tic.start();
   auto res = Postprocess(model_output, rgbaImage, charactor_dict);
   tic.end();
   auto postprocessTime = tic.get_average_ms();
-  std::cout << "rec predictor postprocess costs " << postprocessTime << std::endl;
+  // std::cout << "rec predictor postprocess costs " << postprocessTime << std::endl;
 
   return res;
 }

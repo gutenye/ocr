@@ -31,13 +31,12 @@ ModelOutput Onnx::run(std::vector<float> &input, const std::vector<int64_t> &inp
   // Run model
   Timer tic;
   tic.start();
-
   std::vector<Ort::Value> output_tensors =
       m_session.Run(Ort::RunOptions{nullptr}, m_input_names.data(), input_tensors.data(), m_input_names.size(),
                     m_output_names.data(), m_output_names.size());
   tic.end();
   auto runTime = tic.get_average_ms();
-  std::cout << "onnx run costs " << runTime << std::endl;
+  // std::cout << "onnx run costs " << runTime << std::endl;
 
   // Return output
   auto &output_tensor = output_tensors.front();
