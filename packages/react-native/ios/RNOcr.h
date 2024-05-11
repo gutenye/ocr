@@ -4,11 +4,11 @@
 #ifdef RCT_NEW_ARCH_ENABLED
 #import "RNOcrSpec.h"
 
-@interface Ocr : NSObject <NativeOcrSpec>
+@interface RNOcr : NSObject <NativeOcrSpec>
 #else
 #import <React/RCTBridgeModule.h>
 
-@interface Ocr : NSObject <RCTBridgeModule>
+@interface RNOcr : NSObject <RCTBridgeModule>
 #endif
 
 @end

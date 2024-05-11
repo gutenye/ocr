@@ -4,7 +4,7 @@ package = JSON.parse(File.read(File.join(__dir__, "package.json")))
 folly_compiler_flags = '-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32'
 
 Pod::Spec.new do |s|
-  s.name         = "ocr-react-native"
+  s.name         = "gutenye-ocr-react-native"
   s.version      = package["version"]
   s.summary      = package["description"]
   s.homepage     = package["homepage"]
@@ -15,6 +15,10 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/gutenye/ocr.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm}", "cpp/**/*.{hpp,cpp,cc,c,h}"
+
+  s.pod_target_xcconfig    = {
+      "CLANG_CXX_LANGUAGE_STANDARD" => "c++23"
+  }
 
   s.resource_bundles = {
     'resources' => ['resources/*']
