@@ -1,6 +1,6 @@
 #include <format>
 #include <iostream>
-#include "../pipeline.h"
+#include "../native-ocr.h"
 
 int main() {
   printf("Start\n");
@@ -14,8 +14,8 @@ int main() {
   auto dict_path = asset_dir + "/ppocr_keys_v1.txt";
   auto config_path = asset_dir + "/config.txt";
 
-  Pipeline *pipe_ =
-      new Pipeline(det_model_file, cls_model_file, rec_model_file, "LITE_POWER_HIGH", 1, config_path, dict_path);
+  NativeOcr *pipe_ =
+      new NativeOcr(det_model_file, cls_model_file, rec_model_file, "LITE_POWER_HIGH", 1, config_path, dict_path);
   std::vector<std::string> res_txt;
   pipe_->Process(image_path, output_img_path, res_txt);
 

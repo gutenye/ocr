@@ -7,7 +7,7 @@
 #import <opencv2/opencv.hpp>
 #import <string>
 #import <vector>
-#import "pipeline.h"
+#import "native-ocr.h"
 
 @implementation RNOcr
 RCT_EXPORT_MODULE()

@@ -26,11 +26,11 @@
 
 // using namespace paddle::lite_api; // NOLINT
 
-class Pipeline {
+class NativeOcr {
 public:
-  Pipeline(const std::string &detModelDir, const std::string &clsModelDir, const std::string &recModelDir,
-           const std::string &cPUPowerMode, const int cPUThreadNum, const std::string &config_path,
-           const std::string &dict_path);
+  NativeOcr(const std::string &detModelDir, const std::string &clsModelDir, const std::string &recModelDir,
+            const std::string &cPUPowerMode, const int cPUThreadNum, const std::string &config_path,
+            const std::string &dict_path);
 
   void Process(std::string &image_path, std::string output_img_path, std::vector<std::string> &res_txt);
 
