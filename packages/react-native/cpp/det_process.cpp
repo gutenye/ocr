@@ -12,38 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "det_process.h"     // NOLINT
-#include "db_post_process.h" // NOLINT
-#include "timer.h"           // NOLINT
-#include <map>               // NOLINT
-#include <memory>            // NOLINT
-#include <string>            // NOLINT
-#include <utility>           // NOLINT
-#include <vector>            // NOLINT
+#include "det_process.h"  // NOLINT
 #include <format>
+#include <map>                // NOLINT
+#include <memory>             // NOLINT
+#include <string>             // NOLINT
+#include <utility>            // NOLINT
+#include <vector>             // NOLINT
+#include "db_post_process.h"  // NOLINT
+#include "timer.h"            // NOLINT
 
 // resize image to a size multiple of 32 which is required by the network
 cv::Mat DetResizeImg(const cv::Mat img, int max_size_len,
-                     std::vector<float> &ratio_hw)
-{ // NOLINT
+                     std::vector<float> &ratio_hw) {  // NOLINT
   int w = img.cols;
   int h = img.rows;
   float ratio = 1.f;
   int max_wh = w >= h ? w : h;
-  if (max_wh > max_size_len)
-  {
-    if (h > w)
-    {
+  if (max_wh > max_size_len) {
+    if (h > w) {
       ratio = static_cast<float>(max_size_len) / static_cast<float>(h);
-    }
-    else
-    {
+    } else {
       ratio = static_cast<float>(max_size_len) / static_cast<float>(w);
     }
   }
 
-  int resize_h = static_cast<int>(float(h) * ratio); // NOLINT
-  int resize_w = static_cast<int>(float(w) * ratio); // NOLINT
+  int resize_h = static_cast<int>(float(h) * ratio);  // NOLINT
+  int resize_w = static_cast<int>(float(w) * ratio);  // NOLINT
   if (resize_h % 32 == 0)
     resize_h = resize_h;
   else if (resize_h / 32 < 1 + 1e-5)
@@ -66,9 +61,7 @@ cv::Mat DetResizeImg(const cv::Mat img, int max_size_len,
   return resize_img;
 }
 
-DetPredictor::DetPredictor(const std::string &modelDir, const int cpuThreadNum,
-                           const std::string &cpuPowerMode)
-{
+DetPredictor::DetPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode) {
   // paddle::lite_api::MobileConfig config;
   // config.set_model_from_file(modelDir);
   // config.set_threads(cpuThreadNum);
@@ -78,8 +71,7 @@ DetPredictor::DetPredictor(const std::string &modelDir, const int cpuThreadNum,
   //         config);
 }
 
-ImageRaw DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len)
-{
+ImageRaw DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len) {
   cv::Mat img = DetResizeImg(srcimg, max_side_len, ratio_hw_);
   cv::Mat img_fp;
   img.convertTo(img_fp, CV_32FC3, 1.0 / 255.f);
@@ -99,11 +91,9 @@ ImageRaw DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len)
   return image_raw;
 }
 
-std::vector<std::vector<std::vector<int>>>
-DetPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &srcimg,
-                          std::map<std::string, double> Config,
-                          int det_db_use_dilate)
-{
+std::vector<std::vector<std::vector<int>>> DetPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &srcimg,
+                                                                     std::map<std::string, double> Config,
+                                                                     int det_db_use_dilate) {
   // Get output and post process
   // std::unique_ptr<const Tensor> output_tensor(
   //     std::move(predictor_->GetOutput(0)));
@@ -122,35 +112,30 @@ DetPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &srcimg,
   cv::Mat cbuf_map;
   pred_map.convertTo(cbuf_map, CV_8UC1, 255.0f);
 
-  const double threshold = double(Config["det_db_thresh"]) * 255; // NOLINT
+  const double threshold = double(Config["det_db_thresh"]) * 255;  // NOLINT
   const double max_value = 255;
   cv::Mat bit_map;
   cv::threshold(cbuf_map, bit_map, threshold, max_value, cv::THRESH_BINARY);
-  if (det_db_use_dilate == 1)
-  {
+  if (det_db_use_dilate == 1) {
     cv::Mat dilation_map;
-    cv::Mat dila_ele =
-        cv::getStructuringElement(cv::MORPH_RECT, cv::Size(2, 2));
+    cv::Mat dila_ele = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(2, 2));
     cv::dilate(bit_map, dilation_map, dila_ele);
     bit_map = dilation_map;
   }
   auto boxes = BoxesFromBitmap(pred_map, bit_map, Config);
 
-  std::vector<std::vector<std::vector<int>>> filter_boxes =
-      FilterTagDetRes(boxes, ratio_hw_[0], ratio_hw_[1], srcimg);
+  std::vector<std::vector<std::vector<int>>> filter_boxes = FilterTagDetRes(boxes, ratio_hw_[0], ratio_hw_[1], srcimg);
 
   return filter_boxes;
 }
 
-std::vector<std::vector<std::vector<int>>>
-DetPredictor::Predict(cv::Mat &img, std::map<std::string, double> Config)
-{
+std::vector<std::vector<std::vector<int>>> DetPredictor::Predict(cv::Mat &img, std::map<std::string, double> Config) {
   cv::Mat srcimg;
   img.copyTo(srcimg);
 
   // Read img
-  int max_side_len = int(Config["max_side_len"]);           // NOLINT
-  int det_db_use_dilate = int(Config["det_db_use_dilate"]); // NOLINT
+  int max_side_len = int(Config["max_side_len"]);            // NOLINT
+  int det_db_use_dilate = int(Config["det_db_use_dilate"]);  // NOLINT
 
   Timer tic;
   tic.start();

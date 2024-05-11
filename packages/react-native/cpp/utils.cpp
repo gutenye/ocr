@@ -15,8 +15,7 @@
 #include "utils.h"
 #include <arm_neon.h>
 
-void NHWC3ToNC3HW(const float *din, float *dout, int size,
-                  const std::vector<float> mean,
+void NHWC3ToNC3HW(const float *din, float *dout, int size, const std::vector<float> mean,
                   const std::vector<float> scale) {
   if (mean.size() != 3 || scale.size() != 3) {
     printf("[ERROR] mean or scale size must equal to 3\n");
@@ -58,8 +57,7 @@ void NHWC3ToNC3HW(const float *din, float *dout, int size,
   }
 }
 
-void NHWC1ToNC1HW(const float *src, float *dst, const float *mean,
-                  const float *std, int width, int height) {
+void NHWC1ToNC1HW(const float *src, float *dst, const float *mean, const float *std, int width, int height) {
   int size = height * width;
   float32x4_t vmean = vdupq_n_f32(mean ? mean[0] : 0.0f);
   float32x4_t vscale = vdupq_n_f32(std ? (1.0f / std[0]) : 1.0f);

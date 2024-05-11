@@ -18,28 +18,23 @@
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/imgproc.hpp"
 // #include "paddle_api.h"
-#include "utils.h"
-#include "shared.h"
-#include "onnx.h"
 #include <map>
+#include "onnx.h"
+#include "shared.h"
+#include "utils.h"
 
 // using namespace paddle::lite_api; // NOLINT
 
-class DetPredictor
-{
+class DetPredictor {
 public:
-  explicit DetPredictor(const std::string &modelDir, const int cpuThreadNum,
-                        const std::string &cpuPowerMode);
+  explicit DetPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode);
 
-  std::vector<std::vector<std::vector<int>>>
-  Predict(cv::Mat &rgbImage, std::map<std::string, double> Config);
+  std::vector<std::vector<std::vector<int>>> Predict(cv::Mat &rgbImage, std::map<std::string, double> Config);
 
 private:
   ImageRaw Preprocess(const cv::Mat &img, const int max_side_len);
-  std::vector<std::vector<std::vector<int>>>
-  Postprocess(ModelOutput &model_output, const cv::Mat &srcimg,
-              std::map<std::string, double> Config,
-              int det_db_use_dilate);
+  std::vector<std::vector<std::vector<int>>> Postprocess(ModelOutput &model_output, const cv::Mat &srcimg,
+                                                         std::map<std::string, double> Config, int det_db_use_dilate);
 
 private:
   std::vector<float> ratio_hw_;

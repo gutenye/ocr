@@ -34,9 +34,7 @@
 //   return paddle::lite_api::LITE_POWER_NO_BIND;
 // }
 
-void NHWC3ToNC3HW(const float *src, float *dst, int size,
-                  const std::vector<float> mean,
+void NHWC3ToNC3HW(const float *src, float *dst, int size, const std::vector<float> mean,
                   const std::vector<float> scale);
 
-void NHWC1ToNC1HW(const float *src, float *dst, const float *mean,
-                  const float *std, int width, int height);
+void NHWC1ToNC1HW(const float *src, float *dst, const float *mean, const float *std, int width, int height);

@@ -1,10 +1,7 @@
 {
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "biomejs.biome",
-  "[cpp]": {
-    "editor.defaultFormatter": "xaver.clang-format"
-  },
-  "[objective-cpp]": {
+  "[c][cpp][objective-cpp]": {
     "editor.defaultFormatter": "xaver.clang-format"
   },
   "editor.codeActionsOnSave": {

@@ -16,8 +16,7 @@
 #include "timer.h"
 
 const std::vector<int> cls_image_shape{3, 48, 192};
-cv::Mat ClsResizeImg(cv::Mat img)
-{
+cv::Mat ClsResizeImg(cv::Mat img) {
   int imgC, imgH, imgW;
   imgC = cls_image_shape[0];
   imgH = cls_image_shape[1];
@@ -31,19 +30,14 @@ cv::Mat ClsResizeImg(cv::Mat img)
   else
     resize_w = int(ceilf(imgH * ratio));
   cv::Mat resize_img;
-  cv::resize(img, resize_img, cv::Size(resize_w, imgH), 0.f, 0.f,
-             cv::INTER_LINEAR);
-  if (resize_w < imgW)
-  {
-    cv::copyMakeBorder(resize_img, resize_img, 0, 0, 0, imgW - resize_w,
-                       cv::BORDER_CONSTANT, cv::Scalar(0, 0, 0));
+  cv::resize(img, resize_img, cv::Size(resize_w, imgH), 0.f, 0.f, cv::INTER_LINEAR);
+  if (resize_w < imgW) {
+    cv::copyMakeBorder(resize_img, resize_img, 0, 0, 0, imgW - resize_w, cv::BORDER_CONSTANT, cv::Scalar(0, 0, 0));
   }
   return resize_img;
 }
 
-ClsPredictor::ClsPredictor(const std::string &modelDir, const int cpuThreadNum,
-                           const std::string &cpuPowerMode)
-{
+ClsPredictor::ClsPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode) {
   // paddle::lite_api::MobileConfig config;
   // config.set_model_from_file(modelDir);
   // config.set_threads(cpuThreadNum);
@@ -53,8 +47,7 @@ ClsPredictor::ClsPredictor(const std::string &modelDir, const int cpuThreadNum,
   //         config);
 }
 
-void ClsPredictor::Preprocess(const cv::Mat &img)
-{
+void ClsPredictor::Preprocess(const cv::Mat &img) {
   std::vector<float> mean = {0.5f, 0.5f, 0.5f};
   std::vector<float> scale = {1 / 0.5f, 1 / 0.5f, 1 / 0.5f};
   cv::Mat crop_img;
@@ -62,8 +55,7 @@ void ClsPredictor::Preprocess(const cv::Mat &img)
   cv::Mat resize_img;
 
   int index = 0;
-  float wh_ratio =
-      static_cast<float>(crop_img.cols) / static_cast<float>(crop_img.rows);
+  float wh_ratio = static_cast<float>(crop_img.cols) / static_cast<float>(crop_img.rows);
 
   resize_img = ClsResizeImg(crop_img);
   resize_img.convertTo(resize_img, CV_32FC3, 1 / 255.f);
@@ -76,8 +68,7 @@ void ClsPredictor::Preprocess(const cv::Mat &img)
   // NHWC3ToNC3HW(dimg, data0, resize_img.rows * resize_img.cols, mean, scale);
 }
 
-cv::Mat ClsPredictor::Postprocess(const cv::Mat &srcimg, const float thresh)
-{
+cv::Mat ClsPredictor::Postprocess(const cv::Mat &srcimg, const float thresh) {
   // Get output and run postprocess
   // std::unique_ptr<const Tensor> softmax_out(
   //     std::move(predictor_->GetOutput(0)));
@@ -102,10 +93,8 @@ cv::Mat ClsPredictor::Postprocess(const cv::Mat &srcimg, const float thresh)
   return a;
 }
 
-cv::Mat ClsPredictor::Predict(const cv::Mat &img, double *preprocessTime,
-                              double *predictTime, double *postprocessTime,
-                              const float thresh)
-{
+cv::Mat ClsPredictor::Predict(const cv::Mat &img, double *preprocessTime, double *predictTime, double *postprocessTime,
+                              const float thresh) {
   cv::Mat src_img;
   img.copyTo(src_img);
   //  Timer tic;

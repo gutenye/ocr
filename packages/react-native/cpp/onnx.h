@@ -1,7 +1,6 @@
 #pragma once
 
 #include <onnxruntime_cxx_api.h>
-
 #include <vector>
 
 struct ModelOutput {

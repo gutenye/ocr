@@ -1,11 +1,10 @@
 #include "onnx.h"
-#include "timer.h"
 #include <format>
 #include <iostream>
+#include "timer.h"
 
 Onnx::Onnx(const std::string &model_path)
-    : env{ORT_LOGGING_LEVEL_WARNING, "ocr"},
-      m_session{env, model_path.c_str(), Ort::SessionOptions()} {
+    : env{ORT_LOGGING_LEVEL_WARNING, "ocr"}, m_session{env, model_path.c_str(), Ort::SessionOptions()} {
   // Get input/output node names
   size_t numInputNodes = m_session.GetInputCount();
   for (int i = 0; i < numInputNodes; i++) {
@@ -21,14 +20,11 @@ Onnx::Onnx(const std::string &model_path)
   }
 }
 
-ModelOutput Onnx::run(std::vector<float> &input,
-                      const std::vector<int64_t> &input_shape) {
+ModelOutput Onnx::run(std::vector<float> &input, const std::vector<int64_t> &input_shape) {
   // Get input
-  auto memory_info =
-      Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
+  auto memory_info = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
   Ort::Value iput_tensor =
-      Ort::Value::CreateTensor<float>(memory_info, input.data(), input.size(),
-                                      input_shape.data(), input_shape.size());
+      Ort::Value::CreateTensor<float>(memory_info, input.data(), input.size(), input_shape.data(), input_shape.size());
   std::vector<Ort::Value> input_tensors;
   input_tensors.emplace_back(std::move(iput_tensor));
 
@@ -36,9 +32,9 @@ ModelOutput Onnx::run(std::vector<float> &input,
   Timer tic;
   tic.start();
 
-  std::vector<Ort::Value> output_tensors = m_session.Run(
-      Ort::RunOptions{nullptr}, m_input_names.data(), input_tensors.data(),
-      m_input_names.size(), m_output_names.data(), m_output_names.size());
+  std::vector<Ort::Value> output_tensors =
+      m_session.Run(Ort::RunOptions{nullptr}, m_input_names.data(), input_tensors.data(), m_input_names.size(),
+                    m_output_names.data(), m_output_names.size());
   tic.end();
   auto runTime = tic.get_average_ms();
   std::cout << "onnx run costs " << runTime << std::endl;
