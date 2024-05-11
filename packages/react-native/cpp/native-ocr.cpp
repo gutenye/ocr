@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "pipeline.h"  // NOLINT
-#include <algorithm>   // NOLINT
-#include <iostream>    // NOLINT
-#include <map>         // NOLINT
-#include "timer.h"     // NOLINT
+#include "native-ocr.h"  // NOLINT
+#include <algorithm>     // NOLINT
+#include <iostream>      // NOLINT
+#include <map>           // NOLINT
+#include "timer.h"       // NOLINT
 
 cv::Mat GetRotateCropImage(cv::Mat srcimage, std::vector<std::vector<int>> box) {
   cv::Mat image;
@@ -136,9 +136,9 @@ cv::Mat Visualization(cv::Mat srcimg, std::vector<std::vector<std::vector<int>>>
   return img_vis;
 }
 
-Pipeline::Pipeline(const std::string &detModelDir, const std::string &clsModelDir, const std::string &recModelDir,
-                   const std::string &cPUPowerMode, const int cPUThreadNum, const std::string &config_path,
-                   const std::string &dict_path) {
+NativeOcr::NativeOcr(const std::string &detModelDir, const std::string &clsModelDir, const std::string &recModelDir,
+                     const std::string &cPUPowerMode, const int cPUThreadNum, const std::string &config_path,
+                     const std::string &dict_path) {
   // clsPredictor_.reset(
   //     new ClsPredictor(clsModelDir, cPUThreadNum, cPUPowerMode));
   detPredictor_.reset(new DetPredictor(detModelDir, cPUThreadNum, cPUPowerMode));
@@ -149,7 +149,7 @@ Pipeline::Pipeline(const std::string &detModelDir, const std::string &clsModelDi
   charactor_dict_.push_back(" ");
 }
 
-void Pipeline::Process(std::string &image_path, std::string output_img_path, std::vector<std::string> &res_txt) {
+void NativeOcr::Process(std::string &image_path, std::string output_img_path, std::vector<std::string> &res_txt) {
   auto img = cv::imread(image_path);
   int use_direction_classify = int(Config_["use_direction_classify"]);  // NOLINT
   cv::Mat srcimg;

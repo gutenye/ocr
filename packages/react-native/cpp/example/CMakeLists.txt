@@ -10,7 +10,7 @@ find_package(OpenCV REQUIRED)
 
 file(GLOB SOURCES "../*.cpp")
 
-add_executable(ocr ocr_example.cpp ${SOURCES})
+add_executable(ocr_example ocr_example.cpp ${SOURCES})
 
 include_directories(
 	${CMAKE_SOURCE_DIR}/..
@@ -18,7 +18,7 @@ include_directories(
 	${OpenCV_INCLUDE_DIRS}
 )
 
-target_link_libraries(ocr PRIVATE 
+target_link_libraries(ocr_example PRIVATE 
 	${CMAKE_SOURCE_DIR}/onnxruntime/lib/libonnxruntime.dylib
 	${OpenCV_LIBS}
 )
