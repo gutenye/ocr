@@ -20,7 +20,7 @@
 // #include "paddle_api.h"
 #include "utils.h"
 #include "shared.h"
-#include "run_onnx.h"
+#include "onnx.h"
 #include <map>
 
 // using namespace paddle::lite_api; // NOLINT

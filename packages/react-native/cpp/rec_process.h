@@ -19,7 +19,7 @@
 #include "opencv2/imgproc.hpp"
 // #include "paddle_api.h"
 #include "utils.h"
-#include "run_onnx.h"
+#include "onnx.h"
 #include "shared.h"
 // using namespace paddle::lite_api; // NOLINT
 

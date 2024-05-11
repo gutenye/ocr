@@ -13,7 +13,7 @@ def 'main start' [] {
   #cmake .. 
    cmake ..  -DCMAKE_BUILD_TYPE=Release
   make
-  ./run_onnx
+  ./ocr
 }
 
 def 'main start watch' [] {
