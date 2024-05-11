@@ -24,7 +24,8 @@ Pod::Spec.new do |s|
     'resources' => ['resources/*']
   }
 
-  s.dependency "onnxruntime-mobile-c", "~>1.14.0"
+  # s.dependency "onnxruntime-mobile-c", "~>1.14.0"
+  s.dependency "onnxruntime-c"
   s.dependency "OpenCV", "~>4.3.0" 
 
   # Use install_modules_dependencies helper to install the dependencies if React Native version >=0.71.0.
