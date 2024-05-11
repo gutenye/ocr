@@ -149,7 +149,8 @@ Pipeline::Pipeline(const std::string &detModelDir, const std::string &clsModelDi
   charactor_dict_.push_back(" ");
 }
 
-void Pipeline::Process(cv::Mat img, std::string output_img_path, std::vector<std::string> &res_txt) {
+void Pipeline::Process(std::string &image_path, std::string output_img_path, std::vector<std::string> &res_txt) {
+  auto img = cv::imread(image_path);
   int use_direction_classify = int(Config_["use_direction_classify"]);  // NOLINT
   cv::Mat srcimg;
   img.copyTo(srcimg);
