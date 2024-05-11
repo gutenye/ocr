@@ -23,8 +23,7 @@ RCT_EXPORT_METHOD(create : (RCTPromiseResolveBlock)resolve rejecter : (RCTPromis
   std::string dict_path = bundle_dir + "/gutenye-ocr-react-native.bundle/ppocr_keys_v1.txt";
   std::string config_path = bundle_dir + "/gutenye-ocr-react-native.bundle/config.txt";
 
-  _ocr = std::make_unique<NativeOcr>(det_model_file, cls_model_file, rec_model_file, "LITE_POWER_HIGH", 1, config_path,
-                                     dict_path);
+  _ocr = std::make_unique<NativeOcr>(det_model_file, cls_model_file, rec_model_file, config_path, dict_path);
   long ref = (long)CFBridgingRetain(self);
   resolve(@(ref));
 }
@@ -34,22 +33,9 @@ RCT_EXPORT_METHOD(detect
                   : (NSDictionary *)options resolver
                   : (RCTPromiseResolveBlock)resolve rejecter
                   : (RCTPromiseRejectBlock)reject) {
-  // TODO
   auto image_path = std::string([raw_image_path UTF8String]);
-  std::string output_img_path = "";
-  std::vector<std::string> res_txt;
-  _ocr->Process(image_path, output_img_path, res_txt);
-
-  std::ostringstream result;
-  for (int i = 0; i < res_txt.size() / 2; i++) {
-    //   result << i << "\t" << res_txt[2*i] << "\t" << res_txt[2*i + 1] <<
-    //   "\t";
-    result << res_txt[2 * i] << "\n";
-  }
-  NSString *text = [NSString stringWithUTF8String:result.str().c_str()];
-  // NSLog(@"%@", text);
-
-  resolve(text);
+  auto lines = _ocr->Process(image_path);
+  resolve(lines);
 }
 
 // Don't compile this code when we build for the old architecture.
