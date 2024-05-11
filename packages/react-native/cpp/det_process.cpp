@@ -144,7 +144,7 @@ std::vector<std::vector<std::vector<int>>> DetPredictor::Predict(cv::Mat &img, s
   auto image = Preprocess(img, max_side_len);
   tic.end();
   auto preprocessTime = tic.get_average_ms();
-  // std::cout << "det predictor preprocess costs " << preprocessTime << std::endl;
+  std::cout << "det predictor preprocess costs " << preprocessTime << std::endl;
 
   // Run predictor
   // std::vector<float> input = {1.0f, 2.0f, 3.0f};
@@ -164,7 +164,7 @@ std::vector<std::vector<std::vector<int>>> DetPredictor::Predict(cv::Mat &img, s
   auto filter_boxes = Postprocess(model_output, srcimg, Config, det_db_use_dilate);
   tic.end();
   auto postprocessTime = tic.get_average_ms();
-  // std::cout << "det predictor postprocess costs " << postprocessTime << std::endl;
+  std::cout << "det predictor postprocess costs " << postprocessTime << std::endl;
 
   return filter_boxes;
 }

@@ -23,45 +23,41 @@ Onnx::Onnx(const std::string &model_path)
 
 ModelOutput Onnx::run(std::vector<float> &input, const std::vector<int64_t> &input_shape) {
   // Get input
-  // auto memory_info = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
-  // Ort::Value iput_tensor =
-  //     Ort::Value::CreateTensor<float>(memory_info, input.data(), input.size(), input_shape.data(),
-  //     input_shape.size());
-  // std::vector<Ort::Value> input_tensors;
-  // input_tensors.emplace_back(std::move(iput_tensor));
+  auto memory_info = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
+  Ort::Value iput_tensor =
+      Ort::Value::CreateTensor<float>(memory_info, input.data(), input.size(), input_shape.data(), input_shape.size());
+  std::vector<Ort::Value> input_tensors;
+  input_tensors.emplace_back(std::move(iput_tensor));
 
-  // // Run model
-  // Timer tic;
-  // tic.start();
-  // std::vector<Ort::Value> output_tensors =
-  //     m_session.Run(Ort::RunOptions{nullptr}, m_input_names.data(), input_tensors.data(), m_input_names.size(),
-  //                   m_output_names.data(), m_output_names.size());
-  // tic.end();
-  // auto runTime = tic.get_average_ms();
-  // // std::cout << "onnx run costs " << runTime << std::endl;
+  // Run model
+  Timer tic;
+  tic.start();
+  std::vector<Ort::Value> output_tensors =
+      m_session.Run(Ort::RunOptions{nullptr}, m_input_names.data(), input_tensors.data(), m_input_names.size(),
+                    m_output_names.data(), m_output_names.size());
+  tic.end();
+  auto runTime = tic.get_average_ms();
+  // std::cout << "onnx run costs " << runTime << std::endl;
 
-  // // Return output
-  // auto &output_tensor = output_tensors.front();
-  // auto tensor_info = output_tensor.GetTensorTypeAndShapeInfo();
-  // auto shape = tensor_info.GetShape();
+  // Return output
+  auto &output_tensor = output_tensors.front();
+  auto tensor_info = output_tensor.GetTensorTypeAndShapeInfo();
+  auto shape = tensor_info.GetShape();
 
-  // // Convert float* to vector<float>
-  // auto *floatarr = output_tensor.GetTensorMutableData<float>();
-  // int64_t size;
-  // // det
-  // if (shape.size() == 4) {
-  //   size = shape[0] * shape[1] * shape[2] * shape[3];
-  // } else
-  // // rec
-  // {
-  //   size = shape[0] * shape[1] * shape[2];
-  // }
-  // std::vector<float> data(floatarr, floatarr + size);
+  // Convert float* to vector<float>
+  auto *floatarr = output_tensor.GetTensorMutableData<float>();
+  int64_t size;
+  // det
+  if (shape.size() == 4) {
+    size = shape[0] * shape[1] * shape[2] * shape[3];
+  } else
+  // rec
+  {
+    size = shape[0] * shape[1] * shape[2];
+  }
+  std::vector<float> data(floatarr, floatarr + size);
 
-  // ModelOutput model_output{.data = data, .shape = shape};
+  ModelOutput model_output{.data = data, .shape = shape};
 
-  // return model_output;
-
-  ModelOutput model_output{};
   return model_output;
 }
