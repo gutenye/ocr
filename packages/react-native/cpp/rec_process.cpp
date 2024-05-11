@@ -48,15 +48,7 @@ inline size_t Argmax(ForwardIterator first, ForwardIterator last) {
 }
 
 RecPredictor::RecPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode)
-    : m_model_path{modelDir} {
-  // paddle::lite_api::MobileConfig config;
-  // config.set_model_from_file(modelDir);
-  // config.set_threads(cpuThreadNum);
-  // config.set_power_mode(ParsePowerMode(cpuPowerMode));
-  // predictor_ =
-  //     paddle::lite_api::CreatePaddlePredictor<paddle::lite_api::MobileConfig>(
-  //         config);
-}
+    : m_model_path{modelDir} {}
 
 ImageRaw RecPredictor::Preprocess(const cv::Mat &srcimg) {
   float wh_ratio = static_cast<float>(srcimg.cols) / static_cast<float>(srcimg.rows);
@@ -66,11 +58,6 @@ ImageRaw RecPredictor::Preprocess(const cv::Mat &srcimg) {
   resize_img.convertTo(resize_img, CV_32FC3, 1 / 255.f);
 
   const float *dimg = reinterpret_cast<const float *>(resize_img.data);
-
-  // std::unique_ptr<Tensor> input_tensor0(std::move(predictor_->GetInput(0)));
-  // input_tensor0->Resize({1, 3, resize_img.rows, resize_img.cols});
-  // auto *data0 = input_tensor0->mutable_data<float>();
-  // NHWC3ToNC3HW(dimg, data0, resize_img.rows * resize_img.cols, mean, scale);
 
   std::vector<float> data0(resize_img.rows * resize_img.cols * 3);
   NHWC3ToNC3HW(dimg, data0.data(), resize_img.rows * resize_img.cols, mean, scale);
@@ -82,11 +69,6 @@ ImageRaw RecPredictor::Preprocess(const cv::Mat &srcimg) {
 
 std::pair<std::string, float> RecPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &rgbaImage,
                                                         std::vector<std::string> charactor_dict) {
-  // Get output and run postprocess
-  // std::unique_ptr<const Tensor> output_tensor0(
-  //     std::move(predictor_->GetOutput(0)));
-  // auto *predict_batch = output_tensor0->data<float>();
-  // auto predict_shape = output_tensor0->shape();
   auto predict_batch = model_output.data;
   auto predict_shape = model_output.shape;
 

@@ -14,9 +14,10 @@
 
 #include "native-ocr.h"  // NOLINT
 #include <algorithm>     // NOLINT
-#include <iostream>      // NOLINT
-#include <map>           // NOLINT
-#include "timer.h"       // NOLINT
+#include <fstream>
+#include <iostream>  // NOLINT
+#include <map>       // NOLINT
+#include "timer.h"   // NOLINT
 
 cv::Mat GetRotateCropImage(cv::Mat srcimage, std::vector<std::vector<int>> box) {
   cv::Mat image;
