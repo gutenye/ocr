@@ -1,4 +1,4 @@
-// import * as ocr from '@gutenye/ocr-react-native'
+import * as ocr from '@gutenye/ocr-react-native'
 import * as FileSystem from 'expo-file-system'
 import { useEffect, useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'

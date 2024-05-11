@@ -14,7 +14,8 @@ Pod::Spec.new do |s|
   s.platforms    = { :ios => min_ios_version_supported }
   s.source       = { :git => "https://github.com/gutenye/ocr.git", :tag => "#{s.version}" }
 
-  s.source_files = "ios/**/*.{h,m,mm}", "cpp/**/*.{hpp,cpp,cc,c,h}"
+  # s.source_files = "ios/**/*.{h,m,mm}", "cpp/**/*.{hpp,cpp,cc,c,h}"
+  s.source_files = "ios/**/*.{h,m,mm}"
 
   s.resource_bundles = {
     'resources' => ['resources/*']

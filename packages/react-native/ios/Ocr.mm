@@ -1,5 +1,5 @@
 #import "Ocr.h"
-#import "pipeline.h"
+// #import "pipeline.h"
 #import <iostream>
 #import <onnxruntime_cxx_api.h>
 #import <opencv2/opencv.hpp>
@@ -39,22 +39,22 @@ RCT_EXPORT_METHOD(ocr
 
   onnx_run(rec_model_file2);
 
-  cv::Mat srcimg = cv::imread(img_path);
-  Pipeline *pipe_ = new Pipeline(det_model_file, cls_model_file, rec_model_file,
-                                 "LITE_POWER_HIGH", 1, config_path, dict_path);
-  std::vector<std::string> res_txt;
-  cv::Mat img_vis = pipe_->Process(srcimg, output_img_path, res_txt);
+  // cv::Mat srcimg = cv::imread(img_path);
+  // Pipeline *pipe_ = new Pipeline(det_model_file, cls_model_file, rec_model_file,
+  //                                "LITE_POWER_HIGH", 1, config_path, dict_path);
+  // std::vector<std::string> res_txt;
+  // cv::Mat img_vis = pipe_->Process(srcimg, output_img_path, res_txt);
 
-  std::ostringstream result;
-  for (int i = 0; i < res_txt.size() / 2; i++) {
-    //   result << i << "\t" << res_txt[2*i] << "\t" << res_txt[2*i + 1] <<
-    //   "\t";
-    result << res_txt[2 * i] << "\n";
-  }
-  NSString *text = [NSString stringWithUTF8String:result.str().c_str()];
-  NSLog(@"%@", text);
+  // std::ostringstream result;
+  // for (int i = 0; i < res_txt.size() / 2; i++) {
+  //   //   result << i << "\t" << res_txt[2*i] << "\t" << res_txt[2*i + 1] <<
+  //   //   "\t";
+  //   result << res_txt[2 * i] << "\n";
+  // }
+  // NSString *text = [NSString stringWithUTF8String:result.str().c_str()];
+  // NSLog(@"%@", text);
 
-  resolve(text);
+  // resolve(text);
 }
 
 // Don't compile this code when we build for the old architecture.
@@ -69,7 +69,9 @@ RCT_EXPORT_METHOD(ocr
 
 void onnx_run(const std::string &model_path) {
 
+printf("1\n");
   Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "test");
+printf("2\n");
 
   Ort::SessionOptions session_options;
 
