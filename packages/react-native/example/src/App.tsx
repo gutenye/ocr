@@ -7,12 +7,6 @@ import { ImagePickerButton } from './ImagePickerButton'
 // import { recognize } from './recognize'
 import type { ImageDetails } from './types'
 
-// FileSystem.readDirectoryAsync(`${FileSystem.bundleDirectory}/resources.bundle`).then(console.log)
-// FileSystem.readAsStringAsync(`${FileSystem.bundleDirectory}/resources.bundle/ppocr_keys_v1.txt`).then(console.log)
-// FileSystem.getInfoAsync(`${FileSystem.bundleDirectory}/resources.bundle/ch_PP-OCRv4_det_infer.onnx`).then(console.log)
-
-// ocr.ocr('a.jpg').then((v) => console.log('js', v.split('\n')))
-// ocr.ocr('a.jpg').then((v) => console.log('js', v))
 async function main() {
   const ocr = await Ocr.create()
   const result = await ocr.detect(`${FileSystem.bundleDirectory}/gutenye-ocr-react-native.bundle/cn-01.jpg`)
