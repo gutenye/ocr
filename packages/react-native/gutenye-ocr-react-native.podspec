@@ -14,10 +14,10 @@ Pod::Spec.new do |s|
   s.platforms    = { :ios => min_ios_version_supported }
   s.source       = { :git => "https://github.com/gutenye/ocr.git", :tag => "#{s.version}" }
 
-  s.source_files = "ios/**/*.{h,m,mm}", "cpp/**/*.{hpp,cpp,cc,c,h}"
+  s.source_files = "ios/*.{h,m,mm}", "cpp/*.{hpp,cpp,cc,c,h}"
 
   # s.pod_target_xcconfig    = {
-  #     "CLANG_CXX_LANGUAGE_STANDARD" => "c++29"
+  #     "CLANG_CXX_LANGUAGE_STANDARD" => "c++23"
   # }
 
   s.resource_bundles = {
