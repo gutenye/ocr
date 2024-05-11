@@ -12,20 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "det_process.h"  // NOLINT
+#include "det_process.h"
 // #include <onnxruntime_cxx_api.h>
 #include <format>
-#include <map>                // NOLINT
-#include <memory>             // NOLINT
-#include <string>             // NOLINT
-#include <utility>            // NOLINT
-#include <vector>             // NOLINT
-#include "db_post_process.h"  // NOLINT
-#include "timer.h"            // NOLINT
+#include <map>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
+#include "db_post_process.h"
+#include "timer.h"
 
 // resize image to a size multiple of 32 which is required by the network
-cv::Mat DetResizeImg(const cv::Mat img, int max_size_len,
-                     std::vector<float> &ratio_hw) {  // NOLINT
+cv::Mat DetResizeImg(const cv::Mat img, int max_size_len, std::vector<float> &ratio_hw) {
   int w = img.cols;
   int h = img.rows;
   float ratio = 1.f;
@@ -38,8 +37,8 @@ cv::Mat DetResizeImg(const cv::Mat img, int max_size_len,
     }
   }
 
-  int resize_h = static_cast<int>(float(h) * ratio);  // NOLINT
-  int resize_w = static_cast<int>(float(w) * ratio);  // NOLINT
+  int resize_h = static_cast<int>(float(h) * ratio);
+  int resize_w = static_cast<int>(float(w) * ratio);
   if (resize_h % 32 == 0)
     resize_h = resize_h;
   else if (resize_h / 32 < 1 + 1e-5)
@@ -90,7 +89,7 @@ std::vector<std::vector<std::vector<int>>> DetPredictor::Postprocess(ModelOutput
   cv::Mat cbuf_map;
   pred_map.convertTo(cbuf_map, CV_8UC1, 255.0f);
 
-  const double threshold = double(Config["det_db_thresh"]) * 255;  // NOLINT
+  const double threshold = double(Config["det_db_thresh"]) * 255;
   const double max_value = 255;
   cv::Mat bit_map;
   cv::threshold(cbuf_map, bit_map, threshold, max_value, cv::THRESH_BINARY);
@@ -112,8 +111,8 @@ std::vector<std::vector<std::vector<int>>> DetPredictor::Predict(cv::Mat &img, s
   img.copyTo(srcimg);
 
   // Read img
-  int max_side_len = int(Config["max_side_len"]);            // NOLINT
-  int det_db_use_dilate = int(Config["det_db_use_dilate"]);  // NOLINT
+  int max_side_len = int(Config["max_side_len"]);
+  int det_db_use_dilate = int(Config["det_db_use_dilate"]);
 
   Timer tic;
   tic.start();
