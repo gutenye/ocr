@@ -1,1 +1,1 @@
-../../models/ppocr_keys_v1.txt
+../../models/assets/ppocr_keys_v1.txt
