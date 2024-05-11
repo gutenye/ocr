@@ -2,7 +2,7 @@
 #include <iostream>
 #include <format>
 
-ModelOutput run_onnx(const std::string &model_path, std::vector<float> &input, std::vector<int64_t> &input_shape)
+ModelOutput run_onnx(const std::string &model_path, std::vector<float> &input, const std::vector<int64_t> &input_shape)
 {
 	Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "ocr");
 	Ort::SessionOptions session_options;
