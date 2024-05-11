@@ -143,29 +143,31 @@ std::vector<std::vector<std::vector<int>>> DetPredictor::Predict(cv::Mat &img, s
   auto image = Preprocess(img, max_side_len);
   tic.end();
   auto preprocessTime = tic.get_average_ms();
-  std::cout << "det predictor preprocess costs " << preprocessTime << std::endl;
+  // std::cout << "det predictor preprocess costs " << preprocessTime << std::endl;
 
   // Run predictor
-  std::string asset_dir = "../assets";
-  std::string det_model_file = asset_dir + "/ch_PP-OCRv4_det_infer.onnx";
   // std::vector<float> input = {1.0f, 2.0f, 3.0f};
   // std::vector<int64_t> input_shape = {1, 3, 1, 1};
-  auto input_data{image.data};
   std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
+
+  Ort::Env env{ORT_LOGGING_LEVEL_WARNING, "ocr"};
+  Ort::SessionOptions session_options{};
+  auto session = Ort::Session{env, m_model_path.c_str(), session_options};
+
   // input_tensor0->Resize({1, 3, img_fp.rows, img_fp.cols});
   Onnx onnx{m_model_path};
   tic.start();
-  auto model_output = onnx.run(input_data, input_shape);
+  auto model_output = onnx.run(image.data, input_shape);
   tic.end();
   auto predictTime = tic.get_average_ms();
-  std::cout << "det predictor predict costs " << predictTime << std::endl;
+  // std::cout << "det predictor predict costs " << predictTime << std::endl;
 
   // Process Output
   tic.start();
   auto filter_boxes = Postprocess(model_output, srcimg, Config, det_db_use_dilate);
   tic.end();
   auto postprocessTime = tic.get_average_ms();
-  std::cout << "det predictor postprocess costs " << postprocessTime << std::endl;
+  // std::cout << "det predictor postprocess costs " << postprocessTime << std::endl;
 
   return filter_boxes;
 }
