@@ -191,6 +191,8 @@ void Pipeline::Process(cv::Mat img, std::string output_img_path,
   int use_direction_classify = int(Config_["use_direction_classify"]); // NOLINT
   cv::Mat srcimg;
   img.copyTo(srcimg);
+
+  printf("Run Detection\n");
   // det predict
   Timer tic;
   tic.start();
@@ -204,6 +206,7 @@ void Pipeline::Process(cv::Mat img, std::string output_img_path,
   img.copyTo(img_copy);
   cv::Mat crop_img;
 
+  printf("Run Recognition\n");
   std::vector<std::string> rec_text;
   std::vector<float> rec_text_score;
   for (int i = boxes.size() - 1; i >= 0; i--)

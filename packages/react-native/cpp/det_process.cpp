@@ -15,12 +15,11 @@
 #include "det_process.h"     // NOLINT
 #include "db_post_process.h" // NOLINT
 #include "timer.h"           // NOLINT
-#include "run_onnx.h"
-#include <map>     // NOLINT
-#include <memory>  // NOLINT
-#include <string>  // NOLINT
-#include <utility> // NOLINT
-#include <vector>  // NOLINT
+#include <map>               // NOLINT
+#include <memory>            // NOLINT
+#include <string>            // NOLINT
+#include <utility>           // NOLINT
+#include <vector>            // NOLINT
 #include <format>
 
 // resize image to a size multiple of 32 which is required by the network
@@ -168,8 +167,9 @@ DetPredictor::Predict(cv::Mat &img, std::map<std::string, double> Config)
   auto input_data{image.data};
   std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
   // input_tensor0->Resize({1, 3, img_fp.rows, img_fp.cols});
+  Onnx onnx{det_model_file};
   tic.start();
-  auto model_output = run_onnx(det_model_file, input_data, input_shape);
+  auto model_output = onnx.run(input_data, input_shape);
   tic.end();
   auto predictTime = tic.get_average_ms();
   std::cout << "det predictor predict costs " << predictTime << std::endl;

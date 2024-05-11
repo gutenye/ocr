@@ -140,8 +140,9 @@ RecPredictor::Predict(const cv::Mat &rgbaImage, std::vector<std::string> charact
   std::string rec_model_file = asset_dir + "/ch_PP-OCRv4_rec_infer.onnx";
   auto input_data{image.data};
   std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
+  Onnx onnx{rec_model_file};
   tic.start();
-  auto model_output = run_onnx(rec_model_file, input_data, input_shape);
+  auto model_output = onnx.run(input_data, input_shape);
   tic.end();
   auto predictTime = tic.get_average_ms();
   std::cout << "rec predictor predict costs " << predictTime << std::endl;
