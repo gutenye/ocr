@@ -15,7 +15,8 @@ import type { ImageDetails } from './types'
 // ocr.ocr('a.jpg').then((v) => console.log('js', v))
 async function main() {
   const ocr = await Ocr.create()
-  const result = await ocr.detect('a.jpg')
+  const result = await ocr.detect(`${FileSystem.bundleDirectory}/gutenye-ocr-react-native.bundle/cn-01.jpg`)
+  console.log('js', result)
   return result
 }
 main()

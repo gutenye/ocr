@@ -30,19 +30,15 @@ RCT_EXPORT_METHOD(create : (RCTPromiseResolveBlock)resolve rejecter : (RCTPromis
 }
 
 RCT_EXPORT_METHOD(detect
-                  : (NSString *)image_path options
+                  : (NSString *)raw_image_path options
                   : (NSDictionary *)options resolver
                   : (RCTPromiseResolveBlock)resolve rejecter
                   : (RCTPromiseRejectBlock)reject) {
-  // try {
   // TODO
-  NSString *path = [[NSBundle mainBundle] bundlePath];
-  std::string bundle_dir = std::string([path UTF8String]);
-  std::string img_path = bundle_dir + "/gutenye-ocr-react-native.bundle/cn-01.jpg";
-  std::string output_img_path = bundle_dir + "/test_result.jpg";
-
+  auto image_path = std::string([raw_image_path UTF8String]);
+  std::string output_img_path = "";
   std::vector<std::string> res_txt;
-  _ocr->Process(img_path, output_img_path, res_txt);
+  _ocr->Process(image_path, output_img_path, res_txt);
 
   std::ostringstream result;
   for (int i = 0; i < res_txt.size() / 2; i++) {
@@ -51,7 +47,7 @@ RCT_EXPORT_METHOD(detect
     result << res_txt[2 * i] << "\n";
   }
   NSString *text = [NSString stringWithUTF8String:result.str().c_str()];
-  NSLog(@"%@", text);
+  // NSLog(@"%@", text);
 
   resolve(text);
 }
