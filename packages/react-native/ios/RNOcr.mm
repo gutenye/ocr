@@ -32,8 +32,8 @@ RCT_EXPORT_METHOD(ocr
   std::string dict_path = paddle_dir + "/resources.bundle/ppocr_keys_v1.txt";
   std::string config_path = paddle_dir + "/resources.bundle/config.txt";
 
-  Pipeline *pipe_ =
-      new Pipeline(det_model_file, cls_model_file, rec_model_file, "LITE_POWER_HIGH", 1, config_path, dict_path);
+  NativeOcr *pipe_ =
+      new NativeOcr(det_model_file, cls_model_file, rec_model_file, "LITE_POWER_HIGH", 1, config_path, dict_path);
   std::vector<std::string> res_txt;
   pipe_->Process(img_path, output_img_path, res_txt);
 

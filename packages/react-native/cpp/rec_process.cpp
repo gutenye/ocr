@@ -47,7 +47,8 @@ inline size_t Argmax(ForwardIterator first, ForwardIterator last) {
   return std::distance(first, std::max_element(first, last));
 }
 
-RecPredictor::RecPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode) {
+RecPredictor::RecPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode)
+    : m_model_path{modelDir} {
   // paddle::lite_api::MobileConfig config;
   // config.set_model_from_file(modelDir);
   // config.set_threads(cpuThreadNum);
@@ -121,11 +122,9 @@ std::pair<std::string, float> RecPredictor::Predict(const cv::Mat &rgbaImage, st
   std::cout << "rec predictor preprocess costs " << preprocessTime << std::endl;
 
   // Run predictor
-  std::string asset_dir = "../assets";
-  std::string rec_model_file = asset_dir + "/ch_PP-OCRv4_rec_infer.onnx";
   auto input_data{image.data};
   std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
-  Onnx onnx{rec_model_file};
+  Onnx onnx{m_model_path};
   tic.start();
   auto model_output = onnx.run(input_data, input_shape);
   tic.end();

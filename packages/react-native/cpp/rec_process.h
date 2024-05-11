@@ -30,6 +30,7 @@ public:
   std::pair<std::string, float> Predict(const cv::Mat &rgbaImage, std::vector<std::string> charactor_dict);
 
 private:
+  std::string m_model_path;
   ImageRaw Preprocess(const cv::Mat &rgbaImage);
   std::pair<std::string, float> Postprocess(ModelOutput &model_output, const cv::Mat &rgbaImage,
                                             std::vector<std::string> charactor_dict);

@@ -61,7 +61,8 @@ cv::Mat DetResizeImg(const cv::Mat img, int max_size_len,
   return resize_img;
 }
 
-DetPredictor::DetPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode) {
+DetPredictor::DetPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode)
+    : m_model_path{modelDir} {
   // paddle::lite_api::MobileConfig config;
   // config.set_model_from_file(modelDir);
   // config.set_threads(cpuThreadNum);
@@ -152,7 +153,7 @@ std::vector<std::vector<std::vector<int>>> DetPredictor::Predict(cv::Mat &img, s
   auto input_data{image.data};
   std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
   // input_tensor0->Resize({1, 3, img_fp.rows, img_fp.cols});
-  Onnx onnx{det_model_file};
+  Onnx onnx{m_model_path};
   tic.start();
   auto model_output = onnx.run(input_data, input_shape);
   tic.end();
