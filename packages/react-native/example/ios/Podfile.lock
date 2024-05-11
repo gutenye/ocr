@@ -38,7 +38,7 @@ PODS:
   - glog (0.3.5)
   - gutenye-ocr-react-native (1.0.0):
     - glog
-    - onnxruntime-mobile-c (~> 1.14.0)
+    - onnxruntime-c
     - OpenCV (~> 4.3.0)
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -46,7 +46,7 @@ PODS:
     - hermes-engine/Pre-built (= 0.73.6)
   - hermes-engine/Pre-built (0.73.6)
   - libevent (2.1.12)
-  - onnxruntime-mobile-c (1.14.0)
+  - onnxruntime-c (1.17.3)
   - OpenCV (4.3.0)
   - RCT-Folly (2022.05.16.00):
     - boost
@@ -1159,7 +1159,7 @@ SPEC REPOS:
   trunk:
     - fmt
     - libevent
-    - onnxruntime-mobile-c
+    - onnxruntime-c
     - OpenCV
     - SocketRocket
 
@@ -1300,10 +1300,10 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 11c76c87794f8f2563f4d6523e86091fc94d654b
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: c5d68082e772fa1c511173d6b30a9de2c05a69a2
-  gutenye-ocr-react-native: 574759250e40b3adc579afe9610976342e86988b
+  gutenye-ocr-react-native: 6ad55563a5812590aa5e5efeb3721ba5c934a232
   hermes-engine: 9cecf9953a681df7556b8cc9c74905de8f3293c0
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  onnxruntime-mobile-c: 9b5c011b8484cdfe4ec5463ef66e3ac192fe1977
+  onnxruntime-c: 065a3ed478da911448ff72612e6a0aaf4cb10fae
   OpenCV: 681e0451c1e54c5930a8922277f817ed5d5ab459
   RCT-Folly: 7169b2b1c44399c76a47b5deaaba715eeeb476c0
   RCTRequired: ca1d7414aba0b27efcfa2ccd37637edb1ab77d96

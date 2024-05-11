@@ -7,12 +7,13 @@ import { ImagePickerButton } from './ImagePickerButton'
 import { recognize } from './recognize'
 import type { ImageDetails } from './types'
 
-// FileSystem.readDirectoryAsync(`${FileSystem.bundleDirectory}/models.bundle/ppocr_keys_v1.txt`).then(console.log)
-// FileSystem.readAsStringAsync(`${FileSystem.bundleDirectory}/models.bundle/ppocr_keys_v1.txt`).then(console.log)
+// FileSystem.readDirectoryAsync(`${FileSystem.bundleDirectory}/resources.bundle`).then(console.log)
+// FileSystem.readAsStringAsync(`${FileSystem.bundleDirectory}/resources.bundle/ppocr_keys_v1.txt`).then(console.log)
+// FileSystem.getInfoAsync(`${FileSystem.bundleDirectory}/resources.bundle/ch_PP-OCRv4_det_infer.onnx`).then(console.log)
 
 // ocr.ocr('a.jpg').then((v) => console.log('js', v.split('\n')))
 // ocr.ocr('a.jpg').then((v) => console.log('js', v))
-new Ocr().ocr('a.jpg')
+// new Ocr().ocr('a.jpg')
 
 export default function App() {
   const [image, setImage] = useState<ImageDetails>()
