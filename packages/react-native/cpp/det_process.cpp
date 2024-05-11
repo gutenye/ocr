@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "det_process.h"  // NOLINT
+#include <onnxruntime_cxx_api.h>
 #include <format>
 #include <map>                // NOLINT
 #include <memory>             // NOLINT
@@ -149,10 +150,6 @@ std::vector<std::vector<std::vector<int>>> DetPredictor::Predict(cv::Mat &img, s
   // std::vector<float> input = {1.0f, 2.0f, 3.0f};
   // std::vector<int64_t> input_shape = {1, 3, 1, 1};
   std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
-
-  Ort::Env env{ORT_LOGGING_LEVEL_WARNING, "ocr"};
-  Ort::SessionOptions session_options{};
-  auto session = Ort::Session{env, m_model_path.c_str(), session_options};
 
   // input_tensor0->Resize({1, 3, img_fp.rows, img_fp.cols});
   Onnx onnx{m_model_path};

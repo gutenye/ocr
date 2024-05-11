@@ -4,7 +4,7 @@
 #include "timer.h"
 
 Onnx::Onnx(const std::string &model_path)
-    : env{ORT_LOGGING_LEVEL_WARNING, "ocr"}, m_session{env, model_path.c_str(), Ort::SessionOptions()} {
+    : env(ORT_LOGGING_LEVEL_WARNING, "ocr"), m_session{env, model_path.c_str(), Ort::SessionOptions()} {
   // Get input/output node names
   size_t numInputNodes = m_session.GetInputCount();
   for (int i = 0; i < numInputNodes; i++) {
