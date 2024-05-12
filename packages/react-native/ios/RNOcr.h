@@ -1,6 +1,7 @@
 #ifdef __cplusplus
 #include <unordered_map>
 #include <variant>
+#include "shared.h"
 #endif
 
 #import <memory>
@@ -18,8 +19,6 @@
 @end
 
 std::string convertNSString(NSString *nsString);
-
-using RawOptions = std::unordered_map<std::string, std::variant<bool, int, double, std::string>>;
 
 RawOptions convertNSDictionary(NSDictionary *nsDictionary);
 

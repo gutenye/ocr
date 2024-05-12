@@ -9,6 +9,8 @@ struct ImageRaw {
   int64_t channels {};
 };
 
+using RawOptions = std::unordered_map<std::string, std::variant<bool, double, std::string>>;
+
 struct Options {
   bool is_debug {true};
   double image_max_size {960};

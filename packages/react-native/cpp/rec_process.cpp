@@ -20,35 +20,38 @@
 #include "utils.h"
 
 const std::vector<int> rec_image_shape {3, 48, 320};
-
-cv::Mat CrnnResizeImg(cv::Mat img, float wh_ratio) {
-  int imgC, imgH, imgW;
-  imgC = rec_image_shape[0];
-  imgW = rec_image_shape[2];
-  imgH = rec_image_shape[1];
-
-  // imgW = int(32 * wh_ratio);
-  imgW = int(48 * wh_ratio);
-
-  float ratio = static_cast<float>(img.cols) / static_cast<float>(img.rows);
-  int resize_w, resize_h;
-  if (ceilf(imgH * ratio) > imgW)
-    resize_w = imgW;
-  else
-    resize_w = static_cast<int>(ceilf(imgH * ratio));
-  cv::Mat resize_img;
-  cv::resize(img, resize_img, cv::Size(resize_w, imgH), 0.f, 0.f, cv::INTER_LINEAR);
-
-  return resize_img;
-}
-
+cv::Mat CrnnResizeImg(cv::Mat img, float wh_ratio);
 template <class ForwardIterator>
-inline size_t Argmax(ForwardIterator first, ForwardIterator last) {
-  return std::distance(first, std::max_element(first, last));
-}
+inline size_t Argmax(ForwardIterator first, ForwardIterator last);
 
 RecPredictor::RecPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode)
     : m_options {options} {}
+
+std::pair<std::string, float> RecPredictor::Predict(const cv::Mat &rgbaImage, std::vector<std::string> charactor_dict) {
+  Timer tic;
+  tic.start();
+  auto image = Preprocess(rgbaImage);
+  tic.end();
+  auto preprocessTime = tic.get_average_ms();
+  // std::cout << "rec predictor preprocess costs " << preprocessTime << std::endl;
+
+  // Run predictor
+  std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
+  Onnx onnx {m_options.recognition_model_path};
+  tic.start();
+  auto model_output = onnx.run(image.data, input_shape);
+  tic.end();
+  auto predictTime = tic.get_average_ms();
+  // std::cout << "rec predictor predict costs " << predictTime << std::endl;
+
+  tic.start();
+  auto res = Postprocess(model_output, rgbaImage, charactor_dict);
+  tic.end();
+  auto postprocessTime = tic.get_average_ms();
+  // std::cout << "rec predictor postprocess costs " << postprocessTime << std::endl;
+
+  return res;
+}
 
 ImageRaw RecPredictor::Preprocess(const cv::Mat &srcimg) {
   float wh_ratio = static_cast<float>(srcimg.cols) / static_cast<float>(srcimg.rows);
@@ -95,28 +98,28 @@ std::pair<std::string, float> RecPredictor::Postprocess(ModelOutput &model_outpu
   return std::make_pair(str_res, score);
 }
 
-std::pair<std::string, float> RecPredictor::Predict(const cv::Mat &rgbaImage, std::vector<std::string> charactor_dict) {
-  Timer tic;
-  tic.start();
-  auto image = Preprocess(rgbaImage);
-  tic.end();
-  auto preprocessTime = tic.get_average_ms();
-  // std::cout << "rec predictor preprocess costs " << preprocessTime << std::endl;
+cv::Mat CrnnResizeImg(cv::Mat img, float wh_ratio) {
+  int imgC, imgH, imgW;
+  imgC = rec_image_shape[0];
+  imgW = rec_image_shape[2];
+  imgH = rec_image_shape[1];
 
-  // Run predictor
-  std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
-  Onnx onnx {m_options.recognition_model_path};
-  tic.start();
-  auto model_output = onnx.run(image.data, input_shape);
-  tic.end();
-  auto predictTime = tic.get_average_ms();
-  // std::cout << "rec predictor predict costs " << predictTime << std::endl;
+  // imgW = int(32 * wh_ratio);
+  imgW = int(48 * wh_ratio);
 
-  tic.start();
-  auto res = Postprocess(model_output, rgbaImage, charactor_dict);
-  tic.end();
-  auto postprocessTime = tic.get_average_ms();
-  // std::cout << "rec predictor postprocess costs " << postprocessTime << std::endl;
+  float ratio = static_cast<float>(img.cols) / static_cast<float>(img.rows);
+  int resize_w, resize_h;
+  if (ceilf(imgH * ratio) > imgW)
+    resize_w = imgW;
+  else
+    resize_w = static_cast<int>(ceilf(imgH * ratio));
+  cv::Mat resize_img;
+  cv::resize(img, resize_img, cv::Size(resize_w, imgH), 0.f, 0.f, cv::INTER_LINEAR);
 
-  return res;
+  return resize_img;
+}
+
+template <class ForwardIterator>
+inline size_t Argmax(ForwardIterator first, ForwardIterator last) {
+  return std::distance(first, std::max_element(first, last));
 }
