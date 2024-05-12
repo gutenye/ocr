@@ -24,10 +24,10 @@
 
 cv::Mat DetResizeImg(const cv::Mat img, int max_size_len, std::vector<float> &ratio_hw);
 
-DetPredictor::DetPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode)
+DetectionPredictor::DetectionPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode)
     : m_options {options}, m_onnx {Onnx(options.detection_model_path)} {}
 
-DetectionResult DetPredictor::Predict(cv::Mat &img) {
+DetectionResult DetectionPredictor::Predict(cv::Mat &img) {
   ModelPerformance performance;
 
   cv::Mat srcimg;
@@ -58,7 +58,7 @@ DetectionResult DetPredictor::Predict(cv::Mat &img) {
   return DetectionResult {.data = filter_boxes, .performance = performance};
 }
 
-ImageRaw DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len) {
+ImageRaw DetectionPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len) {
   cv::Mat img = DetResizeImg(srcimg, max_side_len, ratio_hw_);
   cv::Mat img_fp;
   img.convertTo(img_fp, CV_32FC3, 1.0 / 255.f);
@@ -74,7 +74,8 @@ ImageRaw DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len)
   return image_raw;
 }
 
-DetectionResultData DetPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &srcimg, Options &options) {
+DetectionResultData DetectionPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &srcimg,
+                                                    Options &options) {
   auto height = model_output.shape[2];
   auto width = model_output.shape[3];
   cv::Mat pred_map = cv::Mat(height, width, CV_32F, model_output.data.data());

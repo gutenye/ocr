@@ -28,9 +28,9 @@ struct RecognitionResult {
   ModelPerformance performance {};
 };
 
-class RecPredictor {
+class RecognitionPredictor {
 public:
-  explicit RecPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode);
+  explicit RecognitionPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode);
 
   RecognitionResult Predict(const cv::Mat &rgbaImage, std::vector<std::string> charactor_dict);
 

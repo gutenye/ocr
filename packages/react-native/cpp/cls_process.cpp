@@ -37,9 +37,10 @@ cv::Mat ClsResizeImg(cv::Mat img) {
   return resize_img;
 }
 
-ClsPredictor::ClsPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode) {}
+ClassifierPredictor::ClassifierPredictor(const std::string &modelDir, const int cpuThreadNum,
+                                         const std::string &cpuPowerMode) {}
 
-void ClsPredictor::Preprocess(const cv::Mat &img) {
+void ClassifierPredictor::Preprocess(const cv::Mat &img) {
   std::vector<float> mean = {0.5f, 0.5f, 0.5f};
   std::vector<float> scale = {1 / 0.5f, 1 / 0.5f, 1 / 0.5f};
   cv::Mat crop_img;
@@ -55,7 +56,7 @@ void ClsPredictor::Preprocess(const cv::Mat &img) {
   const float *dimg = reinterpret_cast<const float *>(resize_img.data);
 }
 
-cv::Mat ClsPredictor::Postprocess(const cv::Mat &srcimg, const float thresh) {
+cv::Mat ClassifierPredictor::Postprocess(const cv::Mat &srcimg, const float thresh) {
   // Get output and run postprocess
   // std::unique_ptr<const Tensor> softmax_out(
   //     std::move(predictor_->GetOutput(0)));
@@ -80,8 +81,8 @@ cv::Mat ClsPredictor::Postprocess(const cv::Mat &srcimg, const float thresh) {
   return a;
 }
 
-cv::Mat ClsPredictor::Predict(const cv::Mat &img, double *preprocess_time, double *predictTime, double *postprocessTime,
-                              const float thresh) {
+cv::Mat ClassifierPredictor::Predict(const cv::Mat &img, double *preprocess_time, double *predictTime,
+                                     double *postprocessTime, const float thresh) {
   cv::Mat src_img;
   img.copyTo(src_img);
   //  Timer tic;
