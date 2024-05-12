@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include "det_process.h"
-// #include <onnxruntime_cxx_api.h>
 #include <format>
 #include <map>
 #include <memory>
