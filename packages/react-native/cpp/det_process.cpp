@@ -23,46 +23,41 @@
 #include "db_post_process.h"
 #include "timer.h"
 
-// resize image to a size multiple of 32 which is required by the network
-cv::Mat DetResizeImg(const cv::Mat img, int max_size_len, std::vector<float> &ratio_hw) {
-  int w = img.cols;
-  int h = img.rows;
-  float ratio = 1.f;
-  int max_wh = w >= h ? w : h;
-  if (max_wh > max_size_len) {
-    if (h > w) {
-      ratio = static_cast<float>(max_size_len) / static_cast<float>(h);
-    } else {
-      ratio = static_cast<float>(max_size_len) / static_cast<float>(w);
-    }
-  }
-
-  int resize_h = static_cast<int>(float(h) * ratio);
-  int resize_w = static_cast<int>(float(w) * ratio);
-  if (resize_h % 32 == 0)
-    resize_h = resize_h;
-  else if (resize_h / 32 < 1 + 1e-5)
-    resize_h = 32;
-  else
-    resize_h = (resize_h / 32 - 1) * 32;
-
-  if (resize_w % 32 == 0)
-    resize_w = resize_w;
-  else if (resize_w / 32 < 1 + 1e-5)
-    resize_w = 32;
-  else
-    resize_w = (resize_w / 32 - 1) * 32;
-  cv::Mat resize_img;
-
-  cv::resize(img, resize_img, cv::Size(resize_w, resize_h));
-
-  ratio_hw.push_back(static_cast<float>(resize_h) / static_cast<float>(h));
-  ratio_hw.push_back(static_cast<float>(resize_w) / static_cast<float>(w));
-  return resize_img;
-}
+cv::Mat DetResizeImg(const cv::Mat img, int max_size_len, std::vector<float> &ratio_hw);
 
 DetPredictor::DetPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode)
     : m_options {options} {}
+
+std::vector<std::vector<std::vector<int>>> DetPredictor::Predict(cv::Mat &img) {
+  cv::Mat srcimg;
+  img.copyTo(srcimg);
+
+  Timer tic;
+  tic.start();
+  auto image = Preprocess(img, m_options.image_max_size);
+  tic.end();
+  auto preprocessTime = tic.get_average_ms();
+  std::cout << "det predictor preprocess costs " << preprocessTime << std::endl;
+
+  // Run predictor
+  std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
+
+  Onnx onnx {m_options.detection_model_path};
+  tic.start();
+  auto model_output = onnx.run(image.data, input_shape);
+  tic.end();
+  auto predictTime = tic.get_average_ms();
+  std::cout << "det predictor predict costs " << predictTime << std::endl;
+
+  // Process Output
+  tic.start();
+  auto filter_boxes = Postprocess(model_output, srcimg, m_options);
+  tic.end();
+  auto postprocessTime = tic.get_average_ms();
+  std::cout << "det predictor postprocess costs " << postprocessTime << std::endl;
+
+  return filter_boxes;
+}
 
 ImageRaw DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len) {
   cv::Mat img = DetResizeImg(srcimg, max_side_len, ratio_hw_);
@@ -105,33 +100,40 @@ std::vector<std::vector<std::vector<int>>> DetPredictor::Postprocess(ModelOutput
   return filter_boxes;
 }
 
-std::vector<std::vector<std::vector<int>>> DetPredictor::Predict(cv::Mat &img) {
-  cv::Mat srcimg;
-  img.copyTo(srcimg);
+// resize image to a size multiple of 32 which is required by the network
+cv::Mat DetResizeImg(const cv::Mat img, int max_size_len, std::vector<float> &ratio_hw) {
+  int w = img.cols;
+  int h = img.rows;
+  float ratio = 1.f;
+  int max_wh = w >= h ? w : h;
+  if (max_wh > max_size_len) {
+    if (h > w) {
+      ratio = static_cast<float>(max_size_len) / static_cast<float>(h);
+    } else {
+      ratio = static_cast<float>(max_size_len) / static_cast<float>(w);
+    }
+  }
 
-  Timer tic;
-  tic.start();
-  auto image = Preprocess(img, m_options.image_max_size);
-  tic.end();
-  auto preprocessTime = tic.get_average_ms();
-  std::cout << "det predictor preprocess costs " << preprocessTime << std::endl;
+  int resize_h = static_cast<int>(float(h) * ratio);
+  int resize_w = static_cast<int>(float(w) * ratio);
+  if (resize_h % 32 == 0)
+    resize_h = resize_h;
+  else if (resize_h / 32 < 1 + 1e-5)
+    resize_h = 32;
+  else
+    resize_h = (resize_h / 32 - 1) * 32;
 
-  // Run predictor
-  std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
+  if (resize_w % 32 == 0)
+    resize_w = resize_w;
+  else if (resize_w / 32 < 1 + 1e-5)
+    resize_w = 32;
+  else
+    resize_w = (resize_w / 32 - 1) * 32;
+  cv::Mat resize_img;
 
-  Onnx onnx {m_options.detection_model_path};
-  tic.start();
-  auto model_output = onnx.run(image.data, input_shape);
-  tic.end();
-  auto predictTime = tic.get_average_ms();
-  std::cout << "det predictor predict costs " << predictTime << std::endl;
+  cv::resize(img, resize_img, cv::Size(resize_w, resize_h));
 
-  // Process Output
-  tic.start();
-  auto filter_boxes = Postprocess(model_output, srcimg, m_options);
-  tic.end();
-  auto postprocessTime = tic.get_average_ms();
-  std::cout << "det predictor postprocess costs " << postprocessTime << std::endl;
-
-  return filter_boxes;
+  ratio_hw.push_back(static_cast<float>(resize_h) / static_cast<float>(h));
+  ratio_hw.push_back(static_cast<float>(resize_w) / static_cast<float>(w));
+  return resize_img;
 }
