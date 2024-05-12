@@ -9,7 +9,14 @@ import type { ImageDetails } from './types'
 
 async function main() {
   const ocr = await Ocr.create()
-  const result = await ocr.detect(`${FileSystem.bundleDirectory}/gutenye-ocr-react-native.bundle/cn-01.jpg`)
+  const result = await ocr.detect(`${FileSystem.bundleDirectory}/gutenye-ocr-react-native.bundle/cn-01.jpg`, {
+    number1: 1,
+    number2: 0,
+    float1: 1.1,
+    string: 'a',
+    boolean1: true,
+    boolean2: false,
+  })
   console.log('js', result)
   return result
 }

@@ -1,10 +1,7 @@
 #import "RNOcr.h"
 #import <Foundation/Foundation.h>
-#import <onnxruntime_cxx_api.h>
+#include <cstring>
 #import <iostream>
-#import <opencv2/opencv.hpp>
-#import <string>
-#import <vector>
 #import "native-ocr.h"
 
 @interface RNOcr () {
@@ -37,6 +34,29 @@ RCT_EXPORT_METHOD(detect
                   : (RCTPromiseRejectBlock)reject) {
   auto imagePath = convertNSString(rawImagePath);
   auto options = convertNSDictionary(rawOptions);
+
+  NSLog(@"options: %@", rawOptions);
+
+  std::cout << " string: " << std::get<std::string>(options["string"]) << std::endl;
+  std::cout << " double: " << std::get<double>(options["float1"]) << std::endl;
+  std::cout << " number: " << std::get<int>(options["number1"]) << std::endl;
+  std::cout << " boolean: " << std::get<bool>(options["boolean1"]) << std::endl;
+
+  // for (const auto &pair : options) {
+  //   std::visit(
+  //       [](auto &&arg) {
+  //         using T = std::decay_t<decltype(arg)>;
+  //         if constexpr (std::is_same_v<T, std::string>) {
+  //           std::cout << "string: " << pair.first << ": " << arg << std::endl;
+  //         } else if constexpr (std::is_same_v<T, double>) {
+  //           std::cout << "double: " << pair.first << ": " << arg << std::endl;
+  //         } else if constexpr (std::is_same_v<T, bool>) {
+  //           std::cout << "boolean: " << pair.first << ": " << arg << std::endl;
+  //         }
+  //       },
+  //       pair.second);
+  // }
+
   auto lines = _ocr->Process(imagePath);
   NSArray<NSString *> *finalLines = convertStdVector(lines);
   resolve(finalLines);
@@ -66,21 +86,26 @@ std::unordered_map<std::string, MapValue> convertNSDictionary(NSDictionary *nsDi
   if (nsDictionary == nil) {
     return stdMap;
   }
-
-  for (NSString *rawKey in nsDictionary) {
+  for (id rawKey in nsDictionary) {
+    if (![rawKey isKindOfClass:[NSString class]]) {
+      continue;
+    }
     std::string key = [rawKey UTF8String];
     id rawValue = [nsDictionary objectForKey:rawKey];
     if ([rawValue isKindOfClass:[NSString class]]) {
-      std::string value = [((NSString *)rawValue) UTF8String];
-      stdMap[key] = value;
+      stdMap[key] = std::string([rawValue UTF8String]);
     } else if ([rawValue isKindOfClass:[NSNumber class]]) {
-      // Use NSNumber to identify if it's a bool
-      if (strcmp([rawValue objCType], @encode(bool)) == 0) {
-        bool value = [((NSNumber *)rawValue) boolValue];
-        stdMap[key] = value;
+      if (strcmp([rawValue objCType], @encode(char)) == 0) {
+        stdMap[key] = (bool)[rawValue boolValue];
       } else {
-        double value = [((NSNumber *)rawValue) doubleValue];
-        stdMap[key] = value;
+        id rawValueString = [rawValue stringValue];
+        NSRange range = [rawValueString rangeOfString:@"."];
+        NSRange exponentRangeE = [rawValueString rangeOfString:@"e" options:NSCaseInsensitiveSearch];
+        if (range.location != NSNotFound || exponentRangeE.location != NSNotFound) {
+          stdMap[key] = [rawValue doubleValue];
+        } else {
+          stdMap[key] = [rawValue intValue];
+        }
       }
     }
   }
