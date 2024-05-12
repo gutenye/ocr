@@ -21,17 +21,25 @@
 #include "shared.h"
 #include "utils.h"
 
+using RecognitionResultData = std::pair<std::string, float>;
+
+struct RecognitionResult {
+  RecognitionResultData data {};
+  ModelPerformance performance {};
+};
+
 class RecPredictor {
 public:
   explicit RecPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode);
 
-  std::pair<std::string, float> Predict(const cv::Mat &rgbaImage, std::vector<std::string> charactor_dict);
+  RecognitionResult Predict(const cv::Mat &rgbaImage, std::vector<std::string> charactor_dict);
 
 private:
   Options m_options {};
+  Onnx m_onnx;
 
   ImageRaw Preprocess(const cv::Mat &rgbaImage);
 
-  std::pair<std::string, float> Postprocess(ModelOutput &model_output, const cv::Mat &rgbaImage,
-                                            std::vector<std::string> charactor_dict);
+  RecognitionResultData Postprocess(ModelOutput &model_output, const cv::Mat &rgbaImage,
+                                    std::vector<std::string> charactor_dict);
 };

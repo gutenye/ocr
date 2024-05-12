@@ -22,7 +22,7 @@ class ClsPredictor {
 public:
   explicit ClsPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode);
 
-  cv::Mat Predict(const cv::Mat &rgbImage, double *preprocessTime, double *predictTime, double *postprocessTime,
+  cv::Mat Predict(const cv::Mat &rgbImage, double *preprocess_time, double *predictTime, double *postprocessTime,
                   const float thresh);
 
 private:

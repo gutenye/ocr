@@ -25,9 +25,11 @@
 cv::Mat DetResizeImg(const cv::Mat img, int max_size_len, std::vector<float> &ratio_hw);
 
 DetPredictor::DetPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode)
-    : m_options {options} {}
+    : m_options {options}, m_onnx {Onnx(options.detection_model_path)} {}
 
-std::vector<std::vector<std::vector<int>>> DetPredictor::Predict(cv::Mat &img) {
+DetectionResult DetPredictor::Predict(cv::Mat &img) {
+  ModelPerformance performance;
+
   cv::Mat srcimg;
   img.copyTo(srcimg);
 
@@ -35,27 +37,25 @@ std::vector<std::vector<std::vector<int>>> DetPredictor::Predict(cv::Mat &img) {
   tic.start();
   auto image = Preprocess(img, m_options.image_max_size);
   tic.end();
-  auto preprocessTime = tic.get_average_ms();
-  std::cout << "det predictor preprocess costs " << preprocessTime << std::endl;
+  performance.preprocess_time = tic.get_average_ms();
 
   // Run predictor
   std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
 
-  Onnx onnx {m_options.detection_model_path};
   tic.start();
-  auto model_output = onnx.run(image.data, input_shape);
+  auto model_output = m_onnx.run(image.data, input_shape);
   tic.end();
-  auto predictTime = tic.get_average_ms();
-  std::cout << "det predictor predict costs " << predictTime << std::endl;
+  performance.predict_time = tic.get_average_ms();
 
   // Process Output
   tic.start();
   auto filter_boxes = Postprocess(model_output, srcimg, m_options);
   tic.end();
-  auto postprocessTime = tic.get_average_ms();
-  std::cout << "det predictor postprocess costs " << postprocessTime << std::endl;
+  performance.postprocess_time = tic.get_average_ms();
 
-  return filter_boxes;
+  performance.total_time = performance.preprocess_time + performance.predict_time + performance.postprocess_time;
+
+  return DetectionResult {.data = filter_boxes, .performance = performance};
 }
 
 ImageRaw DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len) {
@@ -74,8 +74,7 @@ ImageRaw DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len)
   return image_raw;
 }
 
-std::vector<std::vector<std::vector<int>>> DetPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &srcimg,
-                                                                     Options &options) {
+DetectionResultData DetPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &srcimg, Options &options) {
   auto height = model_output.shape[2];
   auto width = model_output.shape[3];
   cv::Mat pred_map = cv::Mat(height, width, CV_32F, model_output.data.data());

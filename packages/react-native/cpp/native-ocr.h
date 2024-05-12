@@ -20,7 +20,6 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 #include <string>
-#include <variant>
 #include <vector>
 #include "det_process.h"
 #include "rec_process.h"
@@ -34,9 +33,8 @@ public:
 
 private:
   Options m_options;
-  // TODO: charactor_dict_ -> m_dictionary
-  std::vector<std::string> charactor_dict_;
-  // std::shared_ptr<ClsPredictor> clsPredictor_;
-  std::shared_ptr<DetPredictor> detPredictor_;
-  std::shared_ptr<RecPredictor> recPredictor_;
+  std::vector<std::string> m_dictionary;
+  // std::shared_ptr<ClsPredictor> m_cls_predictor;
+  std::shared_ptr<DetPredictor> m_det_predictor;
+  std::shared_ptr<RecPredictor> m_rec_predictor;
 };

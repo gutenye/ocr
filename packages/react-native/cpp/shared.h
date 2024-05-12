@@ -1,5 +1,6 @@
 #pragma once
 
+#include <variant>
 #include <vector>
 
 struct ImageRaw {
@@ -12,7 +13,7 @@ struct ImageRaw {
 using RawOptions = std::unordered_map<std::string, std::variant<bool, double, std::string>>;
 
 struct Options {
-  bool is_debug {true};
+  bool is_debug {false};
   double image_max_size {960};
   double detection_threshold {0.3};
   double detection_box_threshold {0.5};
@@ -24,4 +25,11 @@ struct Options {
   std::string recognition_model_path {};
   std::string classifier_model_path {};
   std::string dictionary_path {};
+};
+
+struct ModelPerformance {
+  float total_time {};
+  float preprocess_time {};
+  float predict_time {};
+  float postprocess_time {};
 };

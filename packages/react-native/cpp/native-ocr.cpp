@@ -18,6 +18,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <sstream>
 #include <stdexcept>
 #include "timer.h"
@@ -30,13 +31,13 @@ NativeOcr::NativeOcr(RawOptions rawOptions) : m_options {convertRawOptions(rawOp
   auto cPUThreadNum = 1;
   auto cPUPowerMode = "LITE_POWER_HIGH";
   try {
-    // clsPredictor_.reset(
+    // m_cls_predictor.reset(
     //     new ClsPredictor(clsModelDir, cPUThreadNum, cPUPowerMode));
-    detPredictor_.reset(new DetPredictor(m_options, cPUThreadNum, cPUPowerMode));
-    recPredictor_.reset(new RecPredictor(m_options, cPUThreadNum, cPUPowerMode));
-    charactor_dict_ = ReadDict(m_options.dictionary_path);
-    charactor_dict_.insert(charactor_dict_.begin(), "#");
-    charactor_dict_.push_back(" ");
+    m_det_predictor.reset(new DetPredictor(m_options, cPUThreadNum, cPUPowerMode));
+    m_rec_predictor.reset(new RecPredictor(m_options, cPUThreadNum, cPUPowerMode));
+    m_dictionary = ReadDict(m_options.dictionary_path);
+    m_dictionary.insert(m_dictionary.begin(), "#");
+    m_dictionary.push_back(" ");
   } catch (std::string &error) {
     std::cerr << error << std::endl;
   }
@@ -44,51 +45,83 @@ NativeOcr::NativeOcr(RawOptions rawOptions) : m_options {convertRawOptions(rawOp
 
 std::vector<std::string> NativeOcr::Process(std::string &image_path) {
   try {
+    Timer tic;
+    tic.start();
+
+    if (m_options.is_debug) {
+      std::cout << "[DEBUG] Start Detection" << std::endl;
+    }
     auto img = cv::imread(image_path);
     cv::Mat srcimg;
     img.copyTo(srcimg);
 
-    printf("Run Detection\n");
-    // det predict
-    Timer tic;
-    tic.start();
-    auto boxes = detPredictor_->Predict(srcimg);
+    auto detection_result = m_det_predictor->Predict(srcimg);
 
-    std::vector<float> mean = {0.5f, 0.5f, 0.5f};
-    std::vector<float> scale = {1 / 0.5f, 1 / 0.5f, 1 / 0.5f};
+    if (m_options.is_debug) {
+      std::cout << "[DEBUG] Start Recognition" << std::endl;
+    }
 
     cv::Mat img_copy;
     img.copyTo(img_copy);
     cv::Mat crop_img;
 
-    printf("Run Recognition\n");
     std::vector<std::string> rec_text;
     std::vector<float> rec_text_score;
-    for (int i = boxes.size() - 1; i >= 0; i--) {
-      crop_img = GetRotateCropImage(img_copy, boxes[i]);
+    std::vector<RecognitionResult> recognitionResults;
+    for (int i = detection_result.data.size() - 1; i >= 0; i--) {
+      crop_img = GetRotateCropImage(img_copy, detection_result.data[i]);
+
       // if (m_options.detection_use_direction_classify)
       // {
       //   crop_img =
-      //       clsPredictor_->Predict(crop_img, nullptr, nullptr, nullptr, 0.9);
+      //       m_cls_predictor->Predict(crop_img, nullptr, nullptr, nullptr, 0.9);
       // }
-      auto res = recPredictor_->Predict(crop_img, charactor_dict_);
-      rec_text.push_back(res.first);
-      rec_text_score.push_back(res.second);
+      auto recognitionResult = m_rec_predictor->Predict(crop_img, m_dictionary);
+      recognitionResults.push_back(recognitionResult);
+      rec_text.push_back(recognitionResult.data.first);
+      rec_text_score.push_back(recognitionResult.data.second);
     }
-    tic.end();
-    auto processTime = tic.get_average_ms();
-    std::cout << "pipeline predict costs " << processTime << std::endl;
 
     //// visualization
-    // isDebug
+    // DEBUG
     // auto img_vis = Visualization(img, boxes, output_img_path);
+
+    tic.end();
+    auto total_time = tic.get_average_ms();
+    if (m_options.is_debug) {
+      float recognitionTotalSum = std::accumulate(
+          recognitionResults.begin(), recognitionResults.end(), 0.0f,
+          [](float accum, const RecognitionResult &result) { return accum + result.performance.total_time; });
+      float recognitionPreprocessSum = std::accumulate(
+          recognitionResults.begin(), recognitionResults.end(), 0.0f,
+          [](float accum, const RecognitionResult &result) { return accum + result.performance.preprocess_time; });
+      float recognitionPredictSum = std::accumulate(
+          recognitionResults.begin(), recognitionResults.end(), 0.0f,
+          [](float accum, const RecognitionResult &result) { return accum + result.performance.predict_time; });
+      float recognitionPostprocessSum = std::accumulate(
+          recognitionResults.begin(), recognitionResults.end(), 0.0f,
+          [](float accum, const RecognitionResult &result) { return accum + result.performance.postprocess_time; });
+      std::cout << "[DEBUG] Recognition costs " << (int)recognitionTotalSum << "ms "
+                << "(preprocess:" << (int)(recognitionPreprocessSum / recognitionResults.size())
+                << " predict:" << (int)(recognitionPredictSum / recognitionResults.size())
+                << " preprocess:" << (int)(recognitionPreprocessSum / recognitionResults.size()) << ") avg * "
+                << recognitionResults.size() << std::endl;
+      std::cout << "[DEBUG] Detection costs " << (int)detection_result.performance.total_time << "ms "
+                << "(preprocess:" << (int)detection_result.performance.preprocess_time
+                << " predict:" << (int)detection_result.performance.predict_time
+                << " postprocess:" << (int)detection_result.performance.postprocess_time << ")" << std::endl;
+      std::cout << "[DEBUG] Total costs " << (int)total_time << "ms" << std::endl;
+    }
+
     // print recognized text
     std::vector<std::string> lines(rec_text.size());
     for (int i = 0; i < lines.size(); i++) {
-      // DEBUG
-      std::cout << i << "\t" << rec_text_score[i] << rec_text[i] << std::endl;
+      if (m_options.is_debug) {
+        std::cout << "[DEBUG] " << i << "\t" << rec_text_score[i] << "\t" << rec_text[i] << std::endl;
+      }
       lines[i] = rec_text[i];
     }
+
     return lines;
   } catch (std::string &error) {
     std::cerr << error << std::endl;
@@ -240,6 +273,5 @@ Options convertRawOptions(RawOptions rawOptions) {
   if (rawOptions.count("dictionaryPath") > 0) {
     options.dictionary_path = std::get<std::string>(rawOptions.at("dictionaryPath"));
   }
-  std::cout << "isDebug " << options.is_debug << std::endl;
   return options;
 }

@@ -14,11 +14,12 @@
 
 #include "utils.h"
 #include <arm_neon.h>
+#include <iostream>
 
 void NHWC3ToNC3HW(const float *din, float *dout, int size, const std::vector<float> mean,
                   const std::vector<float> scale) {
   if (mean.size() != 3 || scale.size() != 3) {
-    printf("[ERROR] mean or scale size must equal to 3\n");
+    std::cerr << "[ERROR] mean or scale size must equal to 3\n" << std ::endl;
     return;
   }
   float32x4_t vmean0 = vdupq_n_f32(mean[0]);

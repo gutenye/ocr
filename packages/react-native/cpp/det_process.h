@@ -22,18 +22,25 @@
 #include "shared.h"
 #include "utils.h"
 
+using DetectionResultData = std::vector<std::vector<std::vector<int>>>;
+
+struct DetectionResult {
+  DetectionResultData data {};
+  ModelPerformance performance {};
+};
+
 class DetPredictor {
 public:
   explicit DetPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode);
 
-  std::vector<std::vector<std::vector<int>>> Predict(cv::Mat &rgbImage);
+  DetectionResult Predict(cv::Mat &rgbImage);
 
 private:
   Options m_options {};
+  Onnx m_onnx;
   std::vector<float> ratio_hw_;
 
   ImageRaw Preprocess(const cv::Mat &img, const int max_side_len);
 
-  std::vector<std::vector<std::vector<int>>> Postprocess(ModelOutput &model_output, const cv::Mat &srcimg,
-                                                         Options &options);
+  DetectionResultData Postprocess(ModelOutput &model_output, const cv::Mat &srcimg, Options &options);
 };
