@@ -25,32 +25,32 @@ template <class ForwardIterator>
 inline size_t Argmax(ForwardIterator first, ForwardIterator last);
 
 RecPredictor::RecPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode)
-    : m_options {options} {}
+    : m_options {options}, m_onnx {Onnx {options.recognition_model_path}} {}
 
-std::pair<std::string, float> RecPredictor::Predict(const cv::Mat &rgbaImage, std::vector<std::string> charactor_dict) {
+RecognitionResult RecPredictor::Predict(const cv::Mat &rgbaImage, std::vector<std::string> charactor_dict) {
+  ModelPerformance performance {};
   Timer tic;
   tic.start();
   auto image = Preprocess(rgbaImage);
   tic.end();
-  auto preprocessTime = tic.get_average_ms();
-  // std::cout << "rec predictor preprocess costs " << preprocessTime << std::endl;
+  performance.preprocess_time = tic.get_average_ms();
 
   // Run predictor
   std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
-  Onnx onnx {m_options.recognition_model_path};
   tic.start();
-  auto model_output = onnx.run(image.data, input_shape);
+  auto model_output = m_onnx.run(image.data, input_shape);
   tic.end();
-  auto predictTime = tic.get_average_ms();
-  // std::cout << "rec predictor predict costs " << predictTime << std::endl;
+  performance.predict_time = tic.get_average_ms();
 
   tic.start();
   auto res = Postprocess(model_output, rgbaImage, charactor_dict);
   tic.end();
   auto postprocessTime = tic.get_average_ms();
-  // std::cout << "rec predictor postprocess costs " << postprocessTime << std::endl;
+  performance.postprocess_time = tic.get_average_ms();
 
-  return res;
+  performance.total_time = performance.preprocess_time + performance.predict_time + performance.postprocess_time;
+
+  return RecognitionResult {.data = res, .performance = performance};
 }
 
 ImageRaw RecPredictor::Preprocess(const cv::Mat &srcimg) {

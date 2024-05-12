@@ -15,7 +15,7 @@
 #include "cls_process.h"
 #include "timer.h"
 
-const std::vector<int> cls_image_shape{3, 48, 192};
+const std::vector<int> cls_image_shape {3, 48, 192};
 cv::Mat ClsResizeImg(cv::Mat img) {
   int imgC, imgH, imgW;
   imgC = cls_image_shape[0];
@@ -76,11 +76,11 @@ cv::Mat ClsPredictor::Postprocess(const cv::Mat &srcimg, const float thresh) {
   //   cv::rotate(srcimg, srcimg, 1);
   // }
   // return srcimg;
-  cv::Mat a{};
+  cv::Mat a {};
   return a;
 }
 
-cv::Mat ClsPredictor::Predict(const cv::Mat &img, double *preprocessTime, double *predictTime, double *postprocessTime,
+cv::Mat ClsPredictor::Predict(const cv::Mat &img, double *preprocess_time, double *predictTime, double *postprocessTime,
                               const float thresh) {
   cv::Mat src_img;
   img.copyTo(src_img);
@@ -88,8 +88,8 @@ cv::Mat ClsPredictor::Predict(const cv::Mat &img, double *preprocessTime, double
   //  tic.start();
   Preprocess(img);
   // tic.end();
-  // *preprocessTime = tic.get_average_ms();
-  // std::cout << "cls predictor preprocess costs" <<  *preprocessTime;
+  // *preprocess_time = tic.get_average_ms();
+  // std::cout << "cls predictor preprocess costs" <<  *preprocess_time;
 
   // tic.start();
   // predictor_->Run();

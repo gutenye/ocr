@@ -1,6 +1,5 @@
 #ifdef __cplusplus
 #include <unordered_map>
-#include <variant>
 #include "shared.h"
 #endif
 
