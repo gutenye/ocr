@@ -19,7 +19,7 @@
 #include "timer.h"
 #include "utils.h"
 
-const std::vector<int> rec_image_shape{3, 48, 320};
+const std::vector<int> rec_image_shape {3, 48, 320};
 
 cv::Mat CrnnResizeImg(cv::Mat img, float wh_ratio) {
   int imgC, imgH, imgW;
@@ -47,8 +47,8 @@ inline size_t Argmax(ForwardIterator first, ForwardIterator last) {
   return std::distance(first, std::max_element(first, last));
 }
 
-RecPredictor::RecPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode)
-    : m_model_path{modelDir} {}
+RecPredictor::RecPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode)
+    : m_options {options} {}
 
 ImageRaw RecPredictor::Preprocess(const cv::Mat &srcimg) {
   float wh_ratio = static_cast<float>(srcimg.cols) / static_cast<float>(srcimg.rows);
@@ -62,7 +62,7 @@ ImageRaw RecPredictor::Preprocess(const cv::Mat &srcimg) {
   std::vector<float> data0(resize_img.rows * resize_img.cols * 3);
   NHWC3ToNC3HW(dimg, data0.data(), resize_img.rows * resize_img.cols, mean, scale);
 
-  ImageRaw image_raw{.data = data0, .width = resize_img.cols, .height = resize_img.rows, .channels = 3};
+  ImageRaw image_raw {.data = data0, .width = resize_img.cols, .height = resize_img.rows, .channels = 3};
 
   return image_raw;
 }
@@ -105,7 +105,7 @@ std::pair<std::string, float> RecPredictor::Predict(const cv::Mat &rgbaImage, st
 
   // Run predictor
   std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
-  Onnx onnx{m_model_path};
+  Onnx onnx {m_options.recognition_model_path};
   tic.start();
   auto model_output = onnx.run(image.data, input_shape);
   tic.end();

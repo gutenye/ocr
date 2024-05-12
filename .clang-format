@@ -2,3 +2,4 @@ BasedOnStyle: Google
 ColumnLimit: 120
 AccessModifierOffset: -2
 IncludeBlocks: Merge
+SpaceBeforeCpp11BracedList: true

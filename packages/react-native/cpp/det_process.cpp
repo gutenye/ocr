@@ -61,8 +61,8 @@ cv::Mat DetResizeImg(const cv::Mat img, int max_size_len, std::vector<float> &ra
   return resize_img;
 }
 
-DetPredictor::DetPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode)
-    : m_model_path{modelDir} {}
+DetPredictor::DetPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode)
+    : m_options {options} {}
 
 ImageRaw DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len) {
   cv::Mat img = DetResizeImg(srcimg, max_side_len, ratio_hw_);
@@ -75,48 +75,43 @@ ImageRaw DetPredictor::Preprocess(const cv::Mat &srcimg, const int max_side_len)
   const float *dimg = reinterpret_cast<const float *>(img_fp.data);
   NHWC3ToNC3HW(dimg, data0.data(), img_fp.rows * img_fp.cols, mean, scale);
 
-  ImageRaw image_raw{.data = data0, .width = img_fp.cols, .height = img_fp.rows, .channels = 3};
+  ImageRaw image_raw {.data = data0, .width = img_fp.cols, .height = img_fp.rows, .channels = 3};
 
   return image_raw;
 }
 
 std::vector<std::vector<std::vector<int>>> DetPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &srcimg,
-                                                                     std::map<std::string, double> Config,
-                                                                     int det_db_use_dilate) {
+                                                                     Options &options) {
   auto height = model_output.shape[2];
   auto width = model_output.shape[3];
   cv::Mat pred_map = cv::Mat(height, width, CV_32F, model_output.data.data());
   cv::Mat cbuf_map;
   pred_map.convertTo(cbuf_map, CV_8UC1, 255.0f);
 
-  const double threshold = double(Config["det_db_thresh"]) * 255;
+  const double threshold = options.detection_threshold * 255;
   const double max_value = 255;
   cv::Mat bit_map;
   cv::threshold(cbuf_map, bit_map, threshold, max_value, cv::THRESH_BINARY);
-  if (det_db_use_dilate == 1) {
+  if (options.detection_use_dilate == 1) {
     cv::Mat dilation_map;
     cv::Mat dila_ele = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(2, 2));
     cv::dilate(bit_map, dilation_map, dila_ele);
     bit_map = dilation_map;
   }
-  auto boxes = BoxesFromBitmap(pred_map, bit_map, Config);
+  auto boxes = BoxesFromBitmap(pred_map, bit_map, options);
 
   std::vector<std::vector<std::vector<int>>> filter_boxes = FilterTagDetRes(boxes, ratio_hw_[0], ratio_hw_[1], srcimg);
 
   return filter_boxes;
 }
 
-std::vector<std::vector<std::vector<int>>> DetPredictor::Predict(cv::Mat &img, std::map<std::string, double> Config) {
+std::vector<std::vector<std::vector<int>>> DetPredictor::Predict(cv::Mat &img) {
   cv::Mat srcimg;
   img.copyTo(srcimg);
 
-  // Read img
-  int max_side_len = int(Config["max_side_len"]);
-  int det_db_use_dilate = int(Config["det_db_use_dilate"]);
-
   Timer tic;
   tic.start();
-  auto image = Preprocess(img, max_side_len);
+  auto image = Preprocess(img, m_options.image_max_size);
   tic.end();
   auto preprocessTime = tic.get_average_ms();
   std::cout << "det predictor preprocess costs " << preprocessTime << std::endl;
@@ -124,7 +119,7 @@ std::vector<std::vector<std::vector<int>>> DetPredictor::Predict(cv::Mat &img, s
   // Run predictor
   std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
 
-  Onnx onnx{m_model_path};
+  Onnx onnx {m_options.detection_model_path};
   tic.start();
   auto model_output = onnx.run(image.data, input_shape);
   tic.end();
@@ -133,7 +128,7 @@ std::vector<std::vector<std::vector<int>>> DetPredictor::Predict(cv::Mat &img, s
 
   // Process Output
   tic.start();
-  auto filter_boxes = Postprocess(model_output, srcimg, Config, det_db_use_dilate);
+  auto filter_boxes = Postprocess(model_output, srcimg, m_options);
   tic.end();
   auto postprocessTime = tic.get_average_ms();
   std::cout << "det predictor postprocess costs " << postprocessTime << std::endl;
