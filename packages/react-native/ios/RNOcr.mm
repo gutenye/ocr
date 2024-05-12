@@ -13,19 +13,30 @@
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(create
-                  : (RCTPromiseResolveBlock)options
-                  : (NSDictionary *)rawOptions resolve rejecter
+                  : (RCTPromiseResolveBlock)inputOptions
+                  : (NSDictionary *)rawOptions resolver
+                  : (RCTPromiseResolveBlock)resolve rejecter
                   : (RCTPromiseRejectBlock)reject) {
   auto options = convertNSDictionary(rawOptions);
 
   id rawBundleDir = [[NSBundle mainBundle] bundlePath];
   auto assetDir = convertNSString(rawBundleDir) + "/gutenye-ocr-react-native.bundle";
-  options["detectionModelPath"] = assetDir + "/ch_PP-OCRv4_det_infer.onnx";
-  options["recognitionModelPath"] = assetDir + "/ch_PP-OCRv4_rec_infer.onnx";
-  options["classifierModelPath"] = assetDir + "/ch_ppocr_mobile_v2.0_cls_infer.onnx";
-  options["dictionaryPath"] = assetDir + "/ppocr_keys_v1.txt";
+  if (!options.count("detectionModelPath")) {
+    options["detectionModelPath"] = assetDir + "/ch_PP-OCRv4_det_infer.onnx";
+  }
+  if (!options.count("recognitionModelPath")) {
+    options["recognitionModelPath"] = assetDir + "/ch_PP-OCRv4_rec_infer.onnx";
+  }
+  if (!options.count("classifierModelPath")) {
+    options["classifierModelPath"] = assetDir + "/ch_ppocr_mobile_v2.0_cls_infer.onnx";
+  }
+  if (!options.count("dictionaryPath")) {
+    options["dictionaryPath"] = assetDir + "/ppocr_keys_v1.txt";
+  }
 
-  _ocr = std::make_unique<NativeOcr>(options) long ref = (long)CFBridgingRetain(self);
+  _ocr = std::make_unique<NativeOcr>(options);
+
+  long ref = (long)CFBridgingRetain(self);
   resolve(@(ref));
 }
 
@@ -59,7 +70,7 @@ std::string convertNSString(NSString *nsString) {
 
 // convert an NSDictoinary to a std::unordered_map
 RawOptions convertNSDictionary(NSDictionary *nsDictionary) {
-  std::unordered_map<std::string, MapValue> stdMap {};
+  RawOptions stdMap {};
   if (nsDictionary == nil) {
     return stdMap;
   }

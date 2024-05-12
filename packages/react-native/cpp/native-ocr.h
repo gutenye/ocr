@@ -26,8 +26,6 @@
 #include "rec_process.h"
 #include "shared.h"
 
-using RawOptions = std::unordered_map<std::string, std::variant<bool, double, std::string>>;
-
 class NativeOcr {
 public:
   NativeOcr(RawOptions rawOptions);
