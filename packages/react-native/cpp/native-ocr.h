@@ -29,12 +29,12 @@ class NativeOcr {
 public:
   NativeOcr(RawOptions rawOptions);
 
-  std::vector<std::string> Process(std::string &image_path);
+  std::vector<std::string> process(std::string &image_path);
 
 private:
   Options m_options;
   std::vector<std::string> m_dictionary;
-  // std::shared_ptr<ClsPredictor> m_cls_predictor;
-  std::shared_ptr<DetPredictor> m_det_predictor;
-  std::shared_ptr<RecPredictor> m_rec_predictor;
+  // std::shared_ptr<ClassifierPredictor> m_classifier_predictor;
+  std::shared_ptr<DetectionPredictor> m_detection_predictor;
+  std::shared_ptr<RecognitionPredictor> m_recognition_predictor;
 };

@@ -15,7 +15,7 @@ int main() {
 
   NativeOcr *pipe_ = new NativeOcr(rawOptions);
   std::vector<std::string> res_txt;
-  auto lines = pipe_->Process(image_path);
+  auto lines = pipe_->process(image_path);
 
   for (auto line : lines) {
     std::cout << line << std::endl;

@@ -18,9 +18,9 @@
 #include "opencv2/imgproc.hpp"
 #include "utils.h"
 
-class ClsPredictor {
+class ClassifierPredictor {
 public:
-  explicit ClsPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode);
+  explicit ClassifierPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode);
 
   cv::Mat Predict(const cv::Mat &rgbImage, double *preprocess_time, double *predictTime, double *postprocessTime,
                   const float thresh);

@@ -24,10 +24,10 @@ cv::Mat CrnnResizeImg(cv::Mat img, float wh_ratio);
 template <class ForwardIterator>
 inline size_t Argmax(ForwardIterator first, ForwardIterator last);
 
-RecPredictor::RecPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode)
+RecognitionPredictor::RecognitionPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode)
     : m_options {options}, m_onnx {Onnx {options.recognition_model_path}} {}
 
-RecognitionResult RecPredictor::Predict(const cv::Mat &rgbaImage, std::vector<std::string> charactor_dict) {
+RecognitionResult RecognitionPredictor::Predict(const cv::Mat &rgbaImage, std::vector<std::string> charactor_dict) {
   ModelPerformance performance {};
   Timer tic;
   tic.start();
@@ -53,7 +53,7 @@ RecognitionResult RecPredictor::Predict(const cv::Mat &rgbaImage, std::vector<st
   return RecognitionResult {.data = res, .performance = performance};
 }
 
-ImageRaw RecPredictor::Preprocess(const cv::Mat &srcimg) {
+ImageRaw RecognitionPredictor::Preprocess(const cv::Mat &srcimg) {
   float wh_ratio = static_cast<float>(srcimg.cols) / static_cast<float>(srcimg.rows);
   std::vector<float> mean = {0.5f, 0.5f, 0.5f};
   std::vector<float> scale = {1 / 0.5f, 1 / 0.5f, 1 / 0.5f};
@@ -70,8 +70,8 @@ ImageRaw RecPredictor::Preprocess(const cv::Mat &srcimg) {
   return image_raw;
 }
 
-std::pair<std::string, float> RecPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &rgbaImage,
-                                                        std::vector<std::string> charactor_dict) {
+std::pair<std::string, float> RecognitionPredictor::Postprocess(ModelOutput &model_output, const cv::Mat &rgbaImage,
+                                                                std::vector<std::string> charactor_dict) {
   auto predict_batch = model_output.data;
   auto predict_shape = model_output.shape;
 

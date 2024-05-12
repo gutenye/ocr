@@ -29,9 +29,9 @@ struct DetectionResult {
   ModelPerformance performance {};
 };
 
-class DetPredictor {
+class DetectionPredictor {
 public:
-  explicit DetPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode);
+  explicit DetectionPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode);
 
   DetectionResult Predict(cv::Mat &rgbImage);
 
