@@ -12,51 +12,28 @@
 @implementation RNOcr
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_METHOD(create : (RCTPromiseResolveBlock)resolve rejecter : (RCTPromiseRejectBlock)reject) {
-  NSString *rawBundleDir = [[NSBundle mainBundle] bundlePath];
-  auto bundleDir = convertNSString(rawBundleDir);
-  auto detectionModelPath = bundleDir + "/gutenye-ocr-react-native.bundle/ch_PP-OCRv4_det_infer.onnx";
-  auto recognitionModelPath = bundleDir + "/gutenye-ocr-react-native.bundle/ch_PP-OCRv4_rec_infer.onnx";
-  auto classifierModelPath = bundleDir + "/gutenye-ocr-react-native.bundle/ch_ppocr_mobile_v2.0_cls_infer.onnx";
-  auto dictionaryPath = bundleDir + "/gutenye-ocr-react-native.bundle/ppocr_keys_v1.txt";
-  auto configPath = bundleDir + "/gutenye-ocr-react-native.bundle/config.txt";
+RCT_EXPORT_METHOD(create
+                  : (RCTPromiseResolveBlock)options
+                  : (NSDictionary *)rawOptions resolve rejecter
+                  : (RCTPromiseRejectBlock)reject) {
+  auto options = convertNSDictionary(rawOptions);
 
-  _ocr = std::make_unique<NativeOcr>(detectionModelPath, classifierModelPath, recognitionModelPath, configPath,
-                                     dictionaryPath);
-  long ref = (long)CFBridgingRetain(self);
+  id rawBundleDir = [[NSBundle mainBundle] bundlePath];
+  auto assetDir = convertNSString(rawBundleDir) + "/gutenye-ocr-react-native.bundle";
+  options["detectionModelPath"] = assetDir + "/ch_PP-OCRv4_det_infer.onnx";
+  options["recognitionModelPath"] = assetDir + "/ch_PP-OCRv4_rec_infer.onnx";
+  options["classifierModelPath"] = assetDir + "/ch_ppocr_mobile_v2.0_cls_infer.onnx";
+  options["dictionaryPath"] = assetDir + "/ppocr_keys_v1.txt";
+
+  _ocr = std::make_unique<NativeOcr>(options) long ref = (long)CFBridgingRetain(self);
   resolve(@(ref));
 }
 
 RCT_EXPORT_METHOD(detect
-                  : (NSString *)rawImagePath options
-                  : (NSDictionary *)rawOptions resolver
+                  : (NSString *)rawImagePath resolver
                   : (RCTPromiseResolveBlock)resolve rejecter
                   : (RCTPromiseRejectBlock)reject) {
   auto imagePath = convertNSString(rawImagePath);
-  auto options = convertNSDictionary(rawOptions);
-
-  NSLog(@"options: %@", rawOptions);
-
-  std::cout << " string: " << std::get<std::string>(options["string"]) << std::endl;
-  std::cout << " double: " << std::get<double>(options["float1"]) << std::endl;
-  std::cout << " number: " << std::get<int>(options["number1"]) << std::endl;
-  std::cout << " boolean: " << std::get<bool>(options["boolean1"]) << std::endl;
-
-  // for (const auto &pair : options) {
-  //   std::visit(
-  //       [](auto &&arg) {
-  //         using T = std::decay_t<decltype(arg)>;
-  //         if constexpr (std::is_same_v<T, std::string>) {
-  //           std::cout << "string: " << pair.first << ": " << arg << std::endl;
-  //         } else if constexpr (std::is_same_v<T, double>) {
-  //           std::cout << "double: " << pair.first << ": " << arg << std::endl;
-  //         } else if constexpr (std::is_same_v<T, bool>) {
-  //           std::cout << "boolean: " << pair.first << ": " << arg << std::endl;
-  //         }
-  //       },
-  //       pair.second);
-  // }
-
   auto lines = _ocr->Process(imagePath);
   NSArray<NSString *> *finalLines = convertStdVector(lines);
   resolve(finalLines);
@@ -81,8 +58,8 @@ std::string convertNSString(NSString *nsString) {
 }
 
 // convert an NSDictoinary to a std::unordered_map
-std::unordered_map<std::string, MapValue> convertNSDictionary(NSDictionary *nsDictionary) {
-  std::unordered_map<std::string, MapValue> stdMap{};
+RawOptions convertNSDictionary(NSDictionary *nsDictionary) {
+  std::unordered_map<std::string, MapValue> stdMap {};
   if (nsDictionary == nil) {
     return stdMap;
   }
@@ -98,14 +75,7 @@ std::unordered_map<std::string, MapValue> convertNSDictionary(NSDictionary *nsDi
       if (strcmp([rawValue objCType], @encode(char)) == 0) {
         stdMap[key] = (bool)[rawValue boolValue];
       } else {
-        id rawValueString = [rawValue stringValue];
-        NSRange range = [rawValueString rangeOfString:@"."];
-        NSRange exponentRangeE = [rawValueString rangeOfString:@"e" options:NSCaseInsensitiveSearch];
-        if (range.location != NSNotFound || exponentRangeE.location != NSNotFound) {
-          stdMap[key] = [rawValue doubleValue];
-        } else {
-          stdMap[key] = [rawValue intValue];
-        }
+        stdMap[key] = [rawValue doubleValue];
       }
     }
   }

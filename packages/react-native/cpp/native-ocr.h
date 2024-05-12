@@ -20,19 +20,23 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 #include <string>
+#include <variant>
 #include <vector>
 #include "det_process.h"
 #include "rec_process.h"
+#include "shared.h"
+
+using RawOptions = std::unordered_map<std::string, std::variant<bool, double, std::string>>;
 
 class NativeOcr {
 public:
-  NativeOcr(const std::string &detModelDir, const std::string &clsModelDir, const std::string &recModelDir,
-            const std::string &config_path, const std::string &dict_path);
+  NativeOcr(RawOptions rawOptions);
 
   std::vector<std::string> Process(std::string &image_path);
 
 private:
-  std::map<std::string, double> Config_;
+  Options m_options;
+  // TODO: charactor_dict_ -> m_dictionary
   std::vector<std::string> charactor_dict_;
   // std::shared_ptr<ClsPredictor> clsPredictor_;
   std::shared_ptr<DetPredictor> detPredictor_;

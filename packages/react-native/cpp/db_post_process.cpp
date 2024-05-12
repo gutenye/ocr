@@ -198,13 +198,14 @@ float PolygonScoreAcc(std::vector<cv::Point> contour, cv::Mat pred) {
   return score;
 }
 
-std::vector<std::vector<std::vector<int>>> BoxesFromBitmap(const cv::Mat pred, const cv::Mat bitmap,
-                                                           std::map<std::string, double> Config) {
+std::vector<std::vector<std::vector<int>>> BoxesFromBitmap(const cv::Mat pred, const cv::Mat bitmap, Options &options) {
   const int min_size = 3;
   const int max_candidates = 1000;
-  const float box_thresh = static_cast<float>(Config["det_db_box_thresh"]);
-  const float unclip_ratio = static_cast<float>(Config["det_db_unclip_ratio"]);
-  const int det_use_polygon_score = int(Config["det_use_polygon_score"]);
+  // const float box_thresh = static_cast<float>(options.detection_box_threshold);
+  // const float unclip_ratio = static_cast<float>(options.detection_unclip_ratiop);
+  const float box_thresh = options.detection_box_threshold;
+  const float unclip_ratio = options.detection_unclip_ratiop;
+  const int det_use_polygon_score = options.detection_use_polygon_score;
 
   int width = bitmap.cols;
   int height = bitmap.rows;
@@ -256,10 +257,10 @@ std::vector<std::vector<std::vector<int>>> BoxesFromBitmap(const cv::Mat pred, c
     std::vector<std::vector<int>> intcliparray;
 
     for (int num_pt = 0; num_pt < 4; num_pt++) {
-      std::vector<int> a{static_cast<int>(clamp(roundf(cliparray[num_pt][0] / float(width) * float(dest_width)),
-                                                float(0), float(dest_width))),
-                         static_cast<int>(clamp(roundf(cliparray[num_pt][1] / float(height) * float(dest_height)),
-                                                float(0), float(dest_height)))};
+      std::vector<int> a {static_cast<int>(clamp(roundf(cliparray[num_pt][0] / float(width) * float(dest_width)),
+                                                 float(0), float(dest_width))),
+                          static_cast<int>(clamp(roundf(cliparray[num_pt][1] / float(height) * float(dest_height)),
+                                                 float(0), float(dest_height)))};
       intcliparray.push_back(a);
     }
     boxes.push_back(intcliparray);

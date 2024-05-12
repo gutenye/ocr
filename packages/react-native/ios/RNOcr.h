@@ -19,7 +19,8 @@
 
 std::string convertNSString(NSString *nsString);
 
-using MapValue = std::variant<bool, int, double, std::string>;
-std::unordered_map<std::string, MapValue> convertNSDictionary(NSDictionary *nsDictionary);
+using RawOptions = std::unordered_map<std::string, std::variant<bool, int, double, std::string>>;
+
+RawOptions convertNSDictionary(NSDictionary *nsDictionary);
 
 NSArray<NSString *> *convertStdVector(const std::vector<std::string> &stdVector);

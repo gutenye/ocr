@@ -1,17 +1,14 @@
 import OcrModule from './OcrModule'
+import type { OcrOptions } from './types'
 
 export class Ocr {
-  static async create(): Promise<Ocr> {
-    await OcrModule.create()
+  // default options is at shared.h
+  static async create(options: OcrOptions): Promise<Ocr> {
+    await OcrModule.create(options)
     return new Ocr()
   }
 
-  detect(imagePath: string, options: { isDebug?: boolean } = {}): Promise<string> {
-    return OcrModule.detect(imagePath, options)
-  }
-
-  // clean up memory when ocr is not needed.
-  destory() {
-    return OcrModule.destory()
+  detect(imagePath: string): Promise<string> {
+    return OcrModule.detect(imagePath)
   }
 }

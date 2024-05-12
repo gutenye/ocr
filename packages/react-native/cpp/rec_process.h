@@ -23,13 +23,15 @@
 
 class RecPredictor {
 public:
-  explicit RecPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode);
+  explicit RecPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode);
 
   std::pair<std::string, float> Predict(const cv::Mat &rgbaImage, std::vector<std::string> charactor_dict);
 
 private:
-  std::string m_model_path;
+  Options m_options {};
+
   ImageRaw Preprocess(const cv::Mat &rgbaImage);
+
   std::pair<std::string, float> Postprocess(ModelOutput &model_output, const cv::Mat &rgbaImage,
                                             std::vector<std::string> charactor_dict);
 };

@@ -22,21 +22,19 @@
 #include <stdexcept>
 #include "timer.h"
 
-std::map<std::string, double> LoadConfigTxt(std::string config_path);
 std::vector<std::string> ReadDict(std::string path);
 cv::Mat GetRotateCropImage(cv::Mat srcimage, std::vector<std::vector<int>> box);
+Options convertRawOptions(RawOptions rawOptions);
 
-NativeOcr::NativeOcr(const std::string &detModelDir, const std::string &clsModelDir, const std::string &recModelDir,
-                     const std::string &config_path, const std::string &dict_path) {
+NativeOcr::NativeOcr(RawOptions rawOptions) : m_options {convertRawOptions(rawOptions)} {
   auto cPUThreadNum = 1;
   auto cPUPowerMode = "LITE_POWER_HIGH";
   try {
     // clsPredictor_.reset(
     //     new ClsPredictor(clsModelDir, cPUThreadNum, cPUPowerMode));
-    detPredictor_.reset(new DetPredictor(detModelDir, cPUThreadNum, cPUPowerMode));
-    recPredictor_.reset(new RecPredictor(recModelDir, cPUThreadNum, cPUPowerMode));
-    Config_ = LoadConfigTxt(config_path);
-    charactor_dict_ = ReadDict(dict_path);
+    detPredictor_.reset(new DetPredictor(m_options, cPUThreadNum, cPUPowerMode));
+    recPredictor_.reset(new RecPredictor(m_options, cPUThreadNum, cPUPowerMode));
+    charactor_dict_ = ReadDict(m_options.dictionary_path);
     charactor_dict_.insert(charactor_dict_.begin(), "#");
     charactor_dict_.push_back(" ");
   } catch (std::string &error) {
@@ -47,7 +45,6 @@ NativeOcr::NativeOcr(const std::string &detModelDir, const std::string &clsModel
 std::vector<std::string> NativeOcr::Process(std::string &image_path) {
   try {
     auto img = cv::imread(image_path);
-    int use_direction_classify = int(Config_["use_direction_classify"]);
     cv::Mat srcimg;
     img.copyTo(srcimg);
 
@@ -55,7 +52,7 @@ std::vector<std::string> NativeOcr::Process(std::string &image_path) {
     // det predict
     Timer tic;
     tic.start();
-    auto boxes = detPredictor_->Predict(srcimg, Config_);
+    auto boxes = detPredictor_->Predict(srcimg);
 
     std::vector<float> mean = {0.5f, 0.5f, 0.5f};
     std::vector<float> scale = {1 / 0.5f, 1 / 0.5f, 1 / 0.5f};
@@ -69,7 +66,7 @@ std::vector<std::string> NativeOcr::Process(std::string &image_path) {
     std::vector<float> rec_text_score;
     for (int i = boxes.size() - 1; i >= 0; i--) {
       crop_img = GetRotateCropImage(img_copy, boxes[i]);
-      // if (use_direction_classify >= 1)
+      // if (m_options.detection_use_direction_classify)
       // {
       //   crop_img =
       //       clsPredictor_->Predict(crop_img, nullptr, nullptr, nullptr, 0.9);
@@ -95,7 +92,7 @@ std::vector<std::string> NativeOcr::Process(std::string &image_path) {
     return lines;
   } catch (std::string &error) {
     std::cerr << error << std::endl;
-    return std::vector<std::string>{};
+    return std::vector<std::string> {};
   }
 }
 
@@ -185,17 +182,6 @@ std::vector<std::string> split(const std::string &str, const std::string &delim)
   return res;
 }
 
-std::map<std::string, double> LoadConfigTxt(std::string config_path) {
-  auto config = ReadDict(config_path);
-
-  std::map<std::string, double> dict;
-  for (int i = 0; i < config.size(); i++) {
-    std::vector<std::string> res = split(config[i], " ");
-    dict[res[0]] = stod(res[1]);
-  }
-  return dict;
-}
-
 cv::Mat Visualization(cv::Mat srcimg, std::vector<std::vector<std::vector<int>>> boxes, std::string output_image_path) {
   cv::Point rook_points[boxes.size()][4];
   for (int n = 0; n < boxes.size(); n++) {
@@ -214,4 +200,46 @@ cv::Mat Visualization(cv::Mat srcimg, std::vector<std::vector<std::vector<int>>>
   cv::imwrite(output_image_path, img_vis);
   std::cout << "The detection visualized image saved in " << output_image_path.c_str() << std::endl;
   return img_vis;
+}
+
+Options convertRawOptions(RawOptions rawOptions) {
+  Options options {};
+  if (rawOptions.count("isDebug") > 0) {
+    options.is_debug = std::get<bool>(rawOptions["isDebug"]);
+  }
+  if (rawOptions.count("imageMaxSize") > 0) {
+    options.image_max_size = std::get<double>(rawOptions.at("imageMaxSize"));
+  }
+  if (rawOptions.count("detectionThreshold") > 0) {
+    options.detection_threshold = std::get<double>(rawOptions.at("detectionThreshold"));
+  }
+  if (rawOptions.count("detectionBoxThreshold") > 0) {
+    options.detection_box_threshold = std::get<double>(rawOptions.at("detectionBoxThreshold"));
+  }
+  if (rawOptions.count("detectionUnclipRatiop") > 0) {
+    options.detection_unclip_ratiop = std::get<double>(rawOptions.at("detectionUnclipRatiop"));
+  }
+  if (rawOptions.count("detectionUseDilate") > 0) {
+    options.detection_use_dilate = std::get<bool>(rawOptions.at("detectionUseDilate"));
+  }
+  if (rawOptions.count("detectionUsePolygonScore") > 0) {
+    options.detection_use_polygon_score = std::get<bool>(rawOptions.at("detectionUsePolygonScore"));
+  }
+  if (rawOptions.count("detectionuseDirectionClassify") > 0) {
+    options.detection_use_direction_classify = std::get<bool>(rawOptions.at("detectionuseDirectionClassify"));
+  }
+  if (rawOptions.count("detectionModelPath") > 0) {
+    options.detection_model_path = std::get<std::string>(rawOptions.at("detectionModelPath"));
+  }
+  if (rawOptions.count("recognitionModelPath") > 0) {
+    options.recognition_model_path = std::get<std::string>(rawOptions.at("recognitionModelPath"));
+  }
+  if (rawOptions.count("classififerModelPath") > 0) {
+    options.classifier_model_path = std::get<std::string>(rawOptions.at("classififerModelPath"));
+  }
+  if (rawOptions.count("dictionaryPath") > 0) {
+    options.dictionary_path = std::get<std::string>(rawOptions.at("dictionaryPath"));
+  }
+  std::cout << "isDebug " << options.is_debug << std::endl;
+  return options;
 }

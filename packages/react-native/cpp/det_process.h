@@ -24,16 +24,16 @@
 
 class DetPredictor {
 public:
-  explicit DetPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode);
+  explicit DetPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode);
 
-  std::vector<std::vector<std::vector<int>>> Predict(cv::Mat &rgbImage, std::map<std::string, double> Config);
-
-private:
-  std::string m_model_path;
-  ImageRaw Preprocess(const cv::Mat &img, const int max_side_len);
-  std::vector<std::vector<std::vector<int>>> Postprocess(ModelOutput &model_output, const cv::Mat &srcimg,
-                                                         std::map<std::string, double> Config, int det_db_use_dilate);
+  std::vector<std::vector<std::vector<int>>> Predict(cv::Mat &rgbImage);
 
 private:
+  Options m_options {};
   std::vector<float> ratio_hw_;
+
+  ImageRaw Preprocess(const cv::Mat &img, const int max_side_len);
+
+  std::vector<std::vector<std::vector<int>>> Postprocess(ModelOutput &model_output, const cv::Mat &srcimg,
+                                                         Options &options);
 };
