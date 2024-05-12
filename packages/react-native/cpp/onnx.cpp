@@ -1,11 +1,10 @@
 #include "onnx.h"
-#include <onnxruntime_cxx_api.h>
 #include <format>
 #include <iostream>
 #include "timer.h"
 
 Onnx::Onnx(const std::string &model_path)
-    : env(ORT_LOGGING_LEVEL_WARNING, "ocr"), m_session{env, model_path.c_str(), Ort::SessionOptions()} {
+    : env(ORT_LOGGING_LEVEL_WARNING, "ocr"), m_session {env, model_path.c_str(), Ort::SessionOptions()} {
   // Get input / output node names
   size_t numInputNodes = m_session.GetInputCount();
   for (int i = 0; i < numInputNodes; i++) {
@@ -33,7 +32,7 @@ ModelOutput Onnx::run(std::vector<float> &input, const std::vector<int64_t> &inp
   Timer tic;
   tic.start();
   std::vector<Ort::Value> output_tensors =
-      m_session.Run(Ort::RunOptions{nullptr}, m_input_names.data(), input_tensors.data(), m_input_names.size(),
+      m_session.Run(Ort::RunOptions {nullptr}, m_input_names.data(), input_tensors.data(), m_input_names.size(),
                     m_output_names.data(), m_output_names.size());
   tic.end();
   auto runTime = tic.get_average_ms();
@@ -57,7 +56,7 @@ ModelOutput Onnx::run(std::vector<float> &input, const std::vector<int64_t> &inp
   }
   std::vector<float> data(floatarr, floatarr + size);
 
-  ModelOutput model_output{.data = data, .shape = shape};
+  ModelOutput model_output {.data = data, .shape = shape};
 
   return model_output;
 }
