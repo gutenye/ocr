@@ -17,12 +17,11 @@ int main(int argc, char* argv[]) {
         // {"recognitionImageMaxSize", 960.0},
         {"detectionModelPath", asset_dir + "/ch_PP-OCRv4_det_infer.onnx"},
         {"recognitionModelPath", asset_dir + "/ch_PP-OCRv4_rec_infer.onnx"},
-        {"classiferModelPath", asset_dir + "/ch_ppocr_mobile_v2"},
+        // {"classiferModelPath", asset_dir + "/ch_ppocr_mobile_v2"},
         {"dictionaryPath", asset_dir + "/ppocr_keys_v1.txt"},
     };
 
     NativeOcr* ocr = new NativeOcr(rawOptions);
-    std::vector<std::string> res_txt;
     auto lines = ocr->process(image_path);
 
     // for (auto line : lines) {
