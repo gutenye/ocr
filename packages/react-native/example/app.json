@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "OCR Example",
+    "name": "GutenYe OCR Example",
     "slug": "ocr",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -14,14 +14,14 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.ocr"
+      "bundleIdentifier": "me.guten.ocr"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.ocr"
+      "package": "me.guten.ocr"
     },
     "web": {
       "favicon": "./assets/favicon.png"

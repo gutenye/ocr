@@ -4,32 +4,41 @@ import { useEffect, useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { ImagePickerButton } from './ImagePickerButton'
-// import { recognize } from './recognize'
 import type { ImageDetails } from './types'
 
-async function main() {
-  const ocr = await Ocr.create({
-    isDebug: true,
-  })
-  const result = await ocr.detect(`${FileSystem.bundleDirectory}/gutenye-ocr-react-native.bundle/cn-01.jpg`)
-  console.log('js', result)
-  return result
+export const DEFAULT_IMAGE = {
+  uri: `${FileSystem.bundleDirectory}/gutenye-ocr-react-native.bundle/cn-01.jpg`,
+  width: 500,
+  height: 500,
 }
-main()
 
 export default function App() {
-  const [image, setImage] = useState<ImageDetails>()
+  const [ocr, setOcr] = useState<Ocr>()
+  const [image, setImage] = useState<ImageDetails>(DEFAULT_IMAGE)
   const [resultText, setResultText] = useState<string>()
 
   useEffect(() => {
+    ;(async () => {
+      console.log(':: 1')
+      const ocr = await Ocr.create({
+        isDebug: true,
+      })
+      console.log(':: 2')
+      setOcr(ocr)
+    })()
+  }, [])
+
+  useEffect(() => {
     ;(async function useEffect() {
-      if (!image) {
+      if (!image || !ocr) {
         return
       }
-      // const resultText = await recognize(image)
-      // setResultText(resultText)
+      console.log(':: 3')
+      const lines = await ocr.detect(image.uri)
+      console.log(':: 4')
+      setResultText(lines.join('\n'))
     })()
-  }, [image])
+  }, [ocr, image])
 
   const handleChange = (image: ImageDetails) => {
     setImage(image)
@@ -54,8 +63,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
   image: {
     aspectRatio: 1,
