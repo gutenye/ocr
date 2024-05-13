@@ -14,6 +14,7 @@
 
 #include "native-ocr.h"
 #include <algorithm>
+#include <filesystem>
 #include <format>
 #include <fstream>
 #include <iomanip>
@@ -49,14 +50,23 @@ std::vector<std::string> NativeOcr::process(std::string &image_path) {
     Timer timer;
     timer.start();
 
+    // namespace fs = std::filesystem; // Namespace alias for convenience
+
+    //   if (fs::exists(filePath)) {
+    //     a
+    //     return
+    //   }
+
+    // throw std::invalid_argument("Parameter cannot be negative.");
+
     if (m_options.is_debug) {
       std::cout << "[DEBUG] Start Detection" << std::endl;
     }
     auto image = cv::imread(image_path);
-    cv::Mat source_image;
-    image.copyTo(source_image);
 
-    auto detection_result = m_detection_predictor->predict(source_image);
+    std::cout << "imread: image_path:" << image_path << " image:" << image.size() << std::endl;
+
+    auto detection_result = m_detection_predictor->predict(image);
 
     if (m_options.is_debug) {
       std::cout << "[DEBUG] Start Recognition" << std::endl;

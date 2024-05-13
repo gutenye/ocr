@@ -10,10 +10,14 @@ def main [] {}
 def 'main start' [] {
   mkdir build
   cd build
-  #cmake .. 
-   cmake ..  -DCMAKE_BUILD_TYPE=Release
+  cmake ..  
   make
-  ./ocr_example
+  cd ..
+  main run ./assets/cn-01.jpg
+}
+
+def 'main run' [path: string] {
+  ./build/ocr_example $path
 }
 
 def 'main start watch' [] {

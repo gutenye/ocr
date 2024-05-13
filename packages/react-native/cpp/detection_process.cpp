@@ -60,6 +60,8 @@ DetectionResult DetectionPredictor::predict(cv::Mat &image) {
 
 ImageRaw DetectionPredictor::preprocess(const cv::Mat &source_image, const int image_max_size) {
   cv::Mat image = resize_image(source_image, image_max_size, m_ratio_hw);
+  // cv::Mat image;
+  // source_image.copyTo(image);
   cv::Mat image_fp;
   image.convertTo(image_fp, CV_32FC3, 1.0 / 255.f);
 
@@ -131,6 +133,8 @@ cv::Mat resize_image(const cv::Mat image, int image_max_size, std::vector<float>
     resize_w = (resize_w / 32 - 1) * 32;
   cv::Mat resize_img;
 
+  std::cout << "resize: width:" << width << " height:" << height << " image_max_size:" << image_max_size
+            << " ratio_hw:" << &ratio_hw << " resize_w:" << resize_w << " resize_h:" << resize_h << std::endl;
   cv::resize(image, resize_img, cv::Size(resize_w, resize_h));
 
   ratio_hw.push_back(static_cast<float>(resize_h) / static_cast<float>(height));
