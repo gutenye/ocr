@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "cls_process.h"
+#include "classifier_process.h"
 #include "timer.h"
 
 const std::vector<int> cls_image_shape {3, 48, 192};
@@ -37,10 +37,10 @@ cv::Mat ClsResizeImg(cv::Mat img) {
   return resize_img;
 }
 
-ClassifierPredictor::ClassifierPredictor(const std::string &modelDir, const int cpuThreadNum,
-                                         const std::string &cpuPowerMode) {}
+ClassifierPredictor::ClassifierPredictor(const std::string &modelDir, const int cpu_thread_num,
+                                         const std::string &cpu_power_mode) {}
 
-void ClassifierPredictor::Preprocess(const cv::Mat &img) {
+void ClassifierPredictor::preprocess(const cv::Mat &img) {
   std::vector<float> mean = {0.5f, 0.5f, 0.5f};
   std::vector<float> scale = {1 / 0.5f, 1 / 0.5f, 1 / 0.5f};
   cv::Mat crop_img;
@@ -56,7 +56,7 @@ void ClassifierPredictor::Preprocess(const cv::Mat &img) {
   const float *dimg = reinterpret_cast<const float *>(resize_img.data);
 }
 
-cv::Mat ClassifierPredictor::Postprocess(const cv::Mat &srcimg, const float thresh) {
+cv::Mat ClassifierPredictor::postprocess(const cv::Mat &srcimg, const float thresh) {
   // Get output and run postprocess
   // std::unique_ptr<const Tensor> softmax_out(
   //     std::move(predictor_->GetOutput(0)));
@@ -81,13 +81,13 @@ cv::Mat ClassifierPredictor::Postprocess(const cv::Mat &srcimg, const float thre
   return a;
 }
 
-cv::Mat ClassifierPredictor::Predict(const cv::Mat &img, double *preprocess_time, double *predictTime,
+cv::Mat ClassifierPredictor::predict(const cv::Mat &img, double *preprocess_time, double *predictTime,
                                      double *postprocessTime, const float thresh) {
   cv::Mat src_img;
   img.copyTo(src_img);
   //  Timer tic;
   //  tic.start();
-  Preprocess(img);
+  preprocess(img);
   // tic.end();
   // *preprocess_time = tic.get_average_ms();
   // std::cout << "cls predictor preprocess costs" <<  *preprocess_time;
@@ -99,7 +99,7 @@ cv::Mat ClassifierPredictor::Predict(const cv::Mat &img, double *preprocess_time
   // std::cout << "cls predictor predict costs" <<  *predictTime;
 
   //  tic.start();
-  cv::Mat srcimg = Postprocess(src_img, thresh);
+  cv::Mat srcimg = postprocess(src_img, thresh);
   // tic.end();
   // *postprocessTime = tic.get_average_ms();
   // std::cout << "cls predictor predict costs" <<  *postprocessTime;

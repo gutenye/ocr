@@ -21,8 +21,8 @@
 #include <opencv2/imgproc.hpp>
 #include <string>
 #include <vector>
-#include "det_process.h"
-#include "rec_process.h"
+#include "detection_process.h"
+#include "recognition_process.h"
 #include "shared.h"
 
 class NativeOcr {

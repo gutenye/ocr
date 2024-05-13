@@ -13,19 +13,33 @@
 // limitations under the License.
 
 #pragma once
+
+#include "onnx.h"
 #include "opencv2/core.hpp"
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/imgproc.hpp"
+#include "shared.h"
 #include "utils.h"
 
-class ClassifierPredictor {
-public:
-  explicit ClassifierPredictor(const std::string &modelDir, const int cpuThreadNum, const std::string &cpuPowerMode);
+using RecognitionResultData = std::pair<std::string, float>;
 
-  cv::Mat Predict(const cv::Mat &rgbImage, double *preprocess_time, double *predictTime, double *postprocessTime,
-                  const float thresh);
+struct RecognitionResult {
+  RecognitionResultData data {};
+  ModelPerformance performance {};
+};
+
+class RecognitionPredictor {
+public:
+  explicit RecognitionPredictor(Options &options, const int cpu_thread_num, const std::string &cpu_power_mode);
+
+  RecognitionResult predict(const cv::Mat &rgba_image, std::vector<std::string> charactor_dict);
 
 private:
-  void Preprocess(const cv::Mat &rgbaImage);
-  cv::Mat Postprocess(const cv::Mat &img, const float thresh);
+  Options m_options {};
+  Onnx m_onnx;
+
+  ImageRaw preprocess(const cv::Mat &rgba_image);
+
+  RecognitionResultData postprocess(ModelOutput &model_output, const cv::Mat &rgba_image,
+                                    std::vector<std::string> charactor_dict);
 };
