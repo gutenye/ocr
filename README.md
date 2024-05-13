@@ -40,7 +40,7 @@ const result = await ocr.detect('/a.jpg')
 
 > [Example](./packages/react-native/example/README.md)
 
-```
+```ts
 bun add @gutenye/ocr-react-native
 import Ocr from '@guenye/ocr-react-native'
 const ocr = await Ocr.create()
