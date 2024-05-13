@@ -21,7 +21,6 @@ export default function App() {
     ;(async () => {
       const ocr = await Ocr.create({
         isDebug: true,
-        recognitionImageMaxSize: 2048,
       })
       setOcr(ocr)
     })()

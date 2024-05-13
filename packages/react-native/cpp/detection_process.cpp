@@ -22,7 +22,7 @@
 #include "db_post_process.h"
 #include "timer.h"
 
-cv::Mat resize_image(const cv::Mat image, int image_max_size, std::vector<float> &ratio_hw, Options &options);
+cv::Mat resize_image(const cv::Mat image, std::vector<float> &ratio_hw, Options &options);
 
 DetectionPredictor::DetectionPredictor(Options &options, const int cpu_thread_num, const std::string &cpu_power_mode)
     : m_options {options}, m_onnx {Onnx(options.detection_model_path)} {}
@@ -35,7 +35,7 @@ DetectionResult DetectionPredictor::predict(cv::Mat &image) {
 
   Timer timer;
   timer.start();
-  auto input = preprocess(image, m_options.recognition_image_max_size);
+  auto input = preprocess(image);
   timer.end();
   performance.preprocess_time = timer.get_average_ms();
 
@@ -58,8 +58,8 @@ DetectionResult DetectionPredictor::predict(cv::Mat &image) {
   return DetectionResult {.data = filter_boxes, .performance = performance};
 }
 
-ImageRaw DetectionPredictor::preprocess(const cv::Mat &source_image, const int image_max_size) {
-  cv::Mat image = resize_image(source_image, image_max_size, m_ratio_hw, m_options);
+ImageRaw DetectionPredictor::preprocess(const cv::Mat &source_image) {
+  cv::Mat image = resize_image(source_image, m_ratio_hw, m_options);
   // cv::Mat image;
   // source_image.copyTo(image);
   cv::Mat image_fp;
@@ -103,16 +103,17 @@ DetectionResultData DetectionPredictor::postprocess(ModelOutput &model_output, c
 }
 
 // resize image to a size multiple of 32 which is required by the network
-cv::Mat resize_image(const cv::Mat image, int image_max_size, std::vector<float> &ratio_hw, Options &options) {
+cv::Mat resize_image(const cv::Mat image, std::vector<float> &ratio_hw, Options &options) {
   int width = image.cols;
   int height = image.rows;
   float ratio = 1.f;
   int max_wh = width >= height ? width : height;
-  if (max_wh > image_max_size) {
+  auto max_size = options.recognition_image_max_size;
+  if (max_size != -1 && max_wh > max_size) {
     if (height > width) {
-      ratio = static_cast<float>(image_max_size) / static_cast<float>(height);
+      ratio = static_cast<float>(max_size) / static_cast<float>(height);
     } else {
-      ratio = static_cast<float>(image_max_size) / static_cast<float>(width);
+      ratio = static_cast<float>(max_size) / static_cast<float>(width);
     }
   }
 
@@ -123,14 +124,16 @@ cv::Mat resize_image(const cv::Mat image, int image_max_size, std::vector<float>
   } else if (resize_height / 32 < 1 + 1e-5) {
     resize_height = 32;
   } else {
-    resize_height = (resize_height / 32 - 1) * 32;
+    // resize_height = (resize_height / 32 - 1) * 32;
+    resize_height = (resize_height / 32 + 1) * 32;
   }
   if (resize_width % 32 == 0) {
     resize_width = resize_width;
   } else if (resize_width / 32 < 1 + 1e-5) {
     resize_width = 32;
   } else {
-    resize_width = (resize_width / 32 - 1) * 32;
+    // resize_width = (resize_width / 32 - 1) * 32;
+    resize_width = (resize_width / 32 + 1) * 32;
   }
 
   if (options.is_debug) {
