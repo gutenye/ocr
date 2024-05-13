@@ -9,7 +9,7 @@ import type { ImageDetails } from './types'
 //  /private/var/containers/Bundle/Application/55E249DC-B95F-4B05-9A10-6C192143E8EB/GutenOCRExample.app//guten-ocr.bundle/cn-01.jpg
 // 'file:///var/mobile/Containers/Data/Application/AA3D33D1-DAB1-43B8-BD9D-D72F1AE89A6F/Library/Caches/ImagePicker/43FDA18A-DB48-4436-B231-1B880CA9BBDB.jpg'
 
-const DEFAULT_IMAGE = `${FileSystem.bundleDirectory}/guten-ocr.bundle/cn-01.jpg`
+const DEFAULT_IMAGE = `${FileSystem.bundleDirectory}/guten-ocr.bundle/cn-01.jpg1`
 // const DEFAULT_IMAGE = undefined
 
 export default function App() {
@@ -32,10 +32,15 @@ export default function App() {
       if (!imagePath || !ocr) {
         return
       }
-      const newImagePath = imagePath.replace('file://', '')
-      console.log(':: imagePath', newImagePath)
-      const lines = await ocr.detect(newImagePath)
-      setResultText(lines.join('\n'))
+      try {
+        const newImagePath = imagePath.replace('file://', '')
+        const lines = await ocr.detect(newImagePath)
+        setResultText(lines.join('\n'))
+      } catch (error) {
+        if (error instanceof Error) {
+          setResultText(error.message)
+        }
+      }
     })()
   }, [ocr, imagePath])
 

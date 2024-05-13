@@ -5,8 +5,12 @@
 
 int main(int argc, char* argv[]) {
   try {
-    std::string asset_dir = (std::filesystem::path(__FILE__).parent_path() / "assets");
+    if (argc != 2) {
+      throw std::runtime_error("Missing image path. Usage ocr_example <image_path>");
+    }
+    std::string image_path = argv[1];
 
+    std::string asset_dir = (std::filesystem::path(__FILE__).parent_path() / "assets");
     RawOptions rawOptions {
         {"isDebug", true},
         {"detectionModelPath", asset_dir + "/ch_PP-OCRv4_det_infer.onnx"},
@@ -14,7 +18,6 @@ int main(int argc, char* argv[]) {
         {"classiferModelPath", asset_dir + "/ch_ppocr_mobile_v2"},
         {"dictionaryPath", asset_dir + "/ppocr_keys_v1.txt"},
     };
-    std::string image_path = argv[1];
 
     NativeOcr* ocr = new NativeOcr(rawOptions);
     std::vector<std::string> res_txt;
@@ -23,10 +26,9 @@ int main(int argc, char* argv[]) {
     // for (auto line : lines) {
     //   std::cout << line << std::endl;
     // }
-
     return 0;
   } catch (const std::exception& e) {
-    std::cerr << "\nError:\n\n" << e.what() << std::endl;
+    std::cerr << "\nError: " << e.what() << std::endl;
     return 1;
   }
 }

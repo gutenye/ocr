@@ -7,13 +7,13 @@
 
 def main [] {}
 
-def 'main start' [] {
+def 'main start' [path?: string = './assets/cn-01.jpg'] {
   mkdir build
   cd build
   cmake ..  
   make
   cd ..
-  main run ./assets/cn-01.jpg
+  main run $path
 }
 
 def 'main run' [path: string] {

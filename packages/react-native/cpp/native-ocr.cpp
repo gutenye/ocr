@@ -25,6 +25,8 @@
 #include <stdexcept>
 #include "timer.h"
 
+namespace fs = std::filesystem;
+
 std::vector<std::string> read_dictionary(std::string path);
 cv::Mat get_rotate_crop_image(cv::Mat source_image, std::vector<std::vector<int>> box);
 Options convertRawOptions(RawOptions rawOptions);
@@ -32,117 +34,102 @@ Options convertRawOptions(RawOptions rawOptions);
 NativeOcr::NativeOcr(RawOptions rawOptions) : m_options {convertRawOptions(rawOptions)} {
   auto cpu_thread_num = 1;
   auto cpu_power_mode = "LITE_POWER_HIGH";
-  try {
-    // m_classifier_predictor.reset(
-    //     new ClassifierPredictor(m_options, cpu_thread_num, cpu_power_mode));
-    m_detection_predictor.reset(new DetectionPredictor(m_options, cpu_thread_num, cpu_power_mode));
-    m_recognition_predictor.reset(new RecognitionPredictor(m_options, cpu_thread_num, cpu_power_mode));
-    m_dictionary = read_dictionary(m_options.dictionary_path);
-    m_dictionary.insert(m_dictionary.begin(), "#");
-    m_dictionary.push_back(" ");
-  } catch (std::string &error) {
-    std::cerr << error << std::endl;
-  }
+  // m_classifier_predictor.reset(
+  //     new ClassifierPredictor(m_options, cpu_thread_num, cpu_power_mode));
+  m_detection_predictor.reset(new DetectionPredictor(m_options, cpu_thread_num, cpu_power_mode));
+  m_recognition_predictor.reset(new RecognitionPredictor(m_options, cpu_thread_num, cpu_power_mode));
+  m_dictionary = read_dictionary(m_options.dictionary_path);
+  m_dictionary.insert(m_dictionary.begin(), "#");
+  m_dictionary.push_back(" ");
 }
 
 std::vector<std::string> NativeOcr::process(std::string &image_path) {
-  try {
-    Timer timer;
-    timer.start();
+  Timer timer;
+  timer.start();
 
-    // namespace fs = std::filesystem; // Namespace alias for convenience
-
-    //   if (fs::exists(filePath)) {
-    //     a
-    //     return
-    //   }
-
-    // throw std::invalid_argument("Parameter cannot be negative.");
-
-    if (m_options.is_debug) {
-      std::cout << "[DEBUG] Start Detection" << std::endl;
-    }
-    auto image = cv::imread(image_path);
-
-    std::cout << "imread: image_path:" << image_path << " image:" << image.size() << std::endl;
-
-    auto detection_result = m_detection_predictor->predict(image);
-
-    if (m_options.is_debug) {
-      std::cout << "[DEBUG] Start Recognition" << std::endl;
-    }
-
-    cv::Mat image_copy;
-    image.copyTo(image_copy);
-    cv::Mat crop_image;
-
-    std::vector<std::string> recognition_text;
-    std::vector<float> recognition_text_score;
-    std::vector<RecognitionResult> recognition_results;
-    for (int i = detection_result.data.size() - 1; i >= 0; i--) {
-      crop_image = get_rotate_crop_image(image_copy, detection_result.data[i]);
-
-      // if (m_options.detection_use_direction_classify)
-      // {
-      //   crop_image =
-      //       m_classifier_predictor->predict(crop_image, nullptr, nullptr, nullptr, 0.9);
-      // }
-      auto recognition_result = m_recognition_predictor->predict(crop_image, m_dictionary);
-      recognition_results.push_back(recognition_result);
-      recognition_text.push_back(recognition_result.data.first);
-      recognition_text_score.push_back(recognition_result.data.second);
-    }
-
-    //// visualization
-    // DEBUG
-    // auto image_visualization = visualization(image, boxes, output_img_path);
-
-    timer.end();
-    auto total_time = timer.get_average_ms();
-    if (m_options.is_debug) {
-      float recognition_total_sum = std::accumulate(recognition_results.begin(), recognition_results.end(), 0.0f,
-                                                    [](float accumulator, const RecognitionResult &result) {
-                                                      return accumulator + result.performance.total_time;
-                                                    });
-      float recognition_preprocess_sum = std::accumulate(recognition_results.begin(), recognition_results.end(), 0.0f,
-                                                         [](float accumulator, const RecognitionResult &result) {
-                                                           return accumulator + result.performance.preprocess_time;
-                                                         });
-      float recognition_predict_sum = std::accumulate(recognition_results.begin(), recognition_results.end(), 0.0f,
-                                                      [](float accumulator, const RecognitionResult &result) {
-                                                        return accumulator + result.performance.predict_time;
-                                                      });
-      float recognition_postproces_sum = std::accumulate(recognition_results.begin(), recognition_results.end(), 0.0f,
-                                                         [](float accumulator, const RecognitionResult &result) {
-                                                           return accumulator + result.performance.postprocess_time;
-                                                         });
-      std::cout << std::fixed << std::setprecision(2);
-      std::cout << "[DEBUG] Detection costs " << (int)detection_result.performance.total_time << "ms "
-                << "(preprocess:" << (int)detection_result.performance.preprocess_time
-                << " predict:" << (int)detection_result.performance.predict_time
-                << " postprocess:" << (int)detection_result.performance.postprocess_time << ")" << std::endl;
-      std::cout << "[DEBUG] Recognition costs " << (int)recognition_total_sum << "ms "
-                << "(preprocess:" << (float)(recognition_preprocess_sum / recognition_results.size())
-                << " predict:" << (int)(recognition_predict_sum / recognition_results.size())
-                << " postprocess:" << (float)(recognition_preprocess_sum / recognition_results.size()) << ") avg * "
-                << recognition_results.size() << std::endl;
-      std::cout << "[DEBUG] Total costs " << (int)total_time << "ms" << std::endl;
-    }
-
-    // print recognized text
-    std::vector<std::string> lines(recognition_text.size());
-    for (int i = 0; i < lines.size(); i++) {
-      if (m_options.is_debug) {
-        std::cout << "[DEBUG] " << i << "\t" << recognition_text_score[i] << "\t" << recognition_text[i] << std::endl;
-      }
-      lines[i] = recognition_text[i];
-    }
-
-    return lines;
-  } catch (std::string &error) {
-    std::cerr << error << std::endl;
-    return std::vector<std::string> {};
+  if (!fs::exists(image_path)) {
+    throw std::runtime_error("image file does not exist - '" + image_path + "'");
   }
+
+  if (m_options.is_debug) {
+    std::cout << "[DEBUG] Start Detection" << std::endl;
+  }
+  auto image = cv::imread(image_path);
+
+  std::cout << "imread: image_path:" << image_path << " image:" << image.size() << std::endl;
+
+  auto detection_result = m_detection_predictor->predict(image);
+
+  if (m_options.is_debug) {
+    std::cout << "[DEBUG] Start Recognition" << std::endl;
+  }
+
+  cv::Mat image_copy;
+  image.copyTo(image_copy);
+  cv::Mat crop_image;
+
+  std::vector<std::string> recognition_text;
+  std::vector<float> recognition_text_score;
+  std::vector<RecognitionResult> recognition_results;
+  for (int i = detection_result.data.size() - 1; i >= 0; i--) {
+    crop_image = get_rotate_crop_image(image_copy, detection_result.data[i]);
+
+    // if (m_options.detection_use_direction_classify)
+    // {
+    //   crop_image =
+    //       m_classifier_predictor->predict(crop_image, nullptr, nullptr, nullptr, 0.9);
+    // }
+    auto recognition_result = m_recognition_predictor->predict(crop_image, m_dictionary);
+    recognition_results.push_back(recognition_result);
+    recognition_text.push_back(recognition_result.data.first);
+    recognition_text_score.push_back(recognition_result.data.second);
+  }
+
+  //// visualization
+  // DEBUG
+  // auto image_visualization = visualization(image, boxes, output_img_path);
+
+  timer.end();
+  auto total_time = timer.get_average_ms();
+  if (m_options.is_debug) {
+    float recognition_total_sum = std::accumulate(
+        recognition_results.begin(), recognition_results.end(), 0.0f,
+        [](float accumulator, const RecognitionResult &result) { return accumulator + result.performance.total_time; });
+    float recognition_preprocess_sum = std::accumulate(recognition_results.begin(), recognition_results.end(), 0.0f,
+                                                       [](float accumulator, const RecognitionResult &result) {
+                                                         return accumulator + result.performance.preprocess_time;
+                                                       });
+    float recognition_predict_sum = std::accumulate(recognition_results.begin(), recognition_results.end(), 0.0f,
+                                                    [](float accumulator, const RecognitionResult &result) {
+                                                      return accumulator + result.performance.predict_time;
+                                                    });
+    float recognition_postproces_sum = std::accumulate(recognition_results.begin(), recognition_results.end(), 0.0f,
+                                                       [](float accumulator, const RecognitionResult &result) {
+                                                         return accumulator + result.performance.postprocess_time;
+                                                       });
+    std::cout << std::fixed << std::setprecision(2);
+    std::cout << "[DEBUG] Detection costs " << (int)detection_result.performance.total_time << "ms "
+              << "(preprocess:" << (int)detection_result.performance.preprocess_time
+              << " predict:" << (int)detection_result.performance.predict_time
+              << " postprocess:" << (int)detection_result.performance.postprocess_time << ")" << std::endl;
+    std::cout << "[DEBUG] Recognition costs " << (int)recognition_total_sum << "ms "
+              << "(preprocess:" << (float)(recognition_preprocess_sum / recognition_results.size())
+              << " predict:" << (int)(recognition_predict_sum / recognition_results.size())
+              << " postprocess:" << (float)(recognition_preprocess_sum / recognition_results.size()) << ") avg * "
+              << recognition_results.size() << std::endl;
+    std::cout << "[DEBUG] Total costs " << (int)total_time << "ms" << std::endl;
+  }
+
+  // print recognized text
+  std::vector<std::string> lines(recognition_text.size());
+  for (int i = 0; i < lines.size(); i++) {
+    if (m_options.is_debug) {
+      std::cout << "[DEBUG] " << i << "\t" << recognition_text_score[i] << "\t" << recognition_text[i] << std::endl;
+    }
+    lines[i] = recognition_text[i];
+  }
+
+  return lines;
 }
 
 cv::Mat get_rotate_crop_image(cv::Mat source_image, std::vector<std::vector<int>> box) {
@@ -204,7 +191,7 @@ std::vector<std::string> read_dictionary(std::string path) {
   std::string line;
   std::vector<std::string> m_vec;
   if (!in) {
-    throw std::string("Error: read_dictionary file not found '") + path + "'";
+    throw std::runtime_error("read_dictionary file not found '" + path + "'");
   }
   while (getline(in, line)) {
     m_vec.push_back(line);
