@@ -1,4 +1,4 @@
-package com.anonymous.ocr
+package me.guten.ocr
 
 import android.app.Application
 import android.content.res.Configuration

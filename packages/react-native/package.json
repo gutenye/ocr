@@ -4,7 +4,8 @@
   "keywords": ["ocr", "paddleocr", "typescript", "onnxruntime", "react-native", "ios", "android", "expo"],
   "version": "1.0.0",
   "exports": {
-    "react-native": "./src/index.ts"
+    "react-native": "./src/index.ts",
+    "default": "./src/index.ts"
   },
   "types": "lib/typescript/src/index.d.ts",
   "files": [

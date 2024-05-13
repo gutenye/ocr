@@ -13,7 +13,6 @@
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(create
-                  : (RCTPromiseResolveBlock)inputOptions
                   : (NSDictionary *)rawOptions resolver
                   : (RCTPromiseResolveBlock)resolve rejecter
                   : (RCTPromiseRejectBlock)reject) {
@@ -45,7 +44,7 @@ RCT_EXPORT_METHOD(detect
                   : (RCTPromiseResolveBlock)resolve rejecter
                   : (RCTPromiseRejectBlock)reject) {
   auto imagePath = convertNSString(rawImagePath);
-  auto lines = _ocr->Process(imagePath);
+  auto lines = _ocr->process(imagePath);
   NSArray<NSString *> *finalLines = convertStdVector(lines);
   resolve(finalLines);
 }

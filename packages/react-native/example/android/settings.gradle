@@ -1,4 +1,4 @@
-rootProject.name = 'OCR Example'
+rootProject.name = 'GutenYe OCR Example'
 
 dependencyResolutionManagement {
   versionCatalogs {

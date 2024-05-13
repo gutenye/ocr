@@ -8,7 +8,7 @@ export class Ocr {
     return new Ocr()
   }
 
-  detect(imagePath: string): Promise<string> {
+  detect(imagePath: string): Promise<string[]> {
     return OcrModule.detect(imagePath)
   }
 }

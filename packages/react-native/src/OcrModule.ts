@@ -1,10 +1,12 @@
 import { NativeModules, Platform } from 'react-native'
+import pkg from '../package.json'
 
-const LINKING_ERROR =
-  `The package '@gutenye/react-native-ocr' doesn't seem to be linked. Make sure: \n\n` +
-  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
-  '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo Go\n'
+const LINKING_ERROR = `
+The package '${pkg.name}' doesn't seem to be linked. Make sure:
+${Platform.select({ ios: `- You have run 'pod install'`, default: '' })} 
+- You rebuilt the app after installing the package
+- You are not using Expo Go
+`.trim()
 
 // @ts-expect-error
 const isTurboModuleEnabled = global.__turboModuleProxy != null
