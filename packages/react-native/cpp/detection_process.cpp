@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "detection_process.h"
+#include <cmath>
 #include <format>
 #include <map>
 #include <memory>
@@ -60,6 +61,7 @@ DetectionResult DetectionPredictor::predict(cv::Mat &image) {
 
 ImageRaw DetectionPredictor::preprocess(const cv::Mat &source_image) {
   cv::Mat image = resize_image(source_image, m_ratio_hw, m_options);
+  // TODO
   // cv::Mat image;
   // source_image.copyTo(image);
   cv::Mat image_fp;
@@ -126,7 +128,7 @@ cv::Mat resize_image(const cv::Mat image, std::vector<float> &ratio_hw, Options 
   } else {
     // TODO
     // resize_height = (resize_height / 32 - 1) * 32;
-    resize_height = (resize_height / 32 + 1) * 32;
+    resize_height = ceil(static_cast<double>(resize_height) / 32) * 32;
   }
   if (resize_width % 32 == 0) {
     resize_width = resize_width;
@@ -134,7 +136,7 @@ cv::Mat resize_image(const cv::Mat image, std::vector<float> &ratio_hw, Options 
     resize_width = 32;
   } else {
     // resize_width = (resize_width / 32 - 1) * 32;
-    resize_width = (resize_width / 32 + 1) * 32;
+    resize_width = ceil(static_cast<double>(resize_width) / 32) * 32;
   }
 
   if (options.is_debug) {
