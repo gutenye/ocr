@@ -6,9 +6,6 @@
 
 Based on [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR), supports PP-OCRv4 model
 
-## Examples
-
-
 ## Getting Started
 
 ### Node
@@ -44,8 +41,10 @@ const result = await ocr.detect('/a.jpg')
 > [Example](./packages/react-native/example/README.md)
 
 ```
-bun add @gutenye/react-native
-
+bun add @gutenye/ocr-react-native
+import Ocr from '@guenye/ocr-react-native'
+const ocr = await Ocr.create()
+const result = await ocr.detect('a.jpg')
 ```
 
 ### C++
