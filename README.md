@@ -1,4 +1,4 @@
-# @gutenye/ocr
+# Guten OCR
 
 > an OCR Javascript library runs on Node.js, Browser and React Native
 
