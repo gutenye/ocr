@@ -48,20 +48,18 @@ std::vector<std::string> NativeOcr::process(std::string &image_path) {
   timer.start();
 
   if (!fs::exists(image_path)) {
-    throw std::runtime_error("image file does not exist - '" + image_path + "'");
+    throw std::runtime_error("Image file does not exist - '" + image_path + "'");
   }
 
   if (m_options.is_debug) {
-    std::cout << "[DEBUG] Start Detection" << std::endl;
+    std::cout << "[DEBUG] Start detection" << std::endl;
   }
   auto image = cv::imread(image_path);
-
-  std::cout << "imread: image_path:" << image_path << " image:" << image.size() << std::endl;
 
   auto detection_result = m_detection_predictor->predict(image);
 
   if (m_options.is_debug) {
-    std::cout << "[DEBUG] Start Recognition" << std::endl;
+    std::cout << "[DEBUG] Start recognition" << std::endl;
   }
 
   cv::Mat image_copy;

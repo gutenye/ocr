@@ -22,7 +22,7 @@
 #include "db_post_process.h"
 #include "timer.h"
 
-cv::Mat resize_image(const cv::Mat image, int image_max_size, std::vector<float> &ratio_hw);
+cv::Mat resize_image(const cv::Mat image, int image_max_size, std::vector<float> &ratio_hw, Options &options);
 
 DetectionPredictor::DetectionPredictor(Options &options, const int cpu_thread_num, const std::string &cpu_power_mode)
     : m_options {options}, m_onnx {Onnx(options.detection_model_path)} {}
@@ -59,7 +59,7 @@ DetectionResult DetectionPredictor::predict(cv::Mat &image) {
 }
 
 ImageRaw DetectionPredictor::preprocess(const cv::Mat &source_image, const int image_max_size) {
-  cv::Mat image = resize_image(source_image, image_max_size, m_ratio_hw);
+  cv::Mat image = resize_image(source_image, image_max_size, m_ratio_hw, m_options);
   // cv::Mat image;
   // source_image.copyTo(image);
   cv::Mat image_fp;
@@ -103,7 +103,7 @@ DetectionResultData DetectionPredictor::postprocess(ModelOutput &model_output, c
 }
 
 // resize image to a size multiple of 32 which is required by the network
-cv::Mat resize_image(const cv::Mat image, int image_max_size, std::vector<float> &ratio_hw) {
+cv::Mat resize_image(const cv::Mat image, int image_max_size, std::vector<float> &ratio_hw, Options &options) {
   int width = image.cols;
   int height = image.rows;
   float ratio = 1.f;
@@ -116,28 +116,32 @@ cv::Mat resize_image(const cv::Mat image, int image_max_size, std::vector<float>
     }
   }
 
-  int resize_h = static_cast<int>(float(height) * ratio);
-  int resize_w = static_cast<int>(float(width) * ratio);
-  if (resize_h % 32 == 0)
-    resize_h = resize_h;
-  else if (resize_h / 32 < 1 + 1e-5)
-    resize_h = 32;
-  else
-    resize_h = (resize_h / 32 - 1) * 32;
+  int resize_height = static_cast<int>(float(height) * ratio);
+  int resize_width = static_cast<int>(float(width) * ratio);
+  if (resize_height % 32 == 0) {
+    resize_height = resize_height;
+  } else if (resize_height / 32 < 1 + 1e-5) {
+    resize_height = 32;
+  } else {
+    resize_height = (resize_height / 32 - 1) * 32;
+  }
+  if (resize_width % 32 == 0) {
+    resize_width = resize_width;
+  } else if (resize_width / 32 < 1 + 1e-5) {
+    resize_width = 32;
+  } else {
+    resize_width = (resize_width / 32 - 1) * 32;
+  }
 
-  if (resize_w % 32 == 0)
-    resize_w = resize_w;
-  else if (resize_w / 32 < 1 + 1e-5)
-    resize_w = 32;
-  else
-    resize_w = (resize_w / 32 - 1) * 32;
+  if (options.is_debug) {
+    std::cout << "[DEBUG] Resize image from " << width << "x" << height << " to " << resize_width << "x"
+              << resize_height << std::endl;
+  }
+
   cv::Mat resize_img;
+  cv::resize(image, resize_img, cv::Size(resize_width, resize_height));
 
-  std::cout << "resize: width:" << width << " height:" << height << " image_max_size:" << image_max_size
-            << " ratio_hw:" << &ratio_hw << " resize_w:" << resize_w << " resize_h:" << resize_h << std::endl;
-  cv::resize(image, resize_img, cv::Size(resize_w, resize_h));
-
-  ratio_hw.push_back(static_cast<float>(resize_h) / static_cast<float>(height));
-  ratio_hw.push_back(static_cast<float>(resize_w) / static_cast<float>(width));
+  ratio_hw.push_back(static_cast<float>(resize_height) / static_cast<float>(height));
+  ratio_hw.push_back(static_cast<float>(resize_width) / static_cast<float>(width));
   return resize_img;
 }
