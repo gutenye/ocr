@@ -19,7 +19,7 @@ RCT_EXPORT_METHOD(create
   auto options = convertNSDictionary(rawOptions);
 
   id rawBundleDir = [[NSBundle mainBundle] bundlePath];
-  auto assetDir = convertNSString(rawBundleDir) + "/gutenye-ocr-react-native.bundle";
+  auto assetDir = convertNSString(rawBundleDir) + "/guten-ocr.bundle";
   if (!options.count("detectionModelPath")) {
     options["detectionModelPath"] = assetDir + "/ch_PP-OCRv4_det_infer.onnx";
   }

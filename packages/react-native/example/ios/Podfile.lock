@@ -36,7 +36,7 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.73.6)
   - fmt (6.2.1)
   - glog (0.3.5)
-  - gutenye-ocr-react-native (1.0.0):
+  - GutenOCR (1.0.0):
     - glog
     - onnxruntime-c
     - OpenCV (~> 4.3.0)
@@ -1106,7 +1106,7 @@ DEPENDENCIES:
   - FBLazyVector (from `../../../../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../../../../node_modules/react-native/React/FBReactNativeSpec`)
   - glog (from `../../../../node_modules/react-native/third-party-podspecs/glog.podspec`)
-  - "gutenye-ocr-react-native (from `../../../../node_modules/@gutenye/ocr-react-native`)"
+  - "GutenOCR (from `../../../../node_modules/@gutenye/ocr-react-native`)"
   - hermes-engine (from `../../../../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
   - libevent (~> 2.1.12)
   - RCT-Folly (from `../../../../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
@@ -1192,7 +1192,7 @@ EXTERNAL SOURCES:
     :path: "../../../../node_modules/react-native/React/FBReactNativeSpec"
   glog:
     :podspec: "../../../../node_modules/react-native/third-party-podspecs/glog.podspec"
-  gutenye-ocr-react-native:
+  GutenOCR:
     :path: "../../../../node_modules/@gutenye/ocr-react-native"
   hermes-engine:
     :podspec: "../../../../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
@@ -1300,7 +1300,7 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 11c76c87794f8f2563f4d6523e86091fc94d654b
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: c5d68082e772fa1c511173d6b30a9de2c05a69a2
-  gutenye-ocr-react-native: 6e6df0be3d4b668ab71611da4a0984ffce803361
+  GutenOCR: 1254789cb82e62ea8a47919deec60f4bb8ae07c1
   hermes-engine: 9cecf9953a681df7556b8cc9c74905de8f3293c0
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   onnxruntime-c: 065a3ed478da911448ff72612e6a0aaf4cb10fae
