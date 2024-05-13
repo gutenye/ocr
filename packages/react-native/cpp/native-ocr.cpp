@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <format>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <map>
 #include <numeric>
@@ -105,15 +106,16 @@ std::vector<std::string> NativeOcr::process(std::string &image_path) {
                                                          [](float accumulator, const RecognitionResult &result) {
                                                            return accumulator + result.performance.postprocess_time;
                                                          });
-      std::cout << "[DEBUG] Recognition costs " << (int)recognition_total_sum << "ms "
-                << "(preprocess:" << (int)(recognition_preprocess_sum / recognition_results.size())
-                << " predict:" << (int)(recognition_predict_sum / recognition_results.size())
-                << " preprocess:" << (int)(recognition_preprocess_sum / recognition_results.size()) << ") avg * "
-                << recognition_results.size() << std::endl;
+      std::cout << std::fixed << std::setprecision(2);
       std::cout << "[DEBUG] Detection costs " << (int)detection_result.performance.total_time << "ms "
                 << "(preprocess:" << (int)detection_result.performance.preprocess_time
                 << " predict:" << (int)detection_result.performance.predict_time
                 << " postprocess:" << (int)detection_result.performance.postprocess_time << ")" << std::endl;
+      std::cout << "[DEBUG] Recognition costs " << (int)recognition_total_sum << "ms "
+                << "(preprocess:" << (float)(recognition_preprocess_sum / recognition_results.size())
+                << " predict:" << (int)(recognition_predict_sum / recognition_results.size())
+                << " postprocess:" << (float)(recognition_preprocess_sum / recognition_results.size()) << ") avg * "
+                << recognition_results.size() << std::endl;
       std::cout << "[DEBUG] Total costs " << (int)total_time << "ms" << std::endl;
     }
 
@@ -245,8 +247,8 @@ Options convertRawOptions(RawOptions rawOptions) {
   if (rawOptions.count("isDebug") > 0) {
     options.is_debug = std::get<bool>(rawOptions["isDebug"]);
   }
-  if (rawOptions.count("imageMaxSize") > 0) {
-    options.image_max_size = std::get<double>(rawOptions.at("imageMaxSize"));
+  if (rawOptions.count("recognitionImageMaxSize") > 0) {
+    options.recognition_image_max_size = std::get<double>(rawOptions.at("recognitionImageMaxSize"));
   }
   if (rawOptions.count("detectionThreshold") > 0) {
     options.detection_threshold = std::get<double>(rawOptions.at("detectionThreshold"));

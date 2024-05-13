@@ -1,6 +1,6 @@
 export interface OcrOptions {
   isDebug: boolean
-  imageMaxSize: number
+  recognitionImageMaxSize: number
   detectionThreshold: number
   detectionBoxThreshold: number
   detectionUnclipRatiop: number
