@@ -19,8 +19,7 @@
 #include "timer.h"
 #include "utils.h"
 
-const std::vector<int> recognition_image_shape {3, 48, 320};
-cv::Mat crnn_resize_image(cv::Mat image, float wh_ratio);
+cv::Mat resize_image(cv::Mat image, int image_height);
 template <class ForwardIterator>
 inline size_t argmax(ForwardIterator first, ForwardIterator last);
 
@@ -55,17 +54,16 @@ RecognitionResult RecognitionPredictor::predict(const cv::Mat &rgba_image, std::
 }
 
 ImageRaw RecognitionPredictor::preprocess(const cv::Mat &source_image) {
-  float wh_ratio = static_cast<float>(source_image.cols) / static_cast<float>(source_image.rows);
   std::vector<float> mean = {0.5f, 0.5f, 0.5f};
   std::vector<float> scale = {1 / 0.5f, 1 / 0.5f, 1 / 0.5f};
-  cv::Mat resize_image = crnn_resize_image(source_image, wh_ratio);
-  resize_image.convertTo(resize_image, CV_32FC3, 1 / 255.f);
+  cv::Mat resized_image = resize_image(source_image, 48);
+  resized_image.convertTo(resized_image, CV_32FC3, 1 / 255.f);
 
-  const float *destination_image = reinterpret_cast<const float *>(resize_image.data);
-  std::vector<float> data(resize_image.rows * resize_image.cols * 3);
-  NHWC3ToNC3HW(destination_image, data.data(), resize_image.rows * resize_image.cols, mean, scale);
+  const float *destination_image = reinterpret_cast<const float *>(resized_image.data);
+  std::vector<float> data(resized_image.rows * resized_image.cols * 3);
+  NHWC3ToNC3HW(destination_image, data.data(), resized_image.rows * resized_image.cols, mean, scale);
 
-  ImageRaw image_raw {.data = data, .width = resize_image.cols, .height = resize_image.rows, .channels = 3};
+  ImageRaw image_raw {.data = data, .width = resized_image.cols, .height = resized_image.rows, .channels = 3};
 
   return image_raw;
 }
@@ -98,24 +96,11 @@ std::pair<std::string, float> RecognitionPredictor::postprocess(ModelOutput &mod
   return std::make_pair(text, score);
 }
 
-cv::Mat crnn_resize_image(cv::Mat image, float wh_ratio) {
-  int image_channels, image_height, image_width;
-  image_channels = recognition_image_shape[0];
-  image_height = recognition_image_shape[1];
-  image_width = recognition_image_shape[2];
-
-  image_width = int(32 * wh_ratio);
-  // image_width = int(48 * wh_ratio);
-
-  float ratio = static_cast<float>(image.cols) / static_cast<float>(image.rows);
-  int resize_width, resize_height;
-  if (ceilf(image_height * ratio) > image_width)
-    resize_width = image_width;
-  else
-    resize_width = static_cast<int>(ceilf(image_height * ratio));
+cv::Mat resize_image(cv::Mat image, int image_height) {
+  float wh_ratio = static_cast<float>(image.cols) / static_cast<float>(image.rows);
+  auto image_width = int(ceilf(image_height * wh_ratio));
   cv::Mat resize_image;
-  cv::resize(image, resize_image, cv::Size(resize_width, image_height), 0.f, 0.f, cv::INTER_LINEAR);
-
+  cv::resize(image, resize_image, cv::Size(image_width, image_height), 0.f, 0.f, cv::INTER_LINEAR);
   return resize_image;
 }
 
