@@ -6,42 +6,35 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { ImagePickerButton } from './ImagePickerButton'
 import type { ImageDetails } from './types'
 
-export const DEFAULT_IMAGE = {
-  uri: `${FileSystem.bundleDirectory}/gutenye-ocr-react-native.bundle/cn-01.jpg`,
-  width: 500,
-  height: 500,
-}
+const DEFAULT_IMAGE = `${FileSystem.bundleDirectory}/gutenye-ocr-react-native.bundle/cn-01.jpg`
+// const DEFAULT_IMAGE = undefined
 
 export default function App() {
   const [ocr, setOcr] = useState<Ocr>()
-  const [image, setImage] = useState<ImageDetails>(DEFAULT_IMAGE)
+  const [imagePath, setImagePath] = useState<string | undefined>(DEFAULT_IMAGE)
   const [resultText, setResultText] = useState<string>()
 
   useEffect(() => {
     ;(async () => {
-      console.log(':: 1')
       const ocr = await Ocr.create({
         isDebug: true,
       })
-      console.log(':: 2')
       setOcr(ocr)
     })()
   }, [])
 
   useEffect(() => {
     ;(async function useEffect() {
-      if (!image || !ocr) {
+      if (!imagePath || !ocr) {
         return
       }
-      console.log(':: 3')
-      const lines = await ocr.detect(image.uri)
-      console.log(':: 4')
+      const lines = await ocr.detect(imagePath)
       setResultText(lines.join('\n'))
     })()
-  }, [ocr, image])
+  }, [ocr, imagePath])
 
   const handleChange = (image: ImageDetails) => {
-    setImage(image)
+    setImagePath(image.uri)
   }
 
   return (
@@ -49,7 +42,7 @@ export default function App() {
       <SafeAreaView style={styles.safeAreaView}>
         <View style={styles.container}>
           <ImagePickerButton onChange={handleChange} />
-          {image && <Image source={{ uri: image.uri }} style={styles.image} />}
+          {imagePath && <Image source={{ uri: imagePath }} style={styles.image} />}
           {resultText && <Text>{resultText}</Text>}
         </View>
       </SafeAreaView>
