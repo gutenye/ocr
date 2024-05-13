@@ -35,7 +35,7 @@ DetectionResult DetectionPredictor::predict(cv::Mat &image) {
 
   Timer timer;
   timer.start();
-  auto input = preprocess(image, m_options.image_max_size);
+  auto input = preprocess(image, m_options.recognition_image_max_size);
   timer.end();
   performance.preprocess_time = timer.get_average_ms();
 

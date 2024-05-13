@@ -14,7 +14,7 @@ using RawOptions = std::unordered_map<std::string, std::variant<bool, double, st
 
 struct Options {
   bool is_debug {false};
-  double image_max_size {960};
+  double recognition_image_max_size {960};
   double detection_threshold {0.3};
   double detection_box_threshold {0.5};
   double detection_unclip_ratiop {1.6};
