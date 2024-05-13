@@ -4,5 +4,12 @@
     "strict": true,
     "moduleResolution": "Bundler"
   },
-  "include": ["**/*.ts", "**/*.tsx"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "../../react-native-js/src/FileUtils.ts",
+    "../../react-native-js/src/ImageRaw.ts",
+    "../../react-native-js/src/index.ts",
+    "../../react-native-js/src/splitIntoLineImages.ts"
+  ]
 }
