@@ -29,7 +29,7 @@ class NativeOcr {
 public:
   NativeOcr(RawOptions rawOptions);
 
-  std::vector<std::string> process(std::string &image_path);
+  std::vector<std::string> detect(std::string &image_path);
 
 private:
   Options m_options;
