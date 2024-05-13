@@ -43,10 +43,14 @@ RCT_EXPORT_METHOD(detect
                   : (NSString *)rawImagePath resolver
                   : (RCTPromiseResolveBlock)resolve rejecter
                   : (RCTPromiseRejectBlock)reject) {
-  auto imagePath = convertNSString(rawImagePath);
-  auto lines = _ocr->process(imagePath);
-  NSArray<NSString *> *finalLines = convertStdVector(lines);
-  resolve(finalLines);
+  try {
+    auto imagePath = convertNSString(rawImagePath);
+    auto lines = _ocr->process(imagePath);
+    NSArray<NSString *> *finalLines = convertStdVector(lines);
+    resolve(finalLines);
+  } catch (const std::exception &error) {
+    reject(@"cpp_exception", convertStdString(std::string("Error: ") + error.what()), nil);
+  }
 }
 
 // Don't compile this code when we build for the old architecture.
@@ -100,3 +104,6 @@ NSArray<NSString *> *convertStdVector(const std::vector<std::string> &stdVector)
   }
   return nsArray;
 }
+
+// convert an std::string to an NSString
+NSString *convertStdString(const std::string &stdString) { return [NSString stringWithUTF8String:stdString.c_str()]; }

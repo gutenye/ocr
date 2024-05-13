@@ -22,3 +22,5 @@ std::string convertNSString(NSString *nsString);
 RawOptions convertNSDictionary(NSDictionary *nsDictionary);
 
 NSArray<NSString *> *convertStdVector(const std::vector<std::string> &stdVector);
+
+NSString *convertStdString(const std::string &stdString);
