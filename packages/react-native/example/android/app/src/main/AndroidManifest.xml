@@ -27,8 +27,6 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="com.anonymous.hello"/>
-        <data android:scheme="com.anonymous.ocr"/>
         <data android:scheme="me.guten.ocr"/>
       </intent-filter>
     </activity>
