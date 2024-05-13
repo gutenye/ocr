@@ -6,7 +6,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { ImagePickerButton } from './ImagePickerButton'
 import type { ImageDetails } from './types'
 
-const DEFAULT_IMAGE = `${FileSystem.bundleDirectory}/gutenye-ocr-react-native.bundle/cn-01.jpg`
+const DEFAULT_IMAGE = `${FileSystem.bundleDirectory}/guten-ocr.bundle/cn-01.jpg`
 // const DEFAULT_IMAGE = undefined
 
 export default function App() {
