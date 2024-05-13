@@ -61,3 +61,12 @@ export interface ModelBaseConstructorArgs {
 }
 
 export type Point = [x: number, y: number]
+
+export interface ModelCreateOptions {
+  models?: {
+    detectionPath: string
+    recognitionPath: string
+    dictionaryPath: string
+  }
+  onnxOptions?: InferenceSession.SessionOptions
+}

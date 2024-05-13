@@ -1,4 +1,4 @@
-import { Tensor } from 'onnxruntime-common'
+import { type InferenceSession as InferenceSessionCommon, Tensor } from 'onnxruntime-common'
 import type { ImageRaw, InferenceSession, ModelBaseConstructorArgs, ModelData, ReshapeOptions } from '#common/types'
 
 export class ModelBase {
@@ -10,11 +10,17 @@ export class ModelBase {
     this.isDebug = false
   }
 
-  async runModel(modelData: ModelData) {
+  async runModel({
+    modelData,
+    onnxOptions = {},
+  }: { modelData: ModelData; onnxOptions?: InferenceSessionCommon.RunOptions }) {
     const input = this.#prepareInput(modelData)
-    const outputs = await this.#model.run({
-      [this.#model.inputNames[0]]: input,
-    })
+    const outputs = await this.#model.run(
+      {
+        [this.#model.inputNames[0]]: input,
+      },
+      onnxOptions,
+    )
     const output = outputs[this.#model.outputNames[0]]
     return output
   }

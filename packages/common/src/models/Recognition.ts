@@ -1,19 +1,18 @@
-import type { Tensor } from 'onnxruntime-common'
-import { FileUtils, InferenceSession } from '#common/backend'
-import type { Dictionary, Line, LineImage, ModelBaseConstructorArgs } from '#common/types'
+import type { InferenceSession as InferenceSessionCommon, Tensor } from 'onnxruntime-common'
+import invariant from 'tiny-invariant'
+import { FileUtils, InferenceSession, defaultModels } from '#common/backend'
+import type { Dictionary, Line, LineImage, ModelBaseConstructorArgs, ModelCreateOptions } from '#common/types'
 import { ModelBase } from './ModelBase'
 
 export class Recognition extends ModelBase {
   #dictionary: Dictionary
 
-  static async create({
-    modelPath,
-    dictionaryPath,
-  }: {
-    modelPath: string
-    dictionaryPath: string
-  }) {
-    const model = await InferenceSession.create(modelPath)
+  static async create({ models, onnxOptions = {} }: ModelCreateOptions) {
+    const recognitionPath = models?.recognitionPath || defaultModels?.recognitionPath
+    invariant(recognitionPath, 'recognitionPath is required')
+    const dictionaryPath = models?.dictionaryPath || defaultModels?.dictionaryPath
+    invariant(dictionaryPath, 'dictionaryPath is required')
+    const model = await InferenceSession.create(recognitionPath, onnxOptions)
     const dictionaryText = await FileUtils.read(dictionaryPath)
     const dictionary = [...dictionaryText.split('\n'), ' ']
     return new Recognition({ model, dictionary })
@@ -24,7 +23,10 @@ export class Recognition extends ModelBase {
     this.#dictionary = dictionary
   }
 
-  async run(lineImages: LineImage[], { isDebug }: { isDebug?: boolean } = { isDebug: false }) {
+  async run(
+    lineImages: LineImage[],
+    { isDebug = false, onnxOptions = {} }: { isDebug?: boolean; onnxOptions?: InferenceSessionCommon.RunOptions } = {},
+  ) {
     this.isDebug = isDebug
 
     const modelDatas = await Promise.all(
@@ -48,13 +50,11 @@ export class Recognition extends ModelBase {
       }),
     )
 
-
-
     const allLines: Line[] = []
     console.time('Recognition')
     for (const modelData of modelDatas) {
       // Run model for each line image
-      const output = await this.runModel(modelData)
+      const output = await this.runModel({ modelData, onnxOptions })
       // use Dictoinary to decode output to text
       const lines = await this.decodeText(output)
       allLines.unshift(...lines)

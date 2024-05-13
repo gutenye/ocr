@@ -1,13 +1,16 @@
-import type { Tensor } from 'onnxruntime-common'
-import { ImageRaw, InferenceSession, splitIntoLineImages } from '#common/backend'
-import type { ModelBaseConstructorArgs, Size } from '#common/types'
+import type { InferenceSession as InferenceSessionCommon, Tensor } from 'onnxruntime-common'
+import invariant from 'tiny-invariant'
+import { ImageRaw, InferenceSession, defaultModels, splitIntoLineImages } from '#common/backend'
+import type { ModelBaseConstructorArgs, ModelCreateOptions, Size } from '#common/types'
 import { ModelBase } from './ModelBase'
 
 const BASE_SIZE = 32
 
 export class Detection extends ModelBase {
-  static async create({ modelPath }: { modelPath: string }) {
-    const model = await InferenceSession.create(modelPath)
+  static async create({ models, onnxOptions = {} }: ModelCreateOptions) {
+    const detectionPath = models?.detectionPath || defaultModels?.detectionPath
+    invariant(detectionPath, 'detectionPath is required')
+    const model = await InferenceSession.create(detectionPath, onnxOptions)
     return new Detection({ model })
   }
 
@@ -15,7 +18,10 @@ export class Detection extends ModelBase {
     super(args)
   }
 
-  async run(path: string, { isDebug }: { isDebug?: boolean } = { isDebug: false }) {
+  async run(
+    path: string,
+    { isDebug = false, onnxOptions = {} }: { isDebug?: boolean; onnxOptions?: InferenceSessionCommon.RunOptions } = {},
+  ) {
     this.isDebug = isDebug
 
     const image = await ImageRaw.open(path)
@@ -37,7 +43,7 @@ export class Detection extends ModelBase {
 
     // Run the model
     console.time('Detection')
-    const modelOutput = await this.runModel(modelData)
+    const modelOutput = await this.runModel({ modelData, onnxOptions })
     console.timeEnd('Detection')
 
     // Convert output data back to image data

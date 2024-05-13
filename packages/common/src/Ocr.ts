@@ -1,34 +1,10 @@
-import invariant from 'tiny-invariant'
+import type { ModelCreateOptions } from '#common/types'
 import { Detection, Recognition } from './models'
 
 export class Ocr {
-  static DEFAULT_DETECTION_PATH: string
-  static DEFAULT_RECOGINTION_PATH: string
-  static DEFAULT_DICTIONARY_PATH: string
-
-  static async create({
-    models,
-  }: {
-    models?: {
-      detectionPath: string
-      recognitionPath: string
-      dictionaryPath: string
-    }
-  } = {}) {
-    const detectionPath = this.DEFAULT_DETECTION_PATH || models?.detectionPath
-    invariant(detectionPath, 'detectionPath is required')
-    const recognitionPath = this.DEFAULT_RECOGINTION_PATH || models?.recognitionPath
-    invariant(recognitionPath, 'recognitionPath is required')
-    const dictionaryPath = this.DEFAULT_DICTIONARY_PATH || models?.dictionaryPath
-    invariant(dictionaryPath, 'dictionaryPath is required')
-
-    const detection = await Detection.create({
-      modelPath: detectionPath,
-    })
-    const recognition = await Recognition.create({
-      modelPath: recognitionPath,
-      dictionaryPath,
-    })
+  static async create(options: ModelCreateOptions = {}) {
+    const detection = await Detection.create(options)
+    const recognition = await Recognition.create(options)
     return new Ocr({ detection, recognition })
   }
 
