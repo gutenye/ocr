@@ -20,9 +20,9 @@
 #include "utils.h"
 
 const std::vector<int> recognition_image_shape {3, 48, 320};
-cv::Mat CrnnResizeImg(cv::Mat image, float wh_ratio);
+cv::Mat crnn_resize_image(cv::Mat image, float wh_ratio);
 template <class ForwardIterator>
-inline size_t Argmax(ForwardIterator first, ForwardIterator last);
+inline size_t argmax(ForwardIterator first, ForwardIterator last);
 
 RecognitionPredictor::RecognitionPredictor(Options &options, const int cpu_thread_num,
                                            const std::string &cpu_power_mode)
@@ -58,7 +58,7 @@ ImageRaw RecognitionPredictor::preprocess(const cv::Mat &source_image) {
   float wh_ratio = static_cast<float>(source_image.cols) / static_cast<float>(source_image.rows);
   std::vector<float> mean = {0.5f, 0.5f, 0.5f};
   std::vector<float> scale = {1 / 0.5f, 1 / 0.5f, 1 / 0.5f};
-  cv::Mat resize_image = CrnnResizeImg(source_image, wh_ratio);
+  cv::Mat resize_image = crnn_resize_image(source_image, wh_ratio);
   resize_image.convertTo(resize_image, CV_32FC3, 1 / 255.f);
 
   const float *destination_image = reinterpret_cast<const float *>(resize_image.data);
@@ -84,7 +84,7 @@ std::pair<std::string, float> RecognitionPredictor::postprocess(ModelOutput &mod
   float max_value = 0.0f;
 
   for (int n = 0; n < predict_shape[1]; n++) {
-    argmax_idx = int(Argmax(&predict_batch[n * predict_shape[2]], &predict_batch[(n + 1) * predict_shape[2]]));
+    argmax_idx = int(argmax(&predict_batch[n * predict_shape[2]], &predict_batch[(n + 1) * predict_shape[2]]));
     max_value =
         float(*std::max_element(&predict_batch[n * predict_shape[2]], &predict_batch[(n + 1) * predict_shape[2]]));
     if (argmax_idx > 0 && (!(n > 0 && argmax_idx == last_index))) {
@@ -98,11 +98,11 @@ std::pair<std::string, float> RecognitionPredictor::postprocess(ModelOutput &mod
   return std::make_pair(text, score);
 }
 
-cv::Mat CrnnResizeImg(cv::Mat image, float wh_ratio) {
+cv::Mat crnn_resize_image(cv::Mat image, float wh_ratio) {
   int image_channels, image_height, image_width;
   image_channels = recognition_image_shape[0];
-  image_width = recognition_image_shape[2];
   image_height = recognition_image_shape[1];
+  image_width = recognition_image_shape[2];
 
   image_width = int(32 * wh_ratio);
   // image_width = int(48 * wh_ratio);
@@ -120,6 +120,6 @@ cv::Mat CrnnResizeImg(cv::Mat image, float wh_ratio) {
 }
 
 template <class ForwardIterator>
-inline size_t Argmax(ForwardIterator first, ForwardIterator last) {
+inline size_t argmax(ForwardIterator first, ForwardIterator last) {
   return std::distance(first, std::max_element(first, last));
 }
