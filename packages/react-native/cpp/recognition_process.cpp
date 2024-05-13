@@ -56,6 +56,7 @@ RecognitionResult RecognitionPredictor::predict(const cv::Mat &rgba_image, std::
 ImageRaw RecognitionPredictor::preprocess(const cv::Mat &source_image) {
   std::vector<float> mean = {0.5f, 0.5f, 0.5f};
   std::vector<float> scale = {1 / 0.5f, 1 / 0.5f, 1 / 0.5f};
+  // cv::Mat resized_image = resize_image(source_image, 32);
   cv::Mat resized_image = resize_image(source_image, 48);
   resized_image.convertTo(resized_image, CV_32FC3, 1 / 255.f);
 

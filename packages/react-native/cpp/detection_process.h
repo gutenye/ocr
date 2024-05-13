@@ -40,7 +40,7 @@ private:
   Onnx m_onnx;
   std::vector<float> m_ratio_hw;
 
-  ImageRaw preprocess(const cv::Mat &image, const int image_max_size);
+  ImageRaw preprocess(const cv::Mat &image);
 
   DetectionResultData postprocess(ModelOutput &model_output, const cv::Mat &source_image, Options &options);
 };
