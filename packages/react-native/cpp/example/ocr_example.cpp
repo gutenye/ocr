@@ -13,6 +13,8 @@ int main(int argc, char* argv[]) {
     std::string asset_dir = (std::filesystem::path(__FILE__).parent_path() / "assets");
     RawOptions rawOptions {
         {"isDebug", true},
+        // {"recognitionImageMaxSize", -1.0},
+        // {"recognitionImageMaxSize", 960.0},
         {"detectionModelPath", asset_dir + "/ch_PP-OCRv4_det_infer.onnx"},
         {"recognitionModelPath", asset_dir + "/ch_PP-OCRv4_rec_infer.onnx"},
         {"classiferModelPath", asset_dir + "/ch_ppocr_mobile_v2"},
