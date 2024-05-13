@@ -1,19 +1,19 @@
 # Guten OCR
 
-> an OCR Javascript library runs on Node.js, Browser and React Native
+> [Demo](https://gutenye-ocr.netlify.app/)
 
-| [Demo](https://gutenye-ocr.netlify.app/) | 
+**an OCR Javascript library runs on Node.js, Browser and React Native**
 
 Based on [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR), supports PP-OCRv4 model
 
 ## Examples
 
-- [Node Example](./examples/node/README.md)
-- [Browser Example](./examples/browser/README.md)
 
 ## Getting Started
 
 ### Node
+
+> [Example](./packages/node/example/README.md)
 
 ```ts
 bun add @gutenye/ocr-node
@@ -23,6 +23,8 @@ const result = await ocr.detect('a.jpg')
 ```
 
 ### Browser
+
+> [Example](./packages/browser/example/README.md)
 
 ```ts
 bun add @gutenye/ocr-browser
@@ -34,24 +36,47 @@ const ocr = await Ocr.create({
     dictionaryPath: '/assets/ppocr_keys_v1.txt'
   }
 })
-const result = await ocr.detect(imageUrl)
+const result = await ocr.detect('/a.jpg')
 ```
 
 ### React Native
 
-Due to opencv does not work on React Native. You need to implement the [detectBoxes](./packages/common/src/splitIntoLineImages.ts) method by yourself
+> [Example](./packages/react-native/example/README.md)
+
+```
+bun add @gutenye/react-native
+
+```
+
+### C++
+
+> [Example](./packages/react-native/cpp/example/README.md)
+
+```cpp
+#include "native-ocr.h"
+NativeOcr* ocr = new NativeOcr(RawOptions {
+  {"detectionModelPath", "./assets/ch_PP-OCRv4_det_infer.onnx"},
+  {"recognitionModelPath", "./assets/ch_PP-OCRv4_rec_infer.onnx"},
+  {"dictionaryPath", "./assets/ppocr_keys_v1.txt"}
+});
+auto result = ocr->detect("a.jpg");
+```
 
 ### API Reference
 
 ```ts
 Ocr.create({
-  onnxOptions       // Pass to ONNX Runtime
-})
+  models?: {
+    detectionPath: string
+    recognitionPath: string
+    dictionaryPath: string
+  },
+  onnxOptions?: {}       // Pass to ONNX Runtime
+}): Promise<Ocr>
 
 ocr.run(imagePath, { 
   isDebug?: boolean
-  onnxOptions       // Pass to ONNX Runtime
-  // TODO
+  onnxOptions?: {}     // Pass to ONNX Runtime
   recognitionImageMaxSize?: number 
   detectionThreshold?: number
   detectionBoxThreshold?: number
@@ -59,7 +84,7 @@ ocr.run(imagePath, {
   detectionUseDilate?: boolean
   detectionUsePolygonScore?: boolean
   detectionUseDirectionClassify?: boolean
-})
+}): Promise<Result>
 ```
 
 ## Related Projects
@@ -70,5 +95,3 @@ ocr.run(imagePath, {
 | [paddleocr-onnx](https://github.com/backrunner/paddleocr-onnx) | Node      | Recogination part is incomplete |
 | [ocrjs](https://github.com/SOVLOOKUP/ocrjs)                    | Node      | Recogination part is incomplete |
 | [Paddle-Lite-Demo](https://github.com/PaddlePaddle/Paddle-Lite-Demo) | Mobile, C++ | |
-
-
