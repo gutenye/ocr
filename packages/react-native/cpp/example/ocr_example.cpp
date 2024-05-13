@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
     }
     std::string image_path = argv[1];
 
-    std::string asset_dir = (std::filesystem::path(__FILE__).parent_path() / "assets");
+    std::string asset_dir = (std::filesystem::path(__FILE__).parent_path() / "../../../ocr-models/assets");
     RawOptions rawOptions {
         {"isDebug", true},
         // {"recognitionImageMaxSize", -1.0},
@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
     };
 
     NativeOcr* ocr = new NativeOcr(rawOptions);
-    auto lines = ocr->process(image_path);
+    auto lines = ocr->detect(image_path);
 
     // for (auto line : lines) {
     //   std::cout << line << std::endl;
