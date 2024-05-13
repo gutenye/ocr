@@ -124,6 +124,7 @@ cv::Mat resize_image(const cv::Mat image, std::vector<float> &ratio_hw, Options 
   } else if (resize_height / 32 < 1 + 1e-5) {
     resize_height = 32;
   } else {
+    // TODO
     // resize_height = (resize_height / 32 - 1) * 32;
     resize_height = (resize_height / 32 + 1) * 32;
   }
