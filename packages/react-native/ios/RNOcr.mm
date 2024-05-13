@@ -45,7 +45,7 @@ RCT_EXPORT_METHOD(detect
                   : (RCTPromiseRejectBlock)reject) {
   try {
     auto imagePath = convertNSString(rawImagePath);
-    auto lines = _ocr->process(imagePath);
+    auto lines = _ocr->detect(imagePath);
     NSArray<NSString *> *finalLines = convertStdVector(lines);
     resolve(finalLines);
   } catch (const std::exception &error) {

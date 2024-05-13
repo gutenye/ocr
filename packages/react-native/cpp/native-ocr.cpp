@@ -43,7 +43,7 @@ NativeOcr::NativeOcr(RawOptions rawOptions) : m_options {convertRawOptions(rawOp
   m_dictionary.push_back(" ");
 }
 
-std::vector<std::string> NativeOcr::process(std::string &image_path) {
+std::vector<std::string> NativeOcr::detect(std::string &image_path) {
   Timer timer;
   timer.start();
 
