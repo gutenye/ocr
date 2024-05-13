@@ -55,7 +55,7 @@ std::vector<std::string> NativeOcr::process(std::string &image_path) {
     cv::Mat source_image;
     image.copyTo(source_image);
 
-    auto detection_result = m_detection_predictor->Predict(source_image);
+    auto detection_result = m_detection_predictor->predict(source_image);
 
     if (m_options.is_debug) {
       std::cout << "[DEBUG] Start Recognition" << std::endl;
@@ -74,9 +74,9 @@ std::vector<std::string> NativeOcr::process(std::string &image_path) {
       // if (m_options.detection_use_direction_classify)
       // {
       //   crop_image =
-      //       m_classifier_predictor->Predict(crop_image, nullptr, nullptr, nullptr, 0.9);
+      //       m_classifier_predictor->predict(crop_image, nullptr, nullptr, nullptr, 0.9);
       // }
-      auto recognition_result = m_recognition_predictor->Predict(crop_image, m_dictionary);
+      auto recognition_result = m_recognition_predictor->predict(crop_image, m_dictionary);
       recognition_results.push_back(recognition_result);
       recognition_text.push_back(recognition_result.data.first);
       recognition_text_score.push_back(recognition_result.data.second);

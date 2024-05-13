@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <map>
 #include "onnx.h"
 #include "opencv2/core.hpp"
 #include "opencv2/imgcodecs.hpp"
@@ -21,25 +22,25 @@
 #include "shared.h"
 #include "utils.h"
 
-using RecognitionResultData = std::pair<std::string, float>;
+using DetectionResultData = std::vector<std::vector<std::vector<int>>>;
 
-struct RecognitionResult {
-  RecognitionResultData data {};
+struct DetectionResult {
+  DetectionResultData data {};
   ModelPerformance performance {};
 };
 
-class RecognitionPredictor {
+class DetectionPredictor {
 public:
-  explicit RecognitionPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode);
+  explicit DetectionPredictor(Options &options, const int cpu_thread_num, const std::string &cpu_power_mode);
 
-  RecognitionResult Predict(const cv::Mat &rgbaImage, std::vector<std::string> charactor_dict);
+  DetectionResult predict(cv::Mat &rgb_image);
 
 private:
   Options m_options {};
   Onnx m_onnx;
+  std::vector<float> m_ratio_hw;
 
-  ImageRaw Preprocess(const cv::Mat &rgbaImage);
+  ImageRaw preprocess(const cv::Mat &image, const int image_max_size);
 
-  RecognitionResultData Postprocess(ModelOutput &model_output, const cv::Mat &rgbaImage,
-                                    std::vector<std::string> charactor_dict);
+  DetectionResultData postprocess(ModelOutput &model_output, const cv::Mat &source_image, Options &options);
 };

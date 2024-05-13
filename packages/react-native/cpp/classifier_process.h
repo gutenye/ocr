@@ -13,34 +13,20 @@
 // limitations under the License.
 
 #pragma once
-
-#include <map>
-#include "onnx.h"
 #include "opencv2/core.hpp"
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/imgproc.hpp"
-#include "shared.h"
 #include "utils.h"
 
-using DetectionResultData = std::vector<std::vector<std::vector<int>>>;
-
-struct DetectionResult {
-  DetectionResultData data {};
-  ModelPerformance performance {};
-};
-
-class DetectionPredictor {
+class ClassifierPredictor {
 public:
-  explicit DetectionPredictor(Options &options, const int cpuThreadNum, const std::string &cpuPowerMode);
+  explicit ClassifierPredictor(const std::string &modelDir, const int cpu_thread_num,
+                               const std::string &cpu_power_mode);
 
-  DetectionResult Predict(cv::Mat &rgbImage);
+  cv::Mat predict(const cv::Mat &rgb_image, double *preprocess_time, double *predictTime, double *postprocessTime,
+                  const float thresh);
 
 private:
-  Options m_options {};
-  Onnx m_onnx;
-  std::vector<float> ratio_hw_;
-
-  ImageRaw Preprocess(const cv::Mat &img, const int max_side_len);
-
-  DetectionResultData Postprocess(ModelOutput &model_output, const cv::Mat &srcimg, Options &options);
+  void preprocess(const cv::Mat &rgba_image);
+  cv::Mat postprocess(const cv::Mat &img, const float thresh);
 };
