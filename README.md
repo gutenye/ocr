@@ -41,6 +41,27 @@ const result = await ocr.detect(imageUrl)
 
 Due to opencv does not work on React Native. You need to implement the [detectBoxes](./packages/common/src/splitIntoLineImages.ts) method by yourself
 
+### API Reference
+
+```ts
+Ocr.create({
+  onnxOptions       // Pass to ONNX Runtime
+})
+
+ocr.run(imagePath, { 
+  isDebug?: boolean
+  onnxOptions       // Pass to ONNX Runtime
+  // TODO
+  recognitionImageMaxSize?: number 
+  detectionThreshold?: number
+  detectionBoxThreshold?: number
+  detectionUnclipRatiop?: number
+  detectionUseDilate?: boolean
+  detectionUsePolygonScore?: boolean
+  detectionUseDirectionClassify?: boolean
+})
+```
+
 ## Related Projects
 
 | Name                                                           | Platforms | Note                            |
