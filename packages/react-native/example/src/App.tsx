@@ -1,7 +1,8 @@
 import Ocr from '@gutenye/ocr-react-native'
 import * as FileSystem from 'expo-file-system'
+import { manipulateAsync } from 'expo-image-manipulator'
 import { useEffect, useState } from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { ImagePickerButton } from './ImagePickerButton'
 import type { ImageDetails } from './types'
@@ -11,16 +12,33 @@ import type { ImageDetails } from './types'
 
 const DEFAULT_IMAGE = `${FileSystem.bundleDirectory}/guten-ocr.bundle/cn-01.jpg`
 // const DEFAULT_IMAGE = undefined
+const IS_DEBUG = true
+const OUTPUT_DIR = FileSystem.cacheDirectory
+
+window.Image = Image
+window.OUTPUT_DIR = OUTPUT_DIR
 
 export default function App() {
   const [ocr, setOcr] = useState<Ocr>()
   const [imagePath, setImagePath] = useState<string | undefined>(DEFAULT_IMAGE)
-  const [resultText, setResultText] = useState<string>()
+  const [resultLines, setResultLines] = useState<string[]>([])
+
+  useEffect(() => {
+    ;(async () => {
+      for (const [i, line] of resultLines.entries()) {
+        const uri = `${OUTPUT_DIR}/line-${i}.jpg`
+        const { width, height } = await manipulateAsync(uri)
+        console.log(`${i} ${width} ${height}`)
+      }
+    })()
+  }, [resultLines])
 
   useEffect(() => {
     ;(async () => {
       const ocr = await Ocr.create({
-        isDebug: true,
+        isDebug: IS_DEBUG,
+        recognitionImageMaxSize: 960,
+        // recognitionImageMaxSize: -1,
       })
       setOcr(ocr)
     })()
@@ -32,12 +50,13 @@ export default function App() {
         return
       }
       try {
+        setResultLines([])
         const newImagePath = imagePath.replace('file://', '')
         const lines = await ocr.detect(newImagePath)
-        setResultText(lines.join('\n'))
+        setResultLines(lines)
       } catch (error) {
         if (error instanceof Error) {
-          setResultText(error.message)
+          setResultLines([error.message])
         }
       }
     })()
@@ -50,11 +69,34 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeAreaView}>
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
           <ImagePickerButton onChange={handleChange} />
           {imagePath && <Image source={{ uri: imagePath }} style={styles.image} />}
-          {resultText && <Text>{resultText}</Text>}
-        </View>
+          {resultLines.length > 0 && <Text>{resultLines.join('\n')}</Text>}
+          {IS_DEBUG && resultLines.length > 0 && (
+            <>
+              <Image source={{ uri: `${OUTPUT_DIR}/boxes.jpg` }} style={styles.image} />
+              {resultLines.map((_, index) => (
+                <View key={index}>
+                  {/* <Image
+                    source={{ uri: `${OUTPUT_DIR}/line-${index}.jpg` }}
+                    style={{
+                      height: 32,
+                      objectFit: 'contain',
+                    }}
+                  /> */}
+                  {/* <Image
+                    source={{ uri: `${OUTPUT_DIR}/line-${index}-resized.jpg` }}
+                    style={{
+                      height: 32,
+                      objectFit: 'contain',
+                    }}
+                  /> */}
+                </View>
+              ))}
+            </>
+          )}
+        </ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>
   )
@@ -65,7 +107,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    flex: 1,
+    // justifyContent: 'flex-start',
+    // flex: 1,
     // alignItems: 'center',
     // justifyContent: 'center',
   },
