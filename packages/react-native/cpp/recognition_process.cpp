@@ -27,11 +27,12 @@ RecognitionPredictor::RecognitionPredictor(Options &options, const int cpu_threa
                                            const std::string &cpu_power_mode)
     : m_options {options}, m_onnx {Onnx {options.models.recognition_model_path}} {}
 
-RecognitionResult RecognitionPredictor::predict(const cv::Mat &rgba_image, std::vector<std::string> charactor_dict) {
+RecognitionResult RecognitionPredictor::predict(const cv::Mat &rgba_image, std::vector<std::string> charactor_dict,
+                                                cv::Mat &resized_image) {
   ModelPerformance performance {};
   Timer timer;
   timer.start();
-  auto image = preprocess(rgba_image);
+  auto image = preprocess(rgba_image, resized_image);
   timer.end();
   performance.preprocess_time = timer.get_average_ms();
 
@@ -53,19 +54,21 @@ RecognitionResult RecognitionPredictor::predict(const cv::Mat &rgba_image, std::
   return RecognitionResult {.data = res, .performance = performance};
 }
 
-ImageRaw RecognitionPredictor::preprocess(const cv::Mat &source_image) {
+ImageRaw RecognitionPredictor::preprocess(const cv::Mat &source_image, cv::Mat &resized_image) {
   std::vector<float> mean = {0.5f, 0.5f, 0.5f};
   std::vector<float> scale = {1 / 0.5f, 1 / 0.5f, 1 / 0.5f};
   // TODO
   // cv::Mat resized_image = resize_image(source_image, 32);
-  cv::Mat resized_image = resize_image(source_image, 48);
-  resized_image.convertTo(resized_image, CV_32FC3, 1 / 255.f);
+  resized_image = resize_image(source_image, 48);
 
-  const float *destination_image = reinterpret_cast<const float *>(resized_image.data);
-  std::vector<float> data(resized_image.rows * resized_image.cols * 3);
-  NHWC3ToNC3HW(destination_image, data.data(), resized_image.rows * resized_image.cols, mean, scale);
+  cv::Mat model_data;
+  resized_image.convertTo(model_data, CV_32FC3, 1 / 255.f);
 
-  ImageRaw image_raw {.data = data, .width = resized_image.cols, .height = resized_image.rows, .channels = 3};
+  const float *destination_image = reinterpret_cast<const float *>(model_data.data);
+  std::vector<float> data(model_data.rows * model_data.cols * 3);
+  NHWC3ToNC3HW(destination_image, data.data(), model_data.rows * model_data.cols, mean, scale);
+
+  ImageRaw image_raw {.data = data, .width = model_data.cols, .height = model_data.rows, .channels = 3};
 
   return image_raw;
 }

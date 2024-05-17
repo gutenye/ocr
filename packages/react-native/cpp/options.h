@@ -20,6 +20,7 @@ struct Options {
   bool detection_use_dilate {false};
   bool detection_use_polygon_score {true};
   bool detection_use_direction_classify {true};
+  std::string output_dir {};
   OptionModels models {};
 };
 

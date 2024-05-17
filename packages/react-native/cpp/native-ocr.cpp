@@ -29,6 +29,8 @@ namespace fs = std::filesystem;
 
 std::vector<std::string> read_dictionary(std::string path);
 cv::Mat get_rotate_crop_image(cv::Mat source_image, std::vector<std::vector<int>> box);
+void visualization(cv::Mat source_image, std::vector<std::vector<std::vector<int>>> boxes,
+                   std::string output_image_path);
 
 NativeOcr::NativeOcr(std::unordered_map<std::string, std::any> rawOptions) : m_options {convertRawOptions(rawOptions)} {
   auto cpu_thread_num = 1;
@@ -58,33 +60,49 @@ std::vector<std::string> NativeOcr::detect(std::string &image_path) {
   auto detection_result = m_detection_predictor->predict(image);
 
   if (m_options.is_debug) {
+    auto output_path = m_options.output_dir + "/boxes.jpg";
+    visualization(image, detection_result.data, output_path);
+    std::cout << "[DEBUG] Detection visualized image saved in " << output_path << std::endl;
+  }
+
+  if (m_options.is_debug) {
     std::cout << "[DEBUG] Start recognition" << std::endl;
   }
 
   cv::Mat image_copy;
   image.copyTo(image_copy);
-  cv::Mat crop_image;
 
   std::vector<std::string> recognition_text;
   std::vector<float> recognition_text_score;
   std::vector<RecognitionResult> recognition_results;
   for (int i = detection_result.data.size() - 1; i >= 0; i--) {
-    crop_image = get_rotate_crop_image(image_copy, detection_result.data[i]);
+    auto crop_image = get_rotate_crop_image(image_copy, detection_result.data[i]);
+
+    if (m_options.is_debug) {
+      auto output_path =
+          m_options.output_dir + "/line-" + std::to_string(detection_result.data.size() - 1 - i) + ".jpg";
+      cv::imwrite(output_path, crop_image);
+    }
 
     // if (m_options.detection_use_direction_classify)
     // {
     //   crop_image =
     //       m_classifier_predictor->predict(crop_image, nullptr, nullptr, nullptr, 0.9);
     // }
-    auto recognition_result = m_recognition_predictor->predict(crop_image, m_dictionary);
+
+    cv::Mat resized_image;
+    auto recognition_result = m_recognition_predictor->predict(crop_image, m_dictionary, resized_image);
+
+    if (m_options.is_debug) {
+      auto output_path =
+          m_options.output_dir + "/line-" + std::to_string(detection_result.data.size() - 1 - i) + "-resized.jpg";
+      cv::imwrite(output_path, resized_image);
+    }
+
     recognition_results.push_back(recognition_result);
     recognition_text.push_back(recognition_result.data.first);
     recognition_text_score.push_back(recognition_result.data.second);
   }
-
-  //// visualization
-  // DEBUG
-  // auto image_visualization = visualization(image, boxes, output_img_path);
 
   timer.end();
   auto total_time = timer.get_average_ms();
@@ -215,8 +233,8 @@ std::vector<std::string> split(const std::string &str, const std::string &delim)
   return res;
 }
 
-cv::Mat visualization(cv::Mat source_image, std::vector<std::vector<std::vector<int>>> boxes,
-                      std::string output_image_path) {
+void visualization(cv::Mat source_image, std::vector<std::vector<std::vector<int>>> boxes,
+                   std::string output_image_path) {
   cv::Point rook_points[boxes.size()][4];
   for (int n = 0; n < boxes.size(); n++) {
     for (int m = 0; m < boxes[0].size(); m++) {
@@ -228,10 +246,8 @@ cv::Mat visualization(cv::Mat source_image, std::vector<std::vector<std::vector<
   for (int n = 0; n < boxes.size(); n++) {
     const cv::Point *ppt[1] = {rook_points[n]};
     int npt[] = {4};
-    cv::polylines(image_visualization, ppt, npt, 1, 1, CV_RGB(0, 255, 0), 2, 8, 0);
+    cv::polylines(image_visualization, ppt, npt, 1, 1, CV_RGB(255, 0, 0), 1, 8, 0);
   }
 
   cv::imwrite(output_image_path, image_visualization);
-  std::cout << "The detection visualized image saved in " << output_image_path.c_str() << std::endl;
-  return image_visualization;
 }

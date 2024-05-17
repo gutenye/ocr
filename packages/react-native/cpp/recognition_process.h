@@ -33,13 +33,13 @@ class RecognitionPredictor {
 public:
   explicit RecognitionPredictor(Options &options, const int cpu_thread_num, const std::string &cpu_power_mode);
 
-  RecognitionResult predict(const cv::Mat &rgba_image, std::vector<std::string> charactor_dict);
+  RecognitionResult predict(const cv::Mat &rgba_image, std::vector<std::string> charactor_dict, cv::Mat &resized_image);
 
 private:
   Options m_options {};
   Onnx m_onnx;
 
-  ImageRaw preprocess(const cv::Mat &rgba_image);
+  ImageRaw preprocess(const cv::Mat &rgba_image, cv::Mat &resized_image);
 
   RecognitionResultData postprocess(ModelOutput &model_output, const cv::Mat &rgba_image,
                                     std::vector<std::string> charactor_dict);

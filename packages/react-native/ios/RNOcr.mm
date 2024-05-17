@@ -15,12 +15,17 @@ RCT_EXPORT_METHOD(create
                   : (RCTPromiseResolveBlock)resolve rejecter
                   : (RCTPromiseRejectBlock)reject) {
   try {
+    id rawBundleDir = [[NSBundle mainBundle] bundlePath];
+    id cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];
+
     NSMutableDictionary *rawOptions = [rawReadonlyOptions mutableCopy];
+    if (!rawOptions[@"outputDir"]) {
+      rawOptions[@"outputDir"] = cacheDir;
+    }
     if (!rawOptions[@"models"]) {
       rawOptions[@"models"] = [NSMutableDictionary dictionary];
     }
     NSMutableDictionary *models = rawOptions[@"models"];
-    id rawBundleDir = [[NSBundle mainBundle] bundlePath];
     auto assetDir = [rawBundleDir stringByAppendingString:@"/guten-ocr.bundle"];
     if (!models[@"detectionModelPath"]) {
       models[@"detectionModelPath"] = [assetDir stringByAppendingString:@"/ch_PP-OCRv4_det_infer.onnx"];

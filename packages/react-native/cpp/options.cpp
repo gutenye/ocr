@@ -7,6 +7,9 @@ Options convertRawOptions(std::unordered_map<std::string, std::any>& rawOptions)
   if (rawOptions.count("isDebug") > 0) {
     options.is_debug = std::any_cast<bool>(rawOptions.at("isDebug"));
   }
+  if (rawOptions.count("outputDir") > 0) {
+    options.output_dir = std::any_cast<std::string>(rawOptions.at("outputDir"));
+  }
   if (rawOptions.count("recognitionImageMaxSize") > 0) {
     options.recognition_image_max_size = std::any_cast<double>(rawOptions.at("recognitionImageMaxSize"));
   }
