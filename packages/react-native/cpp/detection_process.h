@@ -23,6 +23,11 @@
 #include "shared.h"
 #include "utils.h"
 
+struct PreprocessResult {
+  ImageRaw model_input {};
+  cv::Mat resized_image {};
+};
+
 using DetectionResultData = std::vector<std::vector<std::vector<int>>>;
 
 struct DetectionResult {
@@ -39,9 +44,9 @@ public:
 private:
   Options m_options {};
   Onnx m_onnx;
-  std::vector<float> m_ratio_hw;
 
-  ImageRaw preprocess(const cv::Mat &image);
+  PreprocessResult preprocess(const cv::Mat &image);
 
-  DetectionResultData postprocess(ModelOutput &model_output, const cv::Mat &source_image, Options &options);
+  DetectionResultData postprocess(ModelOutput &model_output, const cv::Mat &source_image, const cv::Mat &resized_image,
+                                  Options &options);
 };

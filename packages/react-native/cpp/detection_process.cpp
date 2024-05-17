@@ -23,7 +23,7 @@
 #include "db_post_process.h"
 #include "timer.h"
 
-cv::Mat resize_image(const cv::Mat image, std::vector<float> &ratio_hw, Options &options);
+void resize_image(const cv::Mat image, cv::Mat &resized_image, Options &options);
 
 DetectionPredictor::DetectionPredictor(Options &options, const int cpu_thread_num, const std::string &cpu_power_mode)
     : m_options {options}, m_onnx {Onnx(options.models.detection_model_path)} {}
@@ -36,21 +36,23 @@ DetectionResult DetectionPredictor::predict(cv::Mat &image) {
 
   Timer timer;
   timer.start();
-  auto input = preprocess(image);
+  auto preprocess_result = preprocess(image);
   timer.end();
   performance.preprocess_time = timer.get_average_ms();
+  auto &model_input = preprocess_result.model_input;
+  auto &resized_image = preprocess_result.resized_image;
 
   // Run predictor
-  std::vector<int64_t> input_shape = {1, input.channels, input.height, input.width};
+  std::vector<int64_t> input_shape = {1, model_input.channels, model_input.height, model_input.width};
 
   timer.start();
-  auto model_output = m_onnx.run(input.data, input_shape);
+  auto model_output = m_onnx.run(model_input.data, input_shape);
   timer.end();
   performance.predict_time = timer.get_average_ms();
 
   // Process Output
   timer.start();
-  auto filter_boxes = postprocess(model_output, source_image, m_options);
+  auto filter_boxes = postprocess(model_output, source_image, resized_image, m_options);
   timer.end();
   performance.postprocess_time = timer.get_average_ms();
 
@@ -59,11 +61,12 @@ DetectionResult DetectionPredictor::predict(cv::Mat &image) {
   return DetectionResult {.data = filter_boxes, .performance = performance};
 }
 
-ImageRaw DetectionPredictor::preprocess(const cv::Mat &source_image) {
-  cv::Mat resized_image = resize_image(source_image, m_ratio_hw, m_options);
+PreprocessResult DetectionPredictor::preprocess(const cv::Mat &source_image) {
+  PreprocessResult result {};
+  resize_image(source_image, result.resized_image, m_options);
 
   cv::Mat model_data;
-  resized_image.convertTo(model_data, CV_32FC3, 1.0 / 255.f);
+  result.resized_image.convertTo(model_data, CV_32FC3, 1.0 / 255.f);
 
   std::vector<float> data(model_data.rows * model_data.cols * 3);
   std::vector<float> mean = {0.485f, 0.456f, 0.406f};
@@ -71,13 +74,13 @@ ImageRaw DetectionPredictor::preprocess(const cv::Mat &source_image) {
   const float *destination_image = reinterpret_cast<const float *>(model_data.data);
   NHWC3ToNC3HW(destination_image, data.data(), model_data.rows * model_data.cols, mean, scale);
 
-  ImageRaw image_raw {.data = data, .width = model_data.cols, .height = model_data.rows, .channels = 3};
+  result.model_input = ImageRaw {.data = data, .width = model_data.cols, .height = model_data.rows, .channels = 3};
 
-  return image_raw;
+  return result;
 }
 
 DetectionResultData DetectionPredictor::postprocess(ModelOutput &model_output, const cv::Mat &source_image,
-                                                    Options &options) {
+                                                    const cv::Mat &resized_image, Options &options) {
   auto height = model_output.shape[2];
   auto width = model_output.shape[3];
   cv::Mat pred_map = cv::Mat(height, width, CV_32F, model_output.data.data());
@@ -96,14 +99,15 @@ DetectionResultData DetectionPredictor::postprocess(ModelOutput &model_output, c
   }
   auto boxes = BoxesFromBitmap(pred_map, bit_map, options);
 
-  std::vector<std::vector<std::vector<int>>> filter_boxes =
-      FilterTagDetRes(boxes, m_ratio_hw[0], m_ratio_hw[1], source_image);
+  auto ratio_h = static_cast<float>(resized_image.rows) / static_cast<float>(source_image.rows);
+  auto ratio_w = static_cast<float>(resized_image.cols) / static_cast<float>(source_image.cols);
+  std::vector<std::vector<std::vector<int>>> filter_boxes = filter_tag_det_res(boxes, ratio_h, ratio_w, source_image);
 
   return filter_boxes;
 }
 
 // resize image to a size multiple of 32 which is required by the network
-cv::Mat resize_image(const cv::Mat image, std::vector<float> &ratio_hw, Options &options) {
+void resize_image(const cv::Mat image, cv::Mat &resized_image, Options &options) {
   int width = image.cols;
   int height = image.rows;
   float ratio = 1.f;
@@ -143,10 +147,5 @@ cv::Mat resize_image(const cv::Mat image, std::vector<float> &ratio_hw, Options 
               << resize_height << std::endl;
   }
 
-  cv::Mat resize_img;
-  cv::resize(image, resize_img, cv::Size(resize_width, resize_height));
-
-  ratio_hw.push_back(static_cast<float>(resize_height) / static_cast<float>(height));
-  ratio_hw.push_back(static_cast<float>(resize_width) / static_cast<float>(width));
-  return resize_img;
+  cv::resize(image, resized_image, cv::Size(resize_width, resize_height));
 }
