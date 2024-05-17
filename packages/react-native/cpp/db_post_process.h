@@ -52,5 +52,5 @@ float BoxScoreFast(std::vector<std::vector<float>> box_array, cv::Mat pred);
 
 std::vector<std::vector<std::vector<int>>> BoxesFromBitmap(const cv::Mat pred, const cv::Mat bitmap, Options &options);
 
-std::vector<std::vector<std::vector<int>>> FilterTagDetRes(std::vector<std::vector<std::vector<int>>> boxes,
-                                                           float ratio_h, float ratio_w, cv::Mat srcimg);
+std::vector<std::vector<std::vector<int>>> filter_tag_det_res(std::vector<std::vector<std::vector<int>>> boxes,
+                                                              float ratio_h, float ratio_w, cv::Mat srcimg);

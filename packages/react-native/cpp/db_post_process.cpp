@@ -268,8 +268,8 @@ std::vector<std::vector<std::vector<int>>> BoxesFromBitmap(const cv::Mat pred, c
   return boxes;
 }
 
-std::vector<std::vector<std::vector<int>>> FilterTagDetRes(std::vector<std::vector<std::vector<int>>> boxes,
-                                                           float ratio_h, float ratio_w, cv::Mat srcimg) {
+std::vector<std::vector<std::vector<int>>> filter_tag_det_res(std::vector<std::vector<std::vector<int>>> boxes,
+                                                              float ratio_h, float ratio_w, cv::Mat srcimg) {
   int oriimg_h = srcimg.rows;
   int oriimg_w = srcimg.cols;
 
