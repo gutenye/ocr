@@ -1,4 +1,4 @@
-resources/*.nb
+resources/
 ios/inference_lite_lib.ios64.armv8
 cpp/example/onnxruntime
 

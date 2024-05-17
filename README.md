@@ -70,12 +70,7 @@ Ocr.create({
     recognitionPath: string
     dictionaryPath: string
   },
-  onnxOptions?: {}       // Pass to ONNX Runtime
-}): Promise<Ocr>
-
-ocr.run(imagePath, { 
   isDebug?: boolean
-  onnxOptions?: {}     // Pass to ONNX Runtime
   recognitionImageMaxSize?: number 
   detectionThreshold?: number
   detectionBoxThreshold?: number
@@ -83,6 +78,11 @@ ocr.run(imagePath, {
   detectionUseDilate?: boolean
   detectionUsePolygonScore?: boolean
   detectionUseDirectionClassify?: boolean
+  onnxOptions?: {}       // Pass to ONNX Runtime
+}): Promise<Ocr>
+
+ocr.detect(imagePath, { 
+  onnxOptions?: {}     // Pass to ONNX Runtime
 }): Promise<Result>
 ```
 

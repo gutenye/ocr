@@ -19,6 +19,7 @@
 #include "opencv2/core.hpp"
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/imgproc.hpp"
+#include "options.h"
 #include "shared.h"
 #include "utils.h"
 

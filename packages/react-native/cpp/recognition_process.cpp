@@ -25,7 +25,7 @@ inline size_t argmax(ForwardIterator first, ForwardIterator last);
 
 RecognitionPredictor::RecognitionPredictor(Options &options, const int cpu_thread_num,
                                            const std::string &cpu_power_mode)
-    : m_options {options}, m_onnx {Onnx {options.recognition_model_path}} {}
+    : m_options {options}, m_onnx {Onnx {options.models.recognition_model_path}} {}
 
 RecognitionResult RecognitionPredictor::predict(const cv::Mat &rgba_image, std::vector<std::string> charactor_dict) {
   ModelPerformance performance {};
