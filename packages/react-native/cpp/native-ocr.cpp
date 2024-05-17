@@ -78,11 +78,11 @@ std::vector<std::string> NativeOcr::detect(std::string &image_path) {
   for (int i = detection_result.data.size() - 1; i >= 0; i--) {
     auto crop_image = get_rotate_crop_image(image_copy, detection_result.data[i]);
 
-    if (m_options.is_debug) {
-      auto output_path =
-          m_options.output_dir + "/line-" + std::to_string(detection_result.data.size() - 1 - i) + ".jpg";
-      cv::imwrite(output_path, crop_image);
-    }
+    // if (m_options.is_debug) {
+    //   auto output_path =
+    //       m_options.output_dir + "/line-" + std::to_string(detection_result.data.size() - 1 - i) + ".jpg";
+    //   cv::imwrite(output_path, crop_image);
+    // }
 
     // if (m_options.detection_use_direction_classify)
     // {
@@ -93,11 +93,11 @@ std::vector<std::string> NativeOcr::detect(std::string &image_path) {
     cv::Mat resized_image;
     auto recognition_result = m_recognition_predictor->predict(crop_image, m_dictionary, resized_image);
 
-    if (m_options.is_debug) {
-      auto output_path =
-          m_options.output_dir + "/line-" + std::to_string(detection_result.data.size() - 1 - i) + "-resized.jpg";
-      cv::imwrite(output_path, resized_image);
-    }
+    // if (m_options.is_debug) {
+    //   auto output_path =
+    //       m_options.output_dir + "/line-" + std::to_string(detection_result.data.size() - 1 - i) + "-resized.jpg";
+    //   cv::imwrite(output_path, resized_image);
+    // }
 
     recognition_results.push_back(recognition_result);
     recognition_text.push_back(recognition_result.data.first);

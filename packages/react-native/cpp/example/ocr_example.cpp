@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
         {"isDebug", true},
         {"outputDir", output_dir},
         // {"recognitionImageMaxSize", -1.0},
-        {"recognitionImageMaxSize", 800.0},
+        // {"recognitionImageMaxSize", 800.0},
     };
 
     fs::remove_all(output_dir);
