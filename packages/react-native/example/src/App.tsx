@@ -1,22 +1,14 @@
 import Ocr from '@gutenye/ocr-react-native'
 import * as FileSystem from 'expo-file-system'
-import { manipulateAsync } from 'expo-image-manipulator'
 import { useEffect, useState } from 'react'
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { ImagePickerButton } from './ImagePickerButton'
 import type { ImageDetails } from './types'
 
-//  /private/var/containers/Bundle/Application/55E249DC-B95F-4B05-9A10-6C192143E8EB/GutenOCRExample.app//guten-ocr.bundle/cn-01.jpg
-// 'file:///var/mobile/Containers/Data/Application/AA3D33D1-DAB1-43B8-BD9D-D72F1AE89A6F/Library/Caches/ImagePicker/43FDA18A-DB48-4436-B231-1B880CA9BBDB.jpg'
-
 const DEFAULT_IMAGE = `${FileSystem.bundleDirectory}/guten-ocr.bundle/cn-01.jpg`
-// const DEFAULT_IMAGE = undefined
 const IS_DEBUG = true
 const OUTPUT_DIR = FileSystem.cacheDirectory
-
-window.Image = Image
-window.OUTPUT_DIR = OUTPUT_DIR
 
 export default function App() {
   const [ocr, setOcr] = useState<Ocr>()
@@ -25,19 +17,8 @@ export default function App() {
 
   useEffect(() => {
     ;(async () => {
-      for (const [i, line] of resultLines.entries()) {
-        const uri = `${OUTPUT_DIR}/line-${i}.jpg`
-        const { width, height } = await manipulateAsync(uri)
-        console.log(`${i} ${width} ${height}`)
-      }
-    })()
-  }, [resultLines])
-
-  useEffect(() => {
-    ;(async () => {
       const ocr = await Ocr.create({
         isDebug: IS_DEBUG,
-        recognitionImageMaxSize: 960,
         // recognitionImageMaxSize: -1,
       })
       setOcr(ocr)
