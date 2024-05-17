@@ -109,6 +109,7 @@ cv::Mat resize_image(const cv::Mat image, std::vector<float> &ratio_hw, Options 
   int width = image.cols;
   int height = image.rows;
   float ratio = 1.f;
+
   int max_wh = width >= height ? width : height;
   auto max_size = options.recognition_image_max_size;
   if (max_size != -1 && max_wh > max_size) {
