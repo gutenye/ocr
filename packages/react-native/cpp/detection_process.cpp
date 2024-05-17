@@ -26,7 +26,7 @@
 cv::Mat resize_image(const cv::Mat image, std::vector<float> &ratio_hw, Options &options);
 
 DetectionPredictor::DetectionPredictor(Options &options, const int cpu_thread_num, const std::string &cpu_power_mode)
-    : m_options {options}, m_onnx {Onnx(options.detection_model_path)} {}
+    : m_options {options}, m_onnx {Onnx(options.models.detection_model_path)} {}
 
 DetectionResult DetectionPredictor::predict(cv::Mat &image) {
   ModelPerformance performance;

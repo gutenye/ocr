@@ -29,16 +29,15 @@ namespace fs = std::filesystem;
 
 std::vector<std::string> read_dictionary(std::string path);
 cv::Mat get_rotate_crop_image(cv::Mat source_image, std::vector<std::vector<int>> box);
-Options convertRawOptions(RawOptions rawOptions);
 
-NativeOcr::NativeOcr(RawOptions rawOptions) : m_options {convertRawOptions(rawOptions)} {
+NativeOcr::NativeOcr(std::unordered_map<std::string, std::any> rawOptions) : m_options {convertRawOptions(rawOptions)} {
   auto cpu_thread_num = 1;
   auto cpu_power_mode = "LITE_POWER_HIGH";
   // m_classifier_predictor.reset(
   //     new ClassifierPredictor(m_options, cpu_thread_num, cpu_power_mode));
   m_detection_predictor.reset(new DetectionPredictor(m_options, cpu_thread_num, cpu_power_mode));
   m_recognition_predictor.reset(new RecognitionPredictor(m_options, cpu_thread_num, cpu_power_mode));
-  m_dictionary = read_dictionary(m_options.dictionary_path);
+  m_dictionary = read_dictionary(m_options.models.dictionary_path);
   m_dictionary.insert(m_dictionary.begin(), "#");
   m_dictionary.push_back(" ");
 }
@@ -235,45 +234,4 @@ cv::Mat visualization(cv::Mat source_image, std::vector<std::vector<std::vector<
   cv::imwrite(output_image_path, image_visualization);
   std::cout << "The detection visualized image saved in " << output_image_path.c_str() << std::endl;
   return image_visualization;
-}
-
-Options convertRawOptions(RawOptions rawOptions) {
-  Options options {};
-  if (rawOptions.count("isDebug") > 0) {
-    options.is_debug = std::get<bool>(rawOptions["isDebug"]);
-  }
-  if (rawOptions.count("recognitionImageMaxSize") > 0) {
-    options.recognition_image_max_size = std::get<double>(rawOptions.at("recognitionImageMaxSize"));
-  }
-  if (rawOptions.count("detectionThreshold") > 0) {
-    options.detection_threshold = std::get<double>(rawOptions.at("detectionThreshold"));
-  }
-  if (rawOptions.count("detectionBoxThreshold") > 0) {
-    options.detection_box_threshold = std::get<double>(rawOptions.at("detectionBoxThreshold"));
-  }
-  if (rawOptions.count("detectionUnclipRatiop") > 0) {
-    options.detection_unclip_ratiop = std::get<double>(rawOptions.at("detectionUnclipRatiop"));
-  }
-  if (rawOptions.count("detectionUseDilate") > 0) {
-    options.detection_use_dilate = std::get<bool>(rawOptions.at("detectionUseDilate"));
-  }
-  if (rawOptions.count("detectionUsePolygonScore") > 0) {
-    options.detection_use_polygon_score = std::get<bool>(rawOptions.at("detectionUsePolygonScore"));
-  }
-  if (rawOptions.count("detectionuseDirectionClassify") > 0) {
-    options.detection_use_direction_classify = std::get<bool>(rawOptions.at("detectionuseDirectionClassify"));
-  }
-  if (rawOptions.count("detectionModelPath") > 0) {
-    options.detection_model_path = std::get<std::string>(rawOptions.at("detectionModelPath"));
-  }
-  if (rawOptions.count("recognitionModelPath") > 0) {
-    options.recognition_model_path = std::get<std::string>(rawOptions.at("recognitionModelPath"));
-  }
-  if (rawOptions.count("classififerModelPath") > 0) {
-    options.classifier_model_path = std::get<std::string>(rawOptions.at("classififerModelPath"));
-  }
-  if (rawOptions.count("dictionaryPath") > 0) {
-    options.dictionary_path = std::get<std::string>(rawOptions.at("dictionaryPath"));
-  }
-  return options;
 }

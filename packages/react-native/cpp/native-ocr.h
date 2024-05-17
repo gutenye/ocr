@@ -14,12 +14,13 @@
 
 #pragma once
 
-#include <map>
+#include <any>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 #include <string>
+#include <unordered_map>
 #include <vector>
 #include "detection_process.h"
 #include "recognition_process.h"
@@ -27,7 +28,7 @@
 
 class NativeOcr {
 public:
-  NativeOcr(RawOptions rawOptions);
+  NativeOcr(std::unordered_map<std::string, std::any> rawOptions);
 
   std::vector<std::string> detect(std::string &image_path);
 

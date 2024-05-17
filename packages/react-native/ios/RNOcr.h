@@ -1,9 +1,12 @@
 #ifdef __cplusplus
-#include <unordered_map>
-#include "shared.h"
+#import <unordered_map>
+#import "shared.h"
 #endif
 
+#import <Foundation/Foundation.h>
 #import <memory>
+#import "ConvertNS.h"
+#import "ConvertStd.h"
 
 #ifdef RCT_NEW_ARCH_ENABLED
 #import "RNOcrSpec.h"
@@ -16,11 +19,3 @@
 #endif
 
 @end
-
-std::string convertNSString(NSString *nsString);
-
-RawOptions convertNSDictionary(NSDictionary *nsDictionary);
-
-NSArray<NSString *> *convertStdVector(const std::vector<std::string> &stdVector);
-
-NSString *convertStdString(const std::string &stdString);

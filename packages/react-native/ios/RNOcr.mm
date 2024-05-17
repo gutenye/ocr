@@ -1,6 +1,4 @@
 #import "RNOcr.h"
-#import <Foundation/Foundation.h>
-#include <cstring>
 #import <iostream>
 #import "native-ocr.h"
 
@@ -13,30 +11,39 @@
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(create
-                  : (NSDictionary *)rawOptions resolver
+                  : (NSDictionary *)rawReadonlyOptions resolver
                   : (RCTPromiseResolveBlock)resolve rejecter
                   : (RCTPromiseRejectBlock)reject) {
-  auto options = convertNSDictionary(rawOptions);
+  try {
+    NSMutableDictionary *rawOptions = [rawReadonlyOptions mutableCopy];
+    if (!rawOptions[@"models"]) {
+      rawOptions[@"models"] = [NSMutableDictionary dictionary];
+    }
+    NSMutableDictionary *models = rawOptions[@"models"];
+    id rawBundleDir = [[NSBundle mainBundle] bundlePath];
+    auto assetDir = [rawBundleDir stringByAppendingString:@"/guten-ocr.bundle"];
+    if (!models[@"detectionModelPath"]) {
+      models[@"detectionModelPath"] = [assetDir stringByAppendingString:@"/ch_PP-OCRv4_det_infer.onnx"];
+    }
+    if (!models[@"recognitionModelPath"]) {
+      models[@"recognitionModelPath"] = [assetDir stringByAppendingString:@"/ch_PP-OCRv4_rec_infer.onnx"];
+    }
+    if (!models[@"classifierModelPath"]) {
+      models[@"classifierModelPath"] = [assetDir stringByAppendingString:@"/ch_ppocr_mobile_v2.0_cls_infer.onnx"];
+    }
+    if (!models[@"dictionaryPath"]) {
+      models[@"dictionaryPath"] = [assetDir stringByAppendingString:@"/ppocr_keys_v1.txt"];
+    }
 
-  id rawBundleDir = [[NSBundle mainBundle] bundlePath];
-  auto assetDir = convertNSString(rawBundleDir) + "/guten-ocr.bundle";
-  if (!options.count("detectionModelPath")) {
-    options["detectionModelPath"] = assetDir + "/ch_PP-OCRv4_det_infer.onnx";
-  }
-  if (!options.count("recognitionModelPath")) {
-    options["recognitionModelPath"] = assetDir + "/ch_PP-OCRv4_rec_infer.onnx";
-  }
-  if (!options.count("classifierModelPath")) {
-    options["classifierModelPath"] = assetDir + "/ch_ppocr_mobile_v2.0_cls_infer.onnx";
-  }
-  if (!options.count("dictionaryPath")) {
-    options["dictionaryPath"] = assetDir + "/ppocr_keys_v1.txt";
-  }
+    auto options = convertNSDictionary(rawOptions);
+    _ocr = std::make_unique<NativeOcr>(options);
 
-  _ocr = std::make_unique<NativeOcr>(options);
-
-  long ref = (long)CFBridgingRetain(self);
-  resolve(@(ref));
+    long ref = (long)CFBridgingRetain(self);
+    resolve(@(ref));
+  } catch (const std::exception &error) {
+    auto message = std::string("Error: ") + error.what();
+    reject(@"cpp_exception", convertStdString(message), nil);
+  }
 }
 
 RCT_EXPORT_METHOD(detect
@@ -49,7 +56,8 @@ RCT_EXPORT_METHOD(detect
     NSArray<NSString *> *finalLines = convertStdVector(lines);
     resolve(finalLines);
   } catch (const std::exception &error) {
-    reject(@"cpp_exception", convertStdString(std::string("Error: ") + error.what()), nil);
+    auto message = std::string("Error: ") + error.what();
+    reject(@"cpp_exception", convertStdString(message), nil);
   }
 }
 
@@ -62,48 +70,3 @@ RCT_EXPORT_METHOD(detect
 #endif
 
 @end
-
-// convert an NSString to a std::string
-std::string convertNSString(NSString *nsString) {
-  if (nsString == nil) {
-    return std::string();
-  }
-  return [nsString UTF8String];
-}
-
-// convert an NSDictoinary to a std::unordered_map
-RawOptions convertNSDictionary(NSDictionary *nsDictionary) {
-  RawOptions stdMap {};
-  if (nsDictionary == nil) {
-    return stdMap;
-  }
-  for (id rawKey in nsDictionary) {
-    if (![rawKey isKindOfClass:[NSString class]]) {
-      continue;
-    }
-    std::string key = [rawKey UTF8String];
-    id rawValue = [nsDictionary objectForKey:rawKey];
-    if ([rawValue isKindOfClass:[NSString class]]) {
-      stdMap[key] = std::string([rawValue UTF8String]);
-    } else if ([rawValue isKindOfClass:[NSNumber class]]) {
-      if (strcmp([rawValue objCType], @encode(char)) == 0) {
-        stdMap[key] = (bool)[rawValue boolValue];
-      } else {
-        stdMap[key] = [rawValue doubleValue];
-      }
-    }
-  }
-  return stdMap;
-}
-
-// convert an std::vector to an NSArray
-NSArray<NSString *> *convertStdVector(const std::vector<std::string> &stdVector) {
-  NSMutableArray<NSString *> *nsArray = [NSMutableArray arrayWithCapacity:stdVector.size()];
-  for (const std::string &stdValue : stdVector) {
-    [nsArray addObject:[NSString stringWithUTF8String:stdValue.c_str()]];
-  }
-  return nsArray;
-}
-
-// convert an std::string to an NSString
-NSString *convertStdString(const std::string &stdString) { return [NSString stringWithUTF8String:stdString.c_str()]; }
