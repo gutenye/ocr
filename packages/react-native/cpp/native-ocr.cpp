@@ -62,7 +62,7 @@ std::vector<std::string> NativeOcr::detect(std::string &image_path) {
   if (m_options.is_debug) {
     auto output_path = m_options.output_dir + "/boxes.jpg";
     visualization(image, detection_result.data, output_path);
-    std::cout << "[DEBUG] Detection visualized image saved in " << output_path << std::endl;
+    // std::cout << "[DEBUG] Detection visualized image saved in " << output_path << std::endl;
   }
 
   if (m_options.is_debug) {
