@@ -60,20 +60,18 @@ DetectionResult DetectionPredictor::predict(cv::Mat &image) {
 }
 
 ImageRaw DetectionPredictor::preprocess(const cv::Mat &source_image) {
-  cv::Mat image = resize_image(source_image, m_ratio_hw, m_options);
-  // TODO
-  // cv::Mat image;
-  // source_image.copyTo(image);
-  cv::Mat image_fp;
-  image.convertTo(image_fp, CV_32FC3, 1.0 / 255.f);
+  cv::Mat resized_image = resize_image(source_image, m_ratio_hw, m_options);
 
-  std::vector<float> data(image_fp.rows * image_fp.cols * 3);
+  cv::Mat model_data;
+  resized_image.convertTo(model_data, CV_32FC3, 1.0 / 255.f);
+
+  std::vector<float> data(model_data.rows * model_data.cols * 3);
   std::vector<float> mean = {0.485f, 0.456f, 0.406f};
   std::vector<float> scale = {1 / 0.229f, 1 / 0.224f, 1 / 0.225f};
-  const float *destination_image = reinterpret_cast<const float *>(image_fp.data);
-  NHWC3ToNC3HW(destination_image, data.data(), image_fp.rows * image_fp.cols, mean, scale);
+  const float *destination_image = reinterpret_cast<const float *>(model_data.data);
+  NHWC3ToNC3HW(destination_image, data.data(), model_data.rows * model_data.cols, mean, scale);
 
-  ImageRaw image_raw {.data = data, .width = image_fp.cols, .height = image_fp.rows, .channels = 3};
+  ImageRaw image_raw {.data = data, .width = model_data.cols, .height = model_data.rows, .channels = 3};
 
   return image_raw;
 }
