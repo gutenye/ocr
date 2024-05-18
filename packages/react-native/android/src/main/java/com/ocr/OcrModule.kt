@@ -19,6 +19,6 @@ class OcrModule internal constructor(context: ReactApplicationContext) :
   }
 
   companion object {
-    const val NAME = "Ocr"
+    const val NAME = "RNOcr"
   }
 }
