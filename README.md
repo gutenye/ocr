@@ -86,6 +86,11 @@ ocr.detect(imagePath, {
 }): Promise<Result>
 ```
 
+## Development
+
+- [Development](docs/Development.md)
+
+
 ## Related Projects
 
 | Name                                                           | Platforms | Note                            |

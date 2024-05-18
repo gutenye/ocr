@@ -1,4 +1,4 @@
-# Development
+# React Native
 
 **iOS Simulator is not supported**
 
