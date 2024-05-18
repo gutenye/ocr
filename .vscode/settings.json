@@ -97,5 +97,8 @@
   "cmake.buildDirectory": "${workspaceFolder}/packages/react-native/cpp/example/build",
   "cmake.debugConfig": {
     "externalConsole": true
+  },
+  "[kotlin]": {
+    "editor.defaultFormatter": "esafirm.kotlin-formatter"
   }
 }
