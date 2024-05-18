@@ -15,7 +15,6 @@
 #include "native-ocr.h"
 #include <algorithm>
 #include <filesystem>
-#include <format>
 #include <fstream>
 #include <iomanip>
 #include <iostream>

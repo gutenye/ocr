@@ -17,7 +17,6 @@
 #include <any>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 #include <string>
 #include <unordered_map>

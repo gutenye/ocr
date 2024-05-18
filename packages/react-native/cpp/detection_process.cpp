@@ -14,7 +14,6 @@
 
 #include "detection_process.h"
 #include <cmath>
-#include <format>
 #include <map>
 #include <memory>
 #include <string>

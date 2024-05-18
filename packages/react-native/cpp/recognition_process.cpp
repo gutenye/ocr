@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include "recognition_process.h"
-#include <format>
 #include <iostream>
 #include "shared.h"
 #include "timer.h"
