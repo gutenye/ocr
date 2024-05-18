@@ -4,8 +4,8 @@ project(Ocr)
 set (CMAKE_VERBOSE_MAKEFILE ON)
 set (CMAKE_CXX_STANDARD 14)
 
-add_library(react-native-ocr            SHARED
-            # ../cpp/react-native-ocr.cpp
+add_library(guten-ocr            SHARED
+            # ../cpp/native-ocr.cpp
             cpp-adapter.cpp
 )
 
