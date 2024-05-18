@@ -1,5 +1,5 @@
 #include <jni.h>
-// #include "react-native-ocr.h"
+// #include "native-ocr.h"
 
 extern "C" JNIEXPORT jdouble JNICALL Java_com_ocr_RNOcrModule_nativeMultiply(JNIEnv *env, jclass type, jdouble a,
                                                                              jdouble b) {

@@ -16,7 +16,7 @@ class RNOcrModule internal constructor(context: ReactApplicationContext) :
   }
 
   init {
-   System.loadLibrary("react-native-ocr")
+    System.loadLibrary("guten-ocr")
   }
 
   external fun nativeMultiply(a: Double, b: Double): Double
