@@ -7,7 +7,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
 
 public class OcrModule extends OcrSpec {
-  public static final String NAME = "Ocr";
+  public static final String NAME = "RNOcr";
 
   OcrModule(ReactApplicationContext context) {
     super(context);

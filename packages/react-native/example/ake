@@ -20,3 +20,7 @@ def 'main start' [] {
 def --wrapped 'main add' [...args] {
   expo install ...$args
 }
+
+def 'main android-studio' [] {
+  ^open -a 'Android Studio'
+}

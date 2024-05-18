@@ -24,4 +24,6 @@ const Ocr = OcrModule
       },
     )
 
+Ocr.multiply(2, 3).then((v) => console.log(':: native', v))
+
 export default Ocr
