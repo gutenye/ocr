@@ -58,8 +58,7 @@ RCT_EXPORT_METHOD(detect
   try {
     auto imagePath = convertNSString(rawImagePath);
     auto lines = _ocr->detect(imagePath);
-    NSArray<NSString *> *finalLines = convertStdVector(lines);
-    resolve(finalLines);
+    resolve(convertStdVector(lines));
   } catch (const std::exception &error) {
     auto message = std::string("Error: ") + error.what();
     reject(@"cpp_exception", convertStdString(message), nil);

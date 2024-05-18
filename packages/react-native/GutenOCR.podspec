@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.source_files = "ios/*.{h,m,mm}", "cpp/*.{hpp,cpp,cc,c,h}"
 
   # s.pod_target_xcconfig    = {
-  #     "CLANG_CXX_LANGUAGE_STANDARD" => "c++23"
+  #     "CLANG_CXX_LANGUAGE_STANDARD" => "c++2b"
   # }
 
   s.resource_bundles = {
