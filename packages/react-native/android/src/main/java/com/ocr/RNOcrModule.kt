@@ -4,15 +4,19 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Promise
 
-class OcrModule internal constructor(context: ReactApplicationContext) :
-  OcrSpec(context) {
+class RNOcrModule internal constructor(context: ReactApplicationContext) :
+  RNOcrSpec(context) {
+
+  companion object {
+    const val NAME = "RNOcr"
+  }
 
   override fun getName(): String {
     return NAME
   }
 
   init {
-    System.loadLibrary("react-native-ocr")
+   System.loadLibrary("react-native-ocr")
   }
 
   external fun nativeMultiply(a: Double, b: Double): Double
@@ -22,9 +26,5 @@ class OcrModule internal constructor(context: ReactApplicationContext) :
   @ReactMethod
   override fun multiply(a: Double, b: Double, promise: Promise) {
     promise.resolve(nativeMultiply(a, b))
-  }
-
-  companion object {
-    const val NAME = "RNOcr"
   }
 }
