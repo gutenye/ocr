@@ -14,12 +14,17 @@ buildscript {
   }
 }
 
+
 def isNewArchitectureEnabled() {
   return rootProject.hasProperty("newArchEnabled") && rootProject.getProperty("newArchEnabled") == "true"
 }
 
+plugins {
+  id "de.undercouch.download" version "5.6.0"
+}
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
+
 
 if (isNewArchitectureEnabled()) {
   apply plugin: "com.facebook.react"
@@ -130,3 +135,29 @@ if (isNewArchitectureEnabled()) {
     codegenJavaPackageName = "com.ocr"
   }
 }
+
+// Task to download the OpenCV zip file
+task downloadOpenCV(type: Download) {
+    src 'https://github.com/opencv/opencv/releases/download/4.9.0/opencv-4.9.0-android-sdk.zip'
+    dest layout.buildDirectory.file("opencv-4.9.0-android-sdk.zip")
+    overwrite false
+}
+task extractOpenCV(dependsOn: downloadOpenCV, type: Copy) {
+    from zipTree(downloadOpenCV.dest)
+    into layout.buildDirectory
+}
+preBuild.dependsOn extractOpenCV
+
+
+// Task to download the ONNX Runtime zip file
+task downloadOnnxruntime(type: Download) {
+    src 'https://repo1.maven.org/maven2/com/microsoft/onnxruntime/onnxruntime-android/1.17.3/onnxruntime-android-1.17.3.aar'
+    dest layout.buildDirectory.file("onnxruntime-android-1.17.3.aar")
+    overwrite false
+}
+task extractOnnxruntime(dependsOn: downloadOnnxruntime, type: Copy) {
+    from zipTree(downloadOnnxruntime.dest)
+    into layout.buildDirectory.dir("onnxruntime")
+}
+preBuild.dependsOn extractOnnxruntime
+extractOnnxruntime.mustRunAfter extractOpenCV
