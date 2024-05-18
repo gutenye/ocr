@@ -99,6 +99,6 @@
     "externalConsole": true
   },
   "[kotlin]": {
-    "editor.defaultFormatter": "esafirm.kotlin-formatter"
+    "editor.defaultFormatter": "fwcd.kotlin"
   }
 }

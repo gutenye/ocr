@@ -62,6 +62,7 @@ android {
     
     externalNativeBuild {
       cmake {
+        // cppFlags "-std=c++2b -O2 -frtti -fexceptions -Wall -fstack-protector-all"
         cppFlags "-O2 -frtti -fexceptions -Wall -fstack-protector-all"
       }
     }

@@ -1,15 +1,18 @@
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.10)
 project(Ocr)
 
 set (CMAKE_VERBOSE_MAKEFILE ON)
-set (CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_library(guten-ocr            SHARED
-            # ../cpp/native-ocr.cpp
-            cpp-adapter.cpp
+file(GLOB SOURCES "./*.cpp" "../cpp/*.cpp")
+
+add_library(
+  guten-ocr
+  SHARED
+  ${SOURCES}
 )
 
-# Specifies a path to native header files.
 include_directories(
-            ../cpp
+  ../cpp
 )
