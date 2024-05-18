@@ -136,28 +136,31 @@ if (isNewArchitectureEnabled()) {
   }
 }
 
-// Task to download the OpenCV zip file
-task downloadOpenCV(type: Download) {
-    src 'https://github.com/opencv/opencv/releases/download/4.9.0/opencv-4.9.0-android-sdk.zip'
-    dest layout.buildDirectory.file("opencv-4.9.0-android-sdk.zip")
+task downloadOpenCV() {
+  def zipfile = layout.buildDirectory.file("opencv.zip")
+  download.run {
+    src "https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-android.zip"
+    dest zipfile
     overwrite false
-}
-task extractOpenCV(dependsOn: downloadOpenCV, type: Copy) {
-    from zipTree(downloadOpenCV.dest)
+  }
+  copy {
+    from zipTree(zipfile)
     into layout.buildDirectory
+  }
 }
-preBuild.dependsOn extractOpenCV
+preBuild.dependsOn downloadOpenCV
 
-
-// Task to download the ONNX Runtime zip file
-task downloadOnnxruntime(type: Download) {
-    src 'https://repo1.maven.org/maven2/com/microsoft/onnxruntime/onnxruntime-android/1.17.3/onnxruntime-android-1.17.3.aar'
-    dest layout.buildDirectory.file("onnxruntime-android-1.17.3.aar")
+task downloadOnnxruntime() {
+  def zipfile = layout.buildDirectory.file("onnxruntime.zip")
+  download.run {
+    src "https://repo1.maven.org/maven2/com/microsoft/onnxruntime/onnxruntime-android/1.17.3/onnxruntime-android-1.17.3.aar"
+    dest zipfile
     overwrite false
-}
-task extractOnnxruntime(dependsOn: downloadOnnxruntime, type: Copy) {
-    from zipTree(downloadOnnxruntime.dest)
+  }
+  copy {
+    from zipTree(zipfile)
     into layout.buildDirectory.dir("onnxruntime")
+  }
 }
-preBuild.dependsOn extractOnnxruntime
-extractOnnxruntime.mustRunAfter extractOpenCV
+preBuild.dependsOn downloadOnnxruntime
+downloadOnnxruntime.mustRunAfter downloadOpenCV
