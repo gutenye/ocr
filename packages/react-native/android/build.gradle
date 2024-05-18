@@ -125,7 +125,7 @@ dependencies {
 if (isNewArchitectureEnabled()) {
   react {
     jsRootDir = file("../src/")
-    libraryName = "Ocr"
+    libraryName = "RNOcr"
     codegenJavaPackageName = "com.ocr"
   }
 }
