@@ -4,8 +4,9 @@
 
 std::unique_ptr<NativeOcr> _ocr;
 
-extern "C" JNIEXPORT void JNICALL Java_com_ocr_RNOcrModule_nativeCreate(JNIEnv *env, jclass type, jobject options) {
-  _ocr = std::make_unique<NativeOcr>();
+extern "C" JNIEXPORT void JNICALL Java_com_ocr_RNOcrModule_nativeCreate(JNIEnv *env, jclass type, jobject rawOptions) {
+    std::unordered_map<std::string, std::any> options {};
+    _ocr = std::make_unique<NativeOcr>(options);
 }
 
 extern "C" JNIEXPORT jobject JNICALL Java_com_ocr_RNOcrModule_nativeDetect(JNIEnv *env, jclass type,
