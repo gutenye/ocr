@@ -25,6 +25,6 @@ include_directories(
 target_link_libraries(
   ${PROJECT_NAME} 
   ${OpenCV_LIBS}
-  ${CMAKE_SOURCE_DIR}/build/onnxruntime/jni/${CMAKE_ANDROID_ARCH_ABI}/libonnxruntime4j_jni.so
+  ${CMAKE_SOURCE_DIR}/build/onnxruntime/jni/${CMAKE_ANDROID_ARCH_ABI}/libonnxruntime.so
 )
 
