@@ -4,7 +4,7 @@ project(guten-ocr)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(OpenCV_DIR "${CMAKE_SOURCE_DIR}/build/OpenCV-android-sdk/sdk/native/jni")
+set(OpenCV_DIR "${CMAKE_SOURCE_DIR}/build/opencv-mobile-4.9.0-android/sdk/native/jni")
 
 find_package(OpenCV REQUIRED)
 
