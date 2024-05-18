@@ -11,11 +11,17 @@ class OcrModule internal constructor(context: ReactApplicationContext) :
     return NAME
   }
 
+  init {
+    System.loadLibrary("react-native-ocr")
+  }
+
+  external fun nativeMultiply(a: Double, b: Double): Double
+
   // Example method
   // See https://reactnative.dev/docs/native-modules-android
   @ReactMethod
   override fun multiply(a: Double, b: Double, promise: Promise) {
-    promise.resolve(a + 1)
+    promise.resolve(nativeMultiply(a, b))
   }
 
   companion object {
