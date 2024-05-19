@@ -28,6 +28,7 @@ const Ocr = OcrModule
 // @ts-ignore
 const jsiModule: {
   create(options: OcrOptions): Promise<void>
+  detect(imagePath: string): Promise<string[]>
 } = global
 
 if (Platform.OS === 'android' && !jsiModule.create) {

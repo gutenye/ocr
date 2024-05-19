@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <iostream>
 #include "convert-jsi.h"
+#include "convert-std.h"
 #include "native-ocr.h"
 
 #define LOG_TAG "RNOcrModule"
@@ -48,15 +49,19 @@ void install(Runtime &runtime) {
         return Value::undefined();
       });
   runtime.global().setProperty(runtime, "create", std::move(create));
-}
 
-// extern "C" JNIEXPORT jobject JNICALL Java_com_ocr_RNOcrModule_nativeDetect(JNIEnv *env, jclass type,
-//                                                                            jstring rawImagePath) {
-//   // const char *imagePath = env->GetStringUTFChars(rawImagePath, 0);
-//   // auto lines = _ocr->detect(imagePath);
-//   // env->ReleaseStringUTFChars(rawImagePath, imagePath);
-//   // return convertStdVector(lines);
-// }
+  auto detect = Function::createFromHostFunction(
+      runtime, PropNameID::forAscii(runtime, "detect"), 1,
+      [](Runtime &runtime, const Value &thisValue, const Value *arguments, size_t count) -> Value {
+        if (count != 1 || !arguments[0].isString()) {
+          throw JSError(runtime, "ocr.detect: Expected a single imagePath argument");
+        }
+        auto imagePath = arguments[0].asString(runtime).utf8(runtime);
+        auto lines = _ocr->detect(imagePath);
+        return convertStdVector(runtime, lines);
+      });
+  runtime.global().setProperty(runtime, "detect", std::move(detect));
+}
 
 extern "C" JNIEXPORT void JNICALL Java_com_ocr_RNOcrModule_nativeInstall(JNIEnv *env, jobject thiz, jlong jsi,
                                                                          jstring assetDir, jstring outputDir) {

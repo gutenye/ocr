@@ -1,12 +1,14 @@
 import Ocr from '@gutenye/ocr-react-native'
 import * as FileSystem from 'expo-file-system'
 import { useEffect, useState } from 'react'
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Image, Platform, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { ImagePickerButton } from './ImagePickerButton'
 import type { ImageDetails } from './types'
 
-const DEFAULT_IMAGE = `${FileSystem.bundleDirectory}/guten-ocr.bundle/cn-01.jpg`
+const isIos = Platform.OS === 'ios'
+
+const DEFAULT_IMAGE = `${isIos ? FileSystem.bundleDirectory : FileSystem.cacheDirectory}/guten-ocr.bundle/cn-01.jpg`
 const IS_DEBUG = true
 const OUTPUT_DIR = FileSystem.cacheDirectory
 
@@ -21,7 +23,7 @@ export default function App() {
         isDebug: IS_DEBUG,
         recognitionImageMaxSize: -1,
       })
-      // setOcr(ocr)
+      setOcr(ocr)
     })()
   }, [])
 
