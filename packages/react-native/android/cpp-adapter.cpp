@@ -1,9 +1,10 @@
 #include <jni.h>
+#include <jsi/jsi.h>
+// #include <memory>
 #include "convert-j.h"
 // #include "convert-std.h"
 #include <android/log.h>
-#include <fbjni/fbjni.h>
-#include <jsi/jsi.h>
+// #include <fbjni/fbjni.h>
 #include <iostream>
 #include "native-ocr.h"
 
@@ -13,23 +14,11 @@
 
 std::unique_ptr<NativeOcr> _ocr;
 
-using namespace facebook::jni;
 using namespace facebook::jsi;
 
-static void nativeCreate(alias_ref<JReadableMap> options) {
-  for (auto entry : options) {
-    LOGI("key: %s", entry.first.toString());
-    // std::string key = entry.first->toString()->toStdString();
-    // std::string value = entry.second->toString()->toStdString();
-  }
-
-  // auto cplusplusMap = options->toStdUnorderedMap();
-  // Further processing with the C++ unordered_map
-}
+void install(Runtime &runtime);
 
 extern "C" JNIEXPORT void JNICALL Java_com_ocr_RNOcrModule_nativeCreate(JNIEnv *env, jclass type, jobject rawOptions) {
-  nativeCreate(make_local(options));
-
   // auto readableMap = adopt_local(static_ref_cast<JMap<jstring, jobject>::javaobject>(rawOptions));
 
   //   auto options = convertReadableMap(env, rawOptions);
@@ -42,4 +31,23 @@ extern "C" JNIEXPORT jobject JNICALL Java_com_ocr_RNOcrModule_nativeDetect(JNIEn
   // auto lines = _ocr->detect(imagePath);
   // env->ReleaseStringUTFChars(rawImagePath, imagePath);
   // return convertStdVector(lines);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_com_ocr_RNOcrModule_nativeInstall(JNIEnv *env, jobject thiz, jlong jsi) {
+  auto runtime = reinterpret_cast<Runtime *>(jsi);
+  install(*runtime);
+  // JavaVM *java_vm;
+  // jobject java_object;
+  // env->GetJavaVM(&java_vm);
+  // java_object = env->NewGlobalRef(thiz);
+}
+
+void install(Runtime &runtime) {
+  auto helloWorld = Function::createFromHostFunction(
+      runtime, PropNameID::forAscii(runtime, "helloWorld"), 0,
+      [](Runtime &runtime, const Value &thisValue, const Value *arguments, size_t count) -> Value {
+        return String::createFromAscii(runtime, "Hello from C++!");
+      });
+
+  runtime.global().setProperty(runtime, "helloWorld", std::move(helloWorld));
 }

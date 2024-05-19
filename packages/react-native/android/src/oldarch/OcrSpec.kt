@@ -11,4 +11,6 @@ abstract class RNOcrSpec internal constructor(context: ReactApplicationContext) 
   abstract fun create(options: ReadableMap, promise: Promise)
 
   abstract fun detect(imagePath: String, promise: Promise)
+
+  abstract fun install()
 }
