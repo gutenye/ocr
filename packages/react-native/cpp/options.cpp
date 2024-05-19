@@ -31,19 +31,26 @@ Options convertRawOptions(std::unordered_map<std::string, std::any>& rawOptions)
   if (rawOptions.count("detectionuseDirectionClassify") > 0) {
     options.detection_use_direction_classify = std::any_cast<bool>(rawOptions.at("detectionuseDirectionClassify"));
   }
+  if (rawOptions.count("models") == 0) {
+    throw std::runtime_error("Ocr.create options.models is required.");
+  }
   auto rawModels = std::any_cast<std::unordered_map<std::string, std::any>>(rawOptions.at("models"));
   auto& models = options.models;
-  if (rawModels.count("detectionModelPath") > 0) {
-    models.detection_model_path = std::any_cast<std::string>(rawModels.at("detectionModelPath"));
+  if (rawModels.count("detectionModelPath") == 0) {
+    throw std::runtime_error("Ocr.create options.models.detectionModelPath is required.");
   }
-  if (rawModels.count("recognitionModelPath") > 0) {
-    models.recognition_model_path = std::any_cast<std::string>(rawModels.at("recognitionModelPath"));
+  models.detection_model_path = std::any_cast<std::string>(rawModels.at("detectionModelPath"));
+  if (rawModels.count("recognitionModelPath") == 0) {
+    throw std::runtime_error("Ocr.create options.models.recognitionModelPath is required.");
   }
-  if (rawModels.count("classififerModelPath") > 0) {
-    models.classifier_model_path = std::any_cast<std::string>(rawModels.at("classififerModelPath"));
+  models.recognition_model_path = std::any_cast<std::string>(rawModels.at("recognitionModelPath"));
+  if (rawModels.count("classififerModelPath") == 0) {
+    throw std::runtime_error("Ocr.create options.models.classifierModelPath is required.");
   }
-  if (rawModels.count("dictionaryPath") > 0) {
-    models.dictionary_path = std::any_cast<std::string>(rawModels.at("dictionaryPath"));
+  models.classifier_model_path = std::any_cast<std::string>(rawModels.at("classififerModelPath"));
+  if (rawModels.count("dictionaryPath") == 0) {
+    throw std::runtime_error("Ocr.create options.models.dictionaryPath is required.");
   }
+  models.dictionary_path = std::any_cast<std::string>(rawModels.at("dictionaryPath"));
   return options;
 }
