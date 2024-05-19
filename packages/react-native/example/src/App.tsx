@@ -18,7 +18,8 @@ export default function App() {
   useEffect(() => {
     ;(async () => {
       const ocr = await Ocr.create({
-        isDebug: IS_DEBUG,
+        // isDebug: IS_DEBUG,
+        isDebug: false,
         // recognitionImageMaxSize: -1,
       })
       setOcr(ocr)
