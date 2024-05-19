@@ -1,10 +1,8 @@
 #include <jni.h>
 #include <jsi/jsi.h>
-// #include <memory>
 #include "convert-j.h"
 // #include "convert-std.h"
 #include <android/log.h>
-// #include <fbjni/fbjni.h>
 #include <iostream>
 #include "native-ocr.h"
 
