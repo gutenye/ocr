@@ -47,8 +47,6 @@ def supportsNamespace() {
   return (major == 7 && minor >= 3) || major >= 8
 }
 
-
-
 android {
   if (supportsNamespace()) {
     namespace "com.ocr"
@@ -70,8 +68,7 @@ android {
     externalNativeBuild {
       cmake {
         cppFlags "-O2 -frtti -fexceptions -Wall -fstack-protector-all"
-        abiFilters 'x86', 'armeabi-v7a', 'arm64-v8a', 'x86_64'
-                arguments "-DANDROID_STL=c++_shared"
+        arguments "-DANDROID_STL=c++_shared"
       }
     }
   }
@@ -86,22 +83,6 @@ android {
     buildConfig true
     prefab true
   }
-
-dependencies {
-    // implementation 'com.facebook.fbjni:fbjni:0.2.2'
-      implementation 'com.facebook.fbjni:fbjni:0.6.0'
-  }
-  // configurations {
-  //   all*.exclude module: 'fbjni-java-only'
-  // }
-
-  // prefab {
-  //   fbjni {
-  //     headers "com/facebook"
-  //     library "fbjni"
-  //     binary "libfbjni.so"
-  //   }
-  // }
 
   buildTypes {
     release {
@@ -131,7 +112,6 @@ dependencies {
       }
     }
   }
-
 }
 
 repositories {
@@ -147,17 +127,8 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  // implementation 'com.facebook.fbjni:fbjni:0.6.0'
-    // The fbjni version should align to the version used in React Native
-    // React Native 0.71 will have fbjni 0.3.0
-  // compileOnly 'com.facebook.fbjni:fbjni:0.3.0'
-  // implementation 'com.facebook.fbjni:fbjni-java-only:0.2.2'
-  // implementation 'com.android.ndk.thirdparty:curl:7.68.0-alpha-1'
-  // implementation 'com.android.ndk.thirdparty:jsoncpp:1.8.4-alpha-1'
-
+  implementation 'com.facebook.fbjni:fbjni:0.6.0'
 }
-
-
 
 if (isNewArchitectureEnabled()) {
   react {
