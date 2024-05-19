@@ -20,7 +20,7 @@ RCT_EXPORT_METHOD(create
 
     NSMutableDictionary *rawOptions = [rawReadonlyOptions mutableCopy];
     if (!rawOptions[@"outputDir"]) {
-      rawOptions[@"outputDir"] = cacheDir;
+      rawOptions[@"outputDir"] = [cacheDir stringByAppendingString:@"/guten-ocr.outputs"];
     }
     if (!rawOptions[@"models"]) {
       rawOptions[@"models"] = [NSMutableDictionary dictionary];

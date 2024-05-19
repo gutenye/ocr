@@ -44,6 +44,6 @@ any convertJsiValue(Runtime& runtime, const Value& value) {
       return convertJsiObject(runtime, obj);
     }
   } else {
-    throw JSError(runtime, "Unsupported type of property value");
+    throw JSError(runtime, "convertJsiValue type is not supported");
   }
 }

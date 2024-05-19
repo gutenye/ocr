@@ -1,14 +1,12 @@
 package com.ocr
 
-import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
-import com.facebook.react.bridge.ReadableArray
-import com.facebook.react.bridge.ReadableMap
 import java.io.File
 import java.io.FileOutputStream
 
 const val BUNDLE_DIR = "guten-ocr.bundle"
+const val OUTPUT_DIR = "guten-ocr.outputs"
 
 class RNOcrModule internal constructor(private val context: ReactApplicationContext) :
     RNOcrSpec(context) {
@@ -21,11 +19,14 @@ class RNOcrModule internal constructor(private val context: ReactApplicationCont
   }
 
   external fun nativeInstall(jsiPtr: Long, assetDir: String, outputDir: String)
-  external fun nativeCreate(options: ReadableMap)
-  external fun nativeDetect(imagePath: String): ReadableArray
 
   override fun getName(): String {
     return NAME
+  }
+
+  override fun initialize() {
+    copyAssetToCacheDir()
+    install()
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
@@ -36,62 +37,16 @@ class RNOcrModule internal constructor(private val context: ReactApplicationCont
       // CallInvokerHolderImpl
 
       if (jsContext === null || jsContext.get() == 0L) {
-        println("error")
-        // Log.e("OcrModule", "JSI Runtime is not available in legacy chrome console")
+        println("GutenOCR: JSI Runtime is not available in legacy chrome console")
         return
       }
 
       val assetDir = "${context.cacheDir}/${BUNDLE_DIR}"
-      val outputDir = "${context.cacheDir}/guten-ocr.outputs"
-
+      val outputDir = "${context.cacheDir}/${OUTPUT_DIR}"
       nativeInstall(jsContext.get(), assetDir, outputDir)
-    } catch (e: Exception) {
-      println("error: $e")
+    } catch (exception: Exception) {
+      println("GutenOCR: $exception")
     }
-  }
-
-  // @ReactMethod
-  // override fun create(rawOptions: ReadableMap, promise: Promise) {
-  //   try {
-  //      val options = Arguments.createMap().apply { merge(rawOptions) }
-  //      if (!options.hasKey("outputDir")) {
-  //        var outputDir = "${context.cacheDir}/guten-ocr.outputs"
-  //        options.putString("outputDir", outputDir)
-  //        File(outputDir).mkdirs()
-  //      }
-  //      if (!options.hasKey("models")) {
-  //        val assetDir = "${context.cacheDir}/${BUNDLE_DIR}"
-  //        val models = Arguments.createMap()
-  //        models.putString("detectionModelPath", "$assetDir/ch_PP-OCRv4_det_infer.onnx")
-  //        models.putString("recognitionModelPath", "$assetDir/ch_PP-OCRv4_rec_infer.onnx")
-  //        models.putString("classifierModelPath",
-  // "$assetDir/ch_ppocr_mobile_v2.0_cls_infer.onnx")
-  //        models.putString("dictionaryPath", "$assetDir/ppocr_keys_v1.txt")
-  //        options.putMap("models", models)
-  //  }
-  //     val options = Arguments.createMap().apply {}
-  //     options.putString("a", "1")
-  //     println("kotlin options: $options")
-  //     // nativeCreate(options)
-  //     promise.resolve(null)
-  //   } catch (e: Exception) {
-  //     promise.reject("RNOcrModule", "create: ${e.message}")
-  //   }
-  // }
-
-  @ReactMethod
-  override fun detect(imagePath: String, promise: Promise) {
-    try {
-      val result = nativeDetect(imagePath)
-      promise.resolve(result)
-    } catch (e: Exception) {
-      promise.reject("RNOcrModule", "detect: ${e.message}")
-    }
-  }
-
-  override fun initialize() {
-    copyAssetToCacheDir()
-    install()
   }
 
   private fun copyAssetToCacheDir() {

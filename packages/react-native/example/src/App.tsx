@@ -9,8 +9,8 @@ import type { ImageDetails } from './types'
 const isIos = Platform.OS === 'ios'
 
 const DEFAULT_IMAGE = `${isIos ? FileSystem.bundleDirectory : FileSystem.cacheDirectory}/guten-ocr.bundle/cn-01.jpg`
+const OUTPUT_DIR = `${FileSystem.cacheDirectory}/guten-ocr.outputs`
 const IS_DEBUG = true
-const OUTPUT_DIR = FileSystem.cacheDirectory
 
 export default function App() {
   const [ocr, setOcr] = useState<Ocr>()
@@ -21,7 +21,7 @@ export default function App() {
     ;(async () => {
       const ocr = await Ocr.create({
         isDebug: IS_DEBUG,
-        recognitionImageMaxSize: -1,
+        // recognitionImageMaxSize: -1,
       })
       setOcr(ocr)
     })()
@@ -52,7 +52,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeAreaView}>
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView>
           <ImagePickerButton onChange={handleChange} />
           {imagePath && <Image source={{ uri: imagePath }} style={styles.image} />}
           {resultLines.length > 0 && <Text>{resultLines.join('\n')}</Text>}
@@ -62,18 +62,8 @@ export default function App() {
               {resultLines.map((_, index) => (
                 <View key={index}>
                   {/* <Image
-                    source={{ uri: `${OUTPUT_DIR}/line-${index}.jpg` }}
-                    style={{
-                      height: 32,
-                      objectFit: 'contain',
-                    }}
-                  /> */}
-                  {/* <Image
                     source={{ uri: `${OUTPUT_DIR}/line-${index}-resized.jpg` }}
-                    style={{
-                      height: 32,
-                      objectFit: 'contain',
-                    }}
+                    style={styles.lineImage}
                   /> */}
                 </View>
               ))}
@@ -89,15 +79,13 @@ const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
   },
-  container: {
-    // justifyContent: 'flex-start',
-    // flex: 1,
-    // alignItems: 'center',
-    // justifyContent: 'center',
-  },
   image: {
     aspectRatio: 1,
     width: '100%',
+    objectFit: 'contain',
+  },
+  lineImage: {
+    height: 32,
     objectFit: 'contain',
   },
 })
