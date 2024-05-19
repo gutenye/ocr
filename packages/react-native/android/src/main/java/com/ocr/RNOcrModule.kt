@@ -68,7 +68,7 @@ class RNOcrModule internal constructor(private val context: ReactApplicationCont
   // "$assetDir/ch_ppocr_mobile_v2.0_cls_infer.onnx")
   //        models.putString("dictionaryPath", "$assetDir/ppocr_keys_v1.txt")
   //        options.putMap("models", models)
-  //      }
+  //  }
   //     val options = Arguments.createMap().apply {}
   //     options.putString("a", "1")
   //     println("kotlin options: $options")
