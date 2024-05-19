@@ -21,7 +21,6 @@
     "!android/local.properties",
     "cpp",
     "!cpp/example",
-    "tsconfig.json",
     "*.podspec",
     "!**/__tests__",
     "!**/__fixtures__",

@@ -16,7 +16,7 @@
     "react-native": "./src/index.ts",
     "default": "./src/index.ts"
   },
-  "files": ["src", "build", "tsconfig.json", "!**/__tests__"],
+  "files": ["src", "build", "!**/__tests__"],
   "scripts": {
     "prepublishOnly": "cp ../../README.md . && ./ake build",
     "postpublish": "rm README.md && rm -rf build"

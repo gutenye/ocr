@@ -2,10 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "#common/*": ["./packages/common/src/*"],
-      "#browser/*": ["./packages/browser/src/*"],
-      "#node/*": ["./packages/node/src/*"],
-      "#react-native/*": ["./packages/react-native/src/*"]
+      "#common/*": ["./packages/common/src/*"]
     },
     "lib": ["ESNext", "DOM"],
     "target": "ESNext",
