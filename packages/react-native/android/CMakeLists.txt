@@ -18,13 +18,6 @@ add_library(
 )
 
 include_directories(
-  # "${NODE_MODULES_DIR}/react-native/ReactCommon"
-  # "${NODE_MODULES_DIR}/react-native/ReactCommon/callinvoker"
-  # "${NODE_MODULES_DIR}/react-native/ReactAndroid/src/main/jni/react/turbomodule" # <-- CallInvokerHolder JNI wrapper
-
-  # "${NODE_MODULES_DIR}/react-native/React"
-  # "${NODE_MODULES_DIR}/react-native/React/Base"
-  # "${NODE_MODULES_DIR}/react-native/ReactCommon/jsi"
   ../cpp
   ${OpenCV_INCLUDE_DIRS}
   ${CMAKE_SOURCE_DIR}/build/onnxruntime/headers

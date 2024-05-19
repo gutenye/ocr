@@ -1,9 +1,6 @@
+#include <android/log.h>
 #include <jni.h>
 #include <jsi/jsi.h>
-#include "convert-j.h"
-// #include "convert-std.h"
-#include <android/log.h>
-#include <filesystem>
 #include <iostream>
 #include "convert-jsi.h"
 #include "convert-std.h"
@@ -14,7 +11,6 @@
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
 using namespace facebook::jsi;
-namespace fs = std::filesystem;
 
 std::unique_ptr<NativeOcr> _ocr;
 std::string _assetDir;
@@ -23,7 +19,6 @@ std::string _outputDir;
 void processOptions(std::unordered_map<std::string, std::any> &options) {
   if (options.count("outputDir") == 0) {
     options["outputDir"] = _outputDir;
-    fs::create_directories(_outputDir);
   }
   if (options.count("models") == 0) {
     std::unordered_map<std::string, std::any> models {

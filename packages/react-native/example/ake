@@ -24,3 +24,13 @@ def --wrapped 'main add' [...args] {
 def 'main android-studio' [] {
   ^open -a 'Android Studio'
 }
+
+def 'main simulator a' [name?: string = platforms ] {
+  emulator $'@($name)' -dns-server 8.8.8.8
+  sleep 10sec
+  main fix a
+}
+
+def 'main fix a' [] {
+  adb reverse tcp:8081 tcp:8081
+}

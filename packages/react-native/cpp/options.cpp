@@ -1,6 +1,9 @@
 
 #include "options.h"
+#include <filesystem>
 #include <iostream>
+
+namespace fs = std::filesystem;
 
 Options convertRawOptions(std::unordered_map<std::string, std::any>& rawOptions) {
   Options options {};
@@ -9,6 +12,7 @@ Options convertRawOptions(std::unordered_map<std::string, std::any>& rawOptions)
   }
   if (rawOptions.count("outputDir") > 0) {
     options.output_dir = std::any_cast<std::string>(rawOptions.at("outputDir"));
+    fs::create_directories(options.output_dir);
   }
   if (rawOptions.count("recognitionImageMaxSize") > 0) {
     options.recognition_image_max_size = std::any_cast<double>(rawOptions.at("recognitionImageMaxSize"));
