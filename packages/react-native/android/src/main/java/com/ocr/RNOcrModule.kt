@@ -89,6 +89,7 @@ class RNOcrModule internal constructor(private val context: ReactApplicationCont
 
   override fun initialize() {
     copyAssetToCacheDir()
+    install()
   }
 
   private fun copyAssetToCacheDir() {
