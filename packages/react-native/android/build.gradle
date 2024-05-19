@@ -119,16 +119,16 @@ android {
   }
 
   packagingOptions {
-    doNotStrip resolveBuildType() == 'debug' ? "**/**/*.so" : ''
+    // doNotStrip resolveBuildType() == 'debug' ? "**/**/*.so" : ''
     excludes = [
-      "META-INF",
-      "META-INF/**",
+      // "META-INF",
+      // "META-INF/**",
       "**/libfbjni.so",
       "**/libjsi.so",
-      "**/libreact_nativemodule_core.so",
+      // "**/libreact_nativemodule_core.so",
       "**/libreactnativejni.so",
       "**/libturbomodulejsijni.so",
-      "**/libc++_shared.so"
+      // "**/libc++_shared.so"
     ]
   }
 }

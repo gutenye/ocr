@@ -2,7 +2,7 @@ import OcrModule from './OcrModule'
 import type { OcrOptions } from './types'
 
 export class Ocr {
-  static async foo() {
+  static async install() {
     OcrModule.install()
     console.log(':: foo hello', global.helloWorld())
   }

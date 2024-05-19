@@ -9,7 +9,6 @@ set(OpenCV_DIR "${CMAKE_SOURCE_DIR}/build/opencv-mobile-4.9.0-android/sdk/native
 file(GLOB SOURCES "./*.cpp" "../cpp/*.cpp")
 
 find_package(OpenCV REQUIRED)
-find_package(fbjni REQUIRED CONFIG)
 find_package(ReactAndroid REQUIRED CONFIG)
 
 add_library(
@@ -18,11 +17,10 @@ add_library(
   ${SOURCES}
 )
 
-
 include_directories(
-  "${NODE_MODULES_DIR}/react-native/ReactCommon"
-  "${NODE_MODULES_DIR}/react-native/ReactCommon/callinvoker"
-  "${NODE_MODULES_DIR}/react-native/ReactAndroid/src/main/jni/react/turbomodule" # <-- CallInvokerHolder JNI wrapper
+  # "${NODE_MODULES_DIR}/react-native/ReactCommon"
+  # "${NODE_MODULES_DIR}/react-native/ReactCommon/callinvoker"
+  # "${NODE_MODULES_DIR}/react-native/ReactAndroid/src/main/jni/react/turbomodule" # <-- CallInvokerHolder JNI wrapper
 
   # "${NODE_MODULES_DIR}/react-native/React"
   # "${NODE_MODULES_DIR}/react-native/React/Base"
@@ -38,7 +36,5 @@ target_link_libraries(
   ${CMAKE_SOURCE_DIR}/build/onnxruntime/jni/${CMAKE_ANDROID_ARCH_ABI}/libonnxruntime.so
   ReactAndroid::jsi
   ReactAndroid::reactnativejni
-  android
-  fbjni::fbjni 
 )
 
