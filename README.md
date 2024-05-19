@@ -14,7 +14,7 @@ Based on [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR), supports PP-OCR
 
 ```ts
 bun add @gutenye/ocr-node
-import Ocr from '@guenye/ocr-node'
+import Ocr from '@gutenye/ocr-node'
 const ocr = await Ocr.create()
 const result = await ocr.detect('a.jpg')
 ```
