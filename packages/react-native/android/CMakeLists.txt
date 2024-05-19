@@ -6,14 +6,8 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(OpenCV_DIR "${CMAKE_SOURCE_DIR}/build/opencv-mobile-4.9.0-android/sdk/native/jni")
 
-set(build_DIR ${CMAKE_SOURCE_DIR}/build)
-
 find_package(OpenCV REQUIRED)
-# find_package(curl REQUIRED CONFIG)
 find_package(fbjni REQUIRED CONFIG)
-# find_package(jsoncpp REQUIRED CONFIG)
-
-
 
 file(GLOB SOURCES "./*.cpp" "../cpp/*.cpp")
 
