@@ -88,8 +88,14 @@ ocr.detect(imagePath, {
 
 ## Development
 
-- [Development](docs/Development.md)
+- Requires Git LFS to clone the repo
 
+```sh
+brew install git-lfs 
+git clone git@github.com:gutenye/ocr.git
+```
+
+- [Development](docs/Development.md)
 
 ## Related Projects
 
