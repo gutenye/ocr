@@ -3,8 +3,8 @@ import type { OcrOptions } from './types'
 
 export class Ocr {
   static async install() {
-    OcrModule.install()
-    console.log(':: foo hello', global.helloWorld())
+    // OcrModule.install()
+    console.log(':: foo hello', OcrModule.helloWorld())
   }
 
   // default options is at shared.h

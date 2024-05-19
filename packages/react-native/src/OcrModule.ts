@@ -24,4 +24,15 @@ const Ocr = OcrModule
       },
     )
 
-export default Ocr
+// @ts-ignore
+const jsiModule: {
+  helloWorld(): string
+} = global
+
+if (Platform.OS === 'android' && !jsiModule.helloWorld) {
+  throw new Error(`${pkg.name}: failed to load JSI module`)
+}
+
+const module = Platform.OS === 'ios' ? Ocr : jsiModule
+
+export default module
