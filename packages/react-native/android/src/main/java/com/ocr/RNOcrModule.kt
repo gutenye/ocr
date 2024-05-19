@@ -1,6 +1,5 @@
 package com.ocr
 
-import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
@@ -21,7 +20,7 @@ class RNOcrModule internal constructor(private val context: ReactApplicationCont
     }
   }
 
-  external fun nativeInstall(jsiPtr: Long)
+  external fun nativeInstall(jsiPtr: Long, assetDir: String, outputDir: String)
   external fun nativeCreate(options: ReadableMap)
   external fun nativeDetect(imagePath: String): ReadableArray
 
@@ -36,46 +35,49 @@ class RNOcrModule internal constructor(private val context: ReactApplicationCont
       // val jsCallInvokerHolder = context.catalystInstance.jsCallInvokerHolder as
       // CallInvokerHolderImpl
 
-      if (jsContext !== null && jsContext.get() != 0L) {
-        nativeInstall(jsContext.get())
-        return
-      } else {
+      if (jsContext === null || jsContext.get() == 0L) {
         println("error")
-        // Log.e("RNMMKVModule", "JSI Runtime is not available in legacy chrome console")
+        // Log.e("OcrModule", "JSI Runtime is not available in legacy chrome console")
+        return
       }
+
+      val assetDir = "${context.cacheDir}/${BUNDLE_DIR}"
+      val outputDir = "${context.cacheDir}/guten-ocr.outputs"
+
+      nativeInstall(jsContext.get(), assetDir, outputDir)
     } catch (e: Exception) {
       println("error: $e")
     }
   }
 
-  @ReactMethod
-  override fun create(rawOptions: ReadableMap, promise: Promise) {
-    try {
-      //      val options = Arguments.createMap().apply { merge(rawOptions) }
-      //      if (!options.hasKey("outputDir")) {
-      //        var outputDir = "${context.cacheDir}/guten-ocr.outputs"
-      //        options.putString("outputDir", outputDir)
-      //        File(outputDir).mkdirs()
-      //      }
-      //      if (!options.hasKey("models")) {
-      //        val assetDir = "${context.cacheDir}/${BUNDLE_DIR}"
-      //        val models = Arguments.createMap()
-      //        models.putString("detectionModelPath", "$assetDir/ch_PP-OCRv4_det_infer.onnx")
-      //        models.putString("recognitionModelPath", "$assetDir/ch_PP-OCRv4_rec_infer.onnx")
-      //        models.putString("classifierModelPath",
-      // "$assetDir/ch_ppocr_mobile_v2.0_cls_infer.onnx")
-      //        models.putString("dictionaryPath", "$assetDir/ppocr_keys_v1.txt")
-      //        options.putMap("models", models)
-      //      }
-      val options = Arguments.createMap().apply {}
-      options.putString("a", "1")
-      println("kotlin options: $options")
-      // nativeCreate(options)
-      promise.resolve(null)
-    } catch (e: Exception) {
-      promise.reject("RNOcrModule", "create: ${e.message}")
-    }
-  }
+  // @ReactMethod
+  // override fun create(rawOptions: ReadableMap, promise: Promise) {
+  //   try {
+  //      val options = Arguments.createMap().apply { merge(rawOptions) }
+  //      if (!options.hasKey("outputDir")) {
+  //        var outputDir = "${context.cacheDir}/guten-ocr.outputs"
+  //        options.putString("outputDir", outputDir)
+  //        File(outputDir).mkdirs()
+  //      }
+  //      if (!options.hasKey("models")) {
+  //        val assetDir = "${context.cacheDir}/${BUNDLE_DIR}"
+  //        val models = Arguments.createMap()
+  //        models.putString("detectionModelPath", "$assetDir/ch_PP-OCRv4_det_infer.onnx")
+  //        models.putString("recognitionModelPath", "$assetDir/ch_PP-OCRv4_rec_infer.onnx")
+  //        models.putString("classifierModelPath",
+  // "$assetDir/ch_ppocr_mobile_v2.0_cls_infer.onnx")
+  //        models.putString("dictionaryPath", "$assetDir/ppocr_keys_v1.txt")
+  //        options.putMap("models", models)
+  //      }
+  //     val options = Arguments.createMap().apply {}
+  //     options.putString("a", "1")
+  //     println("kotlin options: $options")
+  //     // nativeCreate(options)
+  //     promise.resolve(null)
+  //   } catch (e: Exception) {
+  //     promise.reject("RNOcrModule", "create: ${e.message}")
+  //   }
+  // }
 
   @ReactMethod
   override fun detect(imagePath: String, promise: Promise) {
@@ -83,7 +85,7 @@ class RNOcrModule internal constructor(private val context: ReactApplicationCont
       val result = nativeDetect(imagePath)
       promise.resolve(result)
     } catch (e: Exception) {
-      promise.reject("JNI_EXCEPTION", "Error detecting text: ${e.message}")
+      promise.reject("RNOcrModule", "detect: ${e.message}")
     }
   }
 

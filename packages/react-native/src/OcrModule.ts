@@ -1,5 +1,6 @@
 import { NativeModules, Platform } from 'react-native'
 import pkg from '../package.json'
+import type { OcrOptions } from './types'
 
 const LINKING_ERROR = `
 The package '${pkg.name}' doesn't seem to be linked. Make sure:
@@ -26,10 +27,10 @@ const Ocr = OcrModule
 
 // @ts-ignore
 const jsiModule: {
-  helloWorld(): string
+  create(options: OcrOptions): Promise<void>
 } = global
 
-if (Platform.OS === 'android' && !jsiModule.helloWorld) {
+if (Platform.OS === 'android' && !jsiModule.create) {
   throw new Error(`${pkg.name}: failed to load JSI module`)
 }
 
