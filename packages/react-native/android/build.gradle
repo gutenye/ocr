@@ -125,6 +125,7 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  implementation 'com.facebook.fbjni:fbjni:0.2.2'
 }
 
 if (isNewArchitectureEnabled()) {
