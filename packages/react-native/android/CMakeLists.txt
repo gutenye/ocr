@@ -27,6 +27,6 @@ target_link_libraries(
   ${PROJECT_NAME} 
   ${OpenCV_LIBS}
   ${CMAKE_SOURCE_DIR}/build/onnxruntime/jni/${CMAKE_ANDROID_ARCH_ABI}/libonnxruntime.so
-  # fbjni::fbjni 
+  fbjni::fbjni 
 )
 

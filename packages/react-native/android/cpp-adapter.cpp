@@ -3,6 +3,7 @@
 // #include "convert-std.h"
 #include <android/log.h>
 #include <fbjni/fbjni.h>
+#include <jsi/jsi.h>
 #include <iostream>
 #include "native-ocr.h"
 
@@ -12,14 +13,24 @@
 
 std::unique_ptr<NativeOcr> _ocr;
 
-extern "C" JNIEXPORT void JNICALL Java_com_ocr_RNOcrModule_nativeCreate(JNIEnv *env, jclass type, jobject rawOptions) {
-  facebook::jni::LocalReference<facebook::jni::JMap> readableMap(env, rawOptions);
+using namespace facebook::jni;
+using namespace facebook::jsi;
 
-  for (auto entry : readableMap) {
-    std::string key = entry.first->toString()->toStdString();
-    std::string value = entry.second->toString()->toStdString();
-    LOGI("key: %s, value: %s", key.c_str(), value.c_str());
+static void nativeCreate(alias_ref<JReadableMap> options) {
+  for (auto entry : options) {
+    LOGI("key: %s", entry.first.toString());
+    // std::string key = entry.first->toString()->toStdString();
+    // std::string value = entry.second->toString()->toStdString();
   }
+
+  // auto cplusplusMap = options->toStdUnorderedMap();
+  // Further processing with the C++ unordered_map
+}
+
+extern "C" JNIEXPORT void JNICALL Java_com_ocr_RNOcrModule_nativeCreate(JNIEnv *env, jclass type, jobject rawOptions) {
+  nativeCreate(make_local(options));
+
+  // auto readableMap = adopt_local(static_ref_cast<JMap<jstring, jobject>::javaobject>(rawOptions));
 
   //   auto options = convertReadableMap(env, rawOptions);
   //   _ocr = std::make_unique<NativeOcr>(options);

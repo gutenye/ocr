@@ -1,11 +1,11 @@
 package com.ocr
 
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
-import com.facebook.react.bridge.WritableNativeMap // a
 import java.io.File
 import java.io.FileOutputStream
 
@@ -31,33 +31,25 @@ class RNOcrModule internal constructor(private val context: ReactApplicationCont
   @ReactMethod
   override fun create(rawOptions: ReadableMap, promise: Promise) {
     try {
-      // val options = Arguments.createMap().apply { merge(rawOptions) }
-      val options = WritableNativeMap()
+      val options = Arguments.createMap().apply { merge(rawOptions) }
+      if (!options.hasKey("outputDir")) {
+        var outputDir = "${context.cacheDir}/guten-ocr.outputs"
+        options.putString("outputDir", outputDir)
+        File(outputDir).mkdirs()
+      }
+      if (!options.hasKey("models")) {
+        val assetDir = "${context.cacheDir}/${BUNDLE_DIR}"
+        val models = Arguments.createMap()
+        models.putString("detectionModelPath", "$assetDir/ch_PP-OCRv4_det_infer.onnx")
+        models.putString("recognitionModelPath", "$assetDir/ch_PP-OCRv4_rec_infer.onnx")
+        models.putString("classifierModelPath", "$assetDir/ch_ppocr_mobile_v2.0_cls_infer.onnx")
+        models.putString("dictionaryPath", "$assetDir/ppocr_keys_v1.txt")
+        options.putMap("models", models)
+      }
+      val options = Arguments.createMap().apply {}
       options.putString("a", "1")
-      // options.hasKey("outputDir")
-      // options.hasKey("a")
-      options.putString("a", options.getString("a") ?: "3")
-      // println("a: $a")
-      // if (a) {
-      // if (true) {
-      // if (!options.hasKey("outputDir")) {
-      // println("if")
-      // options.putString("a", "2")
-      // var outputDir = "${context.cacheDir}/guten-ocr.outputs"
-      // options.putString("outputDir", outputDir)
-      // File(outputDir).mkdirs()
-      // }
-      // if (!options.hasKey("models")) {
-      //   val assetDir = "${context.cacheDir}/${BUNDLE_DIR}"
-      //   val models = Arguments.createMap()
-      //   models.putString("detectionModelPath", "$assetDir/ch_PP-OCRv4_det_infer.onnx")
-      //   models.putString("recognitionModelPath", "$assetDir/ch_PP-OCRv4_rec_infer.onnx")
-      //   models.putString("classifierModelPath", "$assetDir/ch_ppocr_mobile_v2.0_cls_infer.onnx")
-      //   models.putString("dictionaryPath", "$assetDir/ppocr_keys_v1.txt")
-      //   options.putMap("models", models)
-      // }
-      // println("kotlin options: $options")
-      nativeCreate(options)
+      println("kotlin options: $options")
+      // nativeCreate(options)
       promise.resolve(null)
     } catch (e: Exception) {
       promise.reject("RNOcrModule", "create: ${e.message}")
