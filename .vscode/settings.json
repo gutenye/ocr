@@ -9,8 +9,8 @@
     "quickfix.biome": "explicit"
   },
   "files.associations": {
-    "**/ios/*.h": "objective-cpp",
     "babel.config.json": "json5",
+    "**/ios/*.h": "objective-cpp",
     "string": "cpp",
     "vector": "cpp",
     "algorithm": "cpp",
@@ -88,7 +88,9 @@
     "valarray": "cpp",
     "variant": "cpp",
     "*.ipp": "cpp",
-    "format": "cpp"
+    "format": "cpp",
+    "type_traits": "cpp",
+    "__memory": "cpp"
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
