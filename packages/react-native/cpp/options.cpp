@@ -5,6 +5,7 @@
 Options convertRawOptions(std::unordered_map<std::string, std::any>& rawOptions) {
   Options options {};
   if (rawOptions.count("isDebug") > 0) {
+    throw std::runtime_error("isDebug");
     options.is_debug = std::any_cast<bool>(rawOptions.at("isDebug"));
   }
   if (rawOptions.count("outputDir") > 0) {

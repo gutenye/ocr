@@ -4,6 +4,7 @@
 // #include "convert-std.h"
 #include <android/log.h>
 #include <iostream>
+#include "convert-jsi.h"
 #include "native-ocr.h"
 
 #define LOG_TAG "RNOcrModule"
@@ -21,17 +22,16 @@ void install(Runtime &runtime) {
       runtime, PropNameID::forAscii(runtime, "create"), 1,
       [](Runtime &runtime, const Value &thisValue, const Value *arguments, size_t count) -> Value {
         LOGI("%s", _assetDir.c_str());
-        return String::createFromAscii(runtime, "Hello from C++!");
+        if (count != 1 || !arguments[0].isObject()) {
+          throw JSError(runtime, "Ocr.create: Expected a single options argument");
+        }
+        Object obj = arguments[0].asObject(runtime);
+        auto options = convertJsiObject(runtime, obj);
+        _ocr = std::make_unique<NativeOcr>(options);
+        return Value::undefined();
       });
   runtime.global().setProperty(runtime, "create", std::move(create));
 }
-
-// extern "C" JNIEXPORT void JNICALL Java_com_ocr_RNOcrModule_nativeCreate(JNIEnv *env, jclass type, jobject rawOptions)
-// { auto readableMap = adopt_local(static_ref_cast<JMap<jstring, jobject>::javaobject>(rawOptions));
-
-//   auto options = convertReadableMap(env, rawOptions);
-//   _ocr = std::make_unique<NativeOcr>(options);
-// }
 
 // extern "C" JNIEXPORT jobject JNICALL Java_com_ocr_RNOcrModule_nativeDetect(JNIEnv *env, jclass type,
 //                                                                            jstring rawImagePath) {
