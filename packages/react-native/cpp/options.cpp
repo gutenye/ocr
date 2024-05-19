@@ -5,7 +5,6 @@
 Options convertRawOptions(std::unordered_map<std::string, std::any>& rawOptions) {
   Options options {};
   if (rawOptions.count("isDebug") > 0) {
-    throw std::runtime_error("isDebug");
     options.is_debug = std::any_cast<bool>(rawOptions.at("isDebug"));
   }
   if (rawOptions.count("outputDir") > 0) {
@@ -45,10 +44,10 @@ Options convertRawOptions(std::unordered_map<std::string, std::any>& rawOptions)
     throw std::runtime_error("Ocr.create options.models.recognitionModelPath is required.");
   }
   models.recognition_model_path = std::any_cast<std::string>(rawModels.at("recognitionModelPath"));
-  if (rawModels.count("classififerModelPath") == 0) {
+  if (rawModels.count("classifierModelPath") == 0) {
     throw std::runtime_error("Ocr.create options.models.classifierModelPath is required.");
   }
-  models.classifier_model_path = std::any_cast<std::string>(rawModels.at("classififerModelPath"));
+  models.classifier_model_path = std::any_cast<std::string>(rawModels.at("classifierModelPath"));
   if (rawModels.count("dictionaryPath") == 0) {
     throw std::runtime_error("Ocr.create options.models.dictionaryPath is required.");
   }
