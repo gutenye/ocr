@@ -5,8 +5,11 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(OpenCV_DIR "${CMAKE_SOURCE_DIR}/build/opencv-mobile-4.9.0-android/sdk/native/jni")
+set(build_DIR ${CMAKE_SOURCE_DIR}/build)
 
 find_package(OpenCV REQUIRED)
+find_package(fbjni REQUIRED CONFIG)
+
 
 file(GLOB SOURCES "./*.cpp" "../cpp/*.cpp")
 
@@ -26,5 +29,6 @@ target_link_libraries(
   ${PROJECT_NAME} 
   ${OpenCV_LIBS}
   ${CMAKE_SOURCE_DIR}/build/onnxruntime/jni/${CMAKE_ANDROID_ARCH_ABI}/libonnxruntime.so
+  # fbjni::fbjni 
 )
 

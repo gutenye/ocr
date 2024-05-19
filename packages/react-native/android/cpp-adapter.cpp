@@ -2,6 +2,7 @@
 #include "convert-j.h"
 // #include "convert-std.h"
 #include <android/log.h>
+#include <fbjni/fbjni.h>
 #include <iostream>
 #include "native-ocr.h"
 
@@ -12,8 +13,16 @@
 std::unique_ptr<NativeOcr> _ocr;
 
 extern "C" JNIEXPORT void JNICALL Java_com_ocr_RNOcrModule_nativeCreate(JNIEnv *env, jclass type, jobject rawOptions) {
-  auto options = convertReadableMap(env, rawOptions);
-  _ocr = std::make_unique<NativeOcr>(options);
+  facebook::jni::LocalReference<facebook::jni::JMap> readableMap(env, rawOptions);
+
+  for (auto entry : readableMap) {
+    std::string key = entry.first->toString()->toStdString();
+    std::string value = entry.second->toString()->toStdString();
+    LOGI("key: %s, value: %s", key.c_str(), value.c_str());
+  }
+
+  //   auto options = convertReadableMap(env, rawOptions);
+  //   _ocr = std::make_unique<NativeOcr>(options);
 }
 
 extern "C" JNIEXPORT jobject JNICALL Java_com_ocr_RNOcrModule_nativeDetect(JNIEnv *env, jclass type,
