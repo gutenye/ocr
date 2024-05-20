@@ -13,7 +13,7 @@ def 'main start' [path?: string = './assets/cn-01.jpg'] {
 }
 
 def 'main run' [path: string] {
-  ./build/ocr_example $path
+  ./build/ocr $path
 }
 
 def 'main start watch' [] {

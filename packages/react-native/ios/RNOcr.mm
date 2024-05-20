@@ -19,8 +19,8 @@ RCT_EXPORT_METHOD(create
     id cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];
 
     NSMutableDictionary *rawOptions = [rawReadonlyOptions mutableCopy];
-    if (!rawOptions[@"outputDir"]) {
-      rawOptions[@"outputDir"] = [cacheDir stringByAppendingString:@"/guten-ocr.outputs"];
+    if (!rawOptions[@"debugOuputDir"]) {
+      rawOptions[@"debugOuputDir"] = [cacheDir stringByAppendingString:@"/guten-ocr.outputs"];
     }
     if (!rawOptions[@"models"]) {
       rawOptions[@"models"] = [NSMutableDictionary dictionary];
