@@ -14,21 +14,18 @@
 
 #include "detection_process.h"
 #include <cmath>
-#include <map>
 #include <memory>
-#include <string>
 #include <utility>
-#include <vector>
 #include "db_post_process.h"
 #include "timer.h"
 
 void resize_image(const cv::Mat image, cv::Mat &resized_image, Options &options);
 
-DetectionPredictor::DetectionPredictor(Options &options, const int cpu_thread_num, const std::string &cpu_power_mode)
+DetectionPredictor::DetectionPredictor(Options &options)
     : m_options {options}, m_onnx {Onnx(options.models.detection_model_path)} {}
 
 DetectionResult DetectionPredictor::predict(cv::Mat &image) {
-  ModelPerformance performance;
+  ModelPerformance performance {};
 
   cv::Mat source_image;
   image.copyTo(source_image);
@@ -38,12 +35,12 @@ DetectionResult DetectionPredictor::predict(cv::Mat &image) {
   auto preprocess_result = preprocess(image);
   timer.end();
   performance.preprocess_time = timer.get_average_ms();
+
   auto &model_input = preprocess_result.model_input;
   auto &resized_image = preprocess_result.resized_image;
 
   // Run predictor
   std::vector<int64_t> input_shape = {1, model_input.channels, model_input.height, model_input.width};
-
   timer.start();
   auto model_output = m_onnx.run(model_input.data, input_shape);
   timer.end();
@@ -60,8 +57,8 @@ DetectionResult DetectionPredictor::predict(cv::Mat &image) {
   return DetectionResult {.data = filter_boxes, .performance = performance};
 }
 
-PreprocessResult DetectionPredictor::preprocess(const cv::Mat &source_image) {
-  PreprocessResult result {};
+DetectionPreprocessResult DetectionPredictor::preprocess(const cv::Mat &source_image) {
+  DetectionPreprocessResult result {};
   resize_image(source_image, result.resized_image, m_options);
 
   cv::Mat model_data;

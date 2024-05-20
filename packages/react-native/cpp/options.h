@@ -20,7 +20,9 @@ struct Options {
   double detection_unclip_ratiop {1.6};
   bool detection_use_dilate {false};
   bool detection_use_polygon_score {true};
-  bool detection_use_direction_classify {true};
+  // TODO
+  // bool use_direction_classify {true};
+  bool use_direction_classify {false};
   OptionModels models {};
 };
 

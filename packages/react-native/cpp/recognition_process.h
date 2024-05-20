@@ -30,7 +30,7 @@ struct RecognitionResult {
 
 class RecognitionPredictor {
 public:
-  explicit RecognitionPredictor(Options &options, const int cpu_thread_num, const std::string &cpu_power_mode);
+  explicit RecognitionPredictor(Options &options);
 
   RecognitionResult predict(const cv::Mat &rgba_image, std::vector<std::string> charactor_dict, cv::Mat &resized_image);
 

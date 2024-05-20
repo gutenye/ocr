@@ -74,7 +74,7 @@ Ocr.create({
   detectionUnclipRatiop?: number // RN only
   detectionUseDilate?: boolean // RN only
   detectionUsePolygonScore?: boolean // RN only
-  detectionUseDirectionClassify?: boolean // RN only
+  useDirectionClassify?: boolean // RN only
   onnxOptions?: {}       // Node only. Pass to ONNX Runtime
 }): Promise<Ocr>
 
