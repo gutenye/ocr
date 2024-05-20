@@ -28,6 +28,8 @@
     "postpublish": "rm README.md && rm -rf build"
   },
   "dependencies": {
-    "tiny-invariant": "^1.3.3"
+    "tiny-invariant": "^1.3.3",
+    "@techstark/opencv-js": "^4.9.0-release.3",
+    "js-clipper": "^1.0.1"
   }
 }
