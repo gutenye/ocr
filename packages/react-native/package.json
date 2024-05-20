@@ -31,7 +31,8 @@
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
-    "prepublishOnly": "bob build",
+    "prepublishOnly": "cp ../../README.md . && ./ake build",
+    "postpublish": "rm README.md && rm -rf build",
     "release": "release-it"
   },
   "homepage": "https://github.com/gutenye/ocr",
@@ -85,6 +86,7 @@
   "react-native-builder-bob": {
     "source": "src",
     "output": "lib",
+    "exclude": "**/cpp/example/**",
     "targets": [
       "commonjs",
       "module",

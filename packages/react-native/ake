@@ -1,0 +1,16 @@
+#!/usr/bin/env nu
+
+alias bob = bun run bob
+
+def main [] {}
+
+def 'main build' [] {
+  do -i { bob build } 
+}
+
+
+def 'main publish' [] {
+  # build by scripts.prepublishOnly
+  npm publish
+}
+
