@@ -64,6 +64,7 @@ export interface ModelBaseConstructorArg {
 }
 
 export interface ModelBaseOptions {
+  isDebug?: boolean
   debugOutputDir?: string
 }
 
