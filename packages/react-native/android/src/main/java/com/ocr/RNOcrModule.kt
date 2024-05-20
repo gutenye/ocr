@@ -18,7 +18,7 @@ class RNOcrModule internal constructor(private val context: ReactApplicationCont
     }
   }
 
-  external fun nativeInstall(jsiPtr: Long, assetDir: String, debugOuputDir: String)
+  external fun nativeInstall(jsiPtr: Long, assetDir: String, debugOutputDir: String)
 
   override fun getName(): String {
     return NAME
@@ -42,8 +42,8 @@ class RNOcrModule internal constructor(private val context: ReactApplicationCont
       }
 
       val assetDir = "${context.cacheDir}/${BUNDLE_DIR}"
-      val debugOuputDir = "${context.cacheDir}/${OUTPUT_DIR}"
-      nativeInstall(jsContext.get(), assetDir, debugOuputDir)
+      val debugOutputDir = "${context.cacheDir}/${OUTPUT_DIR}"
+      nativeInstall(jsContext.get(), assetDir, debugOutputDir)
     } catch (exception: Exception) {
       println("GutenOCR: $exception")
     }

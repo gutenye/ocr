@@ -11,37 +11,17 @@
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(create
-                  : (NSDictionary *)rawReadonlyOptions resolver
+                  : (NSDictionary *)rawOptions resolver
                   : (RCTPromiseResolveBlock)resolve rejecter
                   : (RCTPromiseRejectBlock)reject) {
   try {
-    id rawBundleDir = [[NSBundle mainBundle] bundlePath];
+    id bundleDir = [[NSBundle mainBundle] bundlePath];
     id cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];
-
-    NSMutableDictionary *rawOptions = [rawReadonlyOptions mutableCopy];
-    if (!rawOptions[@"debugOuputDir"]) {
-      rawOptions[@"debugOuputDir"] = [cacheDir stringByAppendingString:@"/guten-ocr.outputs"];
-    }
-    if (!rawOptions[@"models"]) {
-      rawOptions[@"models"] = [NSMutableDictionary dictionary];
-    }
-    NSMutableDictionary *models = rawOptions[@"models"];
-    auto assetDir = [rawBundleDir stringByAppendingString:@"/guten-ocr.bundle"];
-    if (!models[@"detectionModelPath"]) {
-      models[@"detectionModelPath"] = [assetDir stringByAppendingString:@"/ch_PP-OCRv4_det_infer.onnx"];
-    }
-    if (!models[@"recognitionModelPath"]) {
-      models[@"recognitionModelPath"] = [assetDir stringByAppendingString:@"/ch_PP-OCRv4_rec_infer.onnx"];
-    }
-    if (!models[@"classifierModelPath"]) {
-      models[@"classifierModelPath"] = [assetDir stringByAppendingString:@"/ch_ppocr_mobile_v2.0_cls_infer.onnx"];
-    }
-    if (!models[@"dictionaryPath"]) {
-      models[@"dictionaryPath"] = [assetDir stringByAppendingString:@"/ppocr_keys_v1.txt"];
-    }
-
+    auto assetDir = convertNSString([bundleDir stringByAppendingString:@"/guten-ocr.bundle"]);
+    auto debugOutputDir = convertNSString([cacheDir stringByAppendingString:@"/guten-ocr.outputs"]);
     auto options = convertNSDictionary(rawOptions);
-    _ocr = std::make_unique<NativeOcr>(options);
+
+    _ocr = std::make_unique<NativeOcr>(options, assetDir, debugOutputDir);
 
     long ref = (long)CFBridgingRetain(self);
     resolve(@(ref));

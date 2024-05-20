@@ -27,7 +27,8 @@
 
 class NativeOcr {
 public:
-  NativeOcr(std::unordered_map<std::string, std::any> rawOptions);
+  NativeOcr(std::unordered_map<std::string, std::any> rawOptions, const std::string &assetDir,
+            const std::string &debugOutputDir);
 
   std::vector<std::string> detect(std::string &image_path);
 

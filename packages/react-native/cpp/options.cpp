@@ -5,14 +5,18 @@
 
 namespace fs = std::filesystem;
 
-Options convertRawOptions(std::unordered_map<std::string, std::any>& rawOptions) {
+Options convertRawOptions(std::unordered_map<std::string, std::any>& rawOptions, const std::string& assetDir,
+                          const std::string& debugOutputDir) {
   Options options {};
   if (rawOptions.count("isDebug") > 0) {
     options.is_debug = std::any_cast<bool>(rawOptions.at("isDebug"));
   }
-  if (rawOptions.count("debugOuputDir") > 0) {
-    options.output_dir = std::any_cast<std::string>(rawOptions.at("debugOuputDir"));
-    fs::create_directories(options.output_dir);
+  if (rawOptions.count("debugOutputDir") == 0) {
+    rawOptions["debugOutputDir"] = debugOutputDir;
+  }
+  if (rawOptions.count("debugOutputDir") > 0) {
+    options.debug_output_dir = std::any_cast<std::string>(rawOptions.at("debugOutputDir"));
+    fs::create_directories(options.debug_output_dir);
   }
   if (rawOptions.count("recognitionImageMaxSize") > 0) {
     options.recognition_image_max_size = std::any_cast<double>(rawOptions.at("recognitionImageMaxSize"));
@@ -36,7 +40,11 @@ Options convertRawOptions(std::unordered_map<std::string, std::any>& rawOptions)
     options.detection_use_direction_classify = std::any_cast<bool>(rawOptions.at("detectionuseDirectionClassify"));
   }
   if (rawOptions.count("models") == 0) {
-    throw std::runtime_error("Ocr.create options.models is required.");
+    rawOptions["models"] = std::unordered_map<std::string, std::any> {
+        {"detectionModelPath", assetDir + "/ch_PP-OCRv4_det_infer.onnx"},
+        {"recognitionModelPath", assetDir + "/ch_PP-OCRv4_rec_infer.onnx"},
+        {"classifierModelPath", assetDir + "/ch_ppocr_mobile_v2.0_cls_infer.onnx"},
+        {"dictionaryPath", assetDir + "/ppocr_keys_v1.txt"}};
   }
   auto rawModels = std::any_cast<std::unordered_map<std::string, std::any>>(rawOptions.at("models"));
   auto& models = options.models;
