@@ -56,13 +56,18 @@ export type Line = {
 
 export type Dictionary = string[]
 
-export interface ModelBaseConstructorArgs {
-  model: InferenceSession
-}
-
 export type Point = [x: number, y: number]
 
-export interface ModelCreateOptions {
+export interface ModelBaseConstructorArg {
+  model: InferenceSession
+  options: ModelBaseOptions
+}
+
+export interface ModelBaseOptions {
+  debugOutputDir?: string
+}
+
+export interface ModelCreateOptions extends ModelBaseOptions {
   models?: {
     detectionPath: string
     recognitionPath: string

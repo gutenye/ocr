@@ -71,6 +71,7 @@ Ocr.create({
     dictionaryPath: string
   },
   isDebug?: boolean
+  debugOutputDir?: string
   recognitionImageMaxSize?: number 
   detectionThreshold?: number
   detectionBoxThreshold?: number
