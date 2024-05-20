@@ -4,7 +4,7 @@
 
 **an OCR Javascript library runs on Node.js, Browser, React Native and C++** 
 
-Based on [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR), supports PP-OCRv4 model
+Based on [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) and [ONNX Runtime](https://github.com/microsoft/onnxruntime), supports PP-OCRv4 model
 
 ## Getting Started
 
