@@ -14,11 +14,11 @@ using namespace facebook::jsi;
 
 std::unique_ptr<NativeOcr> _ocr;
 std::string _assetDir;
-std::string _outputDir;
+std::string _debugOuputDir;
 
 void processOptions(std::unordered_map<std::string, std::any> &options) {
-  if (options.count("outputDir") == 0) {
-    options["outputDir"] = _outputDir;
+  if (options.count("debugOuputDir") == 0) {
+    options["debugOuputDir"] = _debugOuputDir;
   }
   if (options.count("models") == 0) {
     std::unordered_map<std::string, std::any> models {
@@ -59,16 +59,16 @@ void install(Runtime &runtime) {
 }
 
 extern "C" JNIEXPORT void JNICALL Java_com_ocr_RNOcrModule_nativeInstall(JNIEnv *env, jobject thiz, jlong jsi,
-                                                                         jstring assetDir, jstring outputDir) {
+                                                                         jstring assetDir, jstring debugOuputDir) {
   auto runtime = reinterpret_cast<Runtime *>(jsi);
   install(*runtime);
 
   const char *cAssetDir = env->GetStringUTFChars(assetDir, nullptr);
-  const char *cOutputDir = env->GetStringUTFChars(outputDir, nullptr);
+  const char *cDebugOuputDir = env->GetStringUTFChars(debugOuputDir, nullptr);
   _assetDir = std::string(cAssetDir);
-  _outputDir = std::string(cOutputDir);
+  _debugOuputDir = std::string(cDebugOuputDir);
   env->ReleaseStringUTFChars(assetDir, cAssetDir);
-  env->ReleaseStringUTFChars(outputDir, cOutputDir);
+  env->ReleaseStringUTFChars(debugOuputDir, cDebugOuputDir);
 
   // JavaVM *java_vm;
   // jobject java_object;

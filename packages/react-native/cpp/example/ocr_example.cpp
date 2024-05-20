@@ -16,7 +16,7 @@ int main(int argc, char* argv[]) {
 
     auto source_dir = fs::path(__FILE__).parent_path();
     std::string asset_dir = (source_dir / "assets");
-    std::string output_dir = (source_dir / "output");
+    std::string debug_output_dir = (source_dir / "output");
     std::unordered_map<std::string, std::any> rawOptions {
         {"models",
          std::unordered_map<std::string, std::any> {
@@ -26,13 +26,13 @@ int main(int argc, char* argv[]) {
              {"dictionaryPath", asset_dir + "/ppocr_keys_v1.txt"},
          }},
         {"isDebug", true},
-        {"outputDir", output_dir},
+        {"debugOutputDir", debug_output_dir},
         // {"recognitionImageMaxSize", -1.0},
         // {"recognitionImageMaxSize", 800.0},
     };
 
-    fs::remove_all(output_dir);
-    fs::create_directory(output_dir);
+    fs::remove_all(debug_output_dir);
+    fs::create_directory(debug_output_dir);
     NativeOcr* ocr = new NativeOcr(rawOptions);
     auto lines = ocr->detect(image_path);
 
