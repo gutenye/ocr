@@ -71,19 +71,19 @@ Ocr.create({
     dictionaryPath: string
   },
   isDebug?: boolean
-  debugOutputDir?: string
-  recognitionImageMaxSize?: number 
-  detectionThreshold?: number
-  detectionBoxThreshold?: number
-  detectionUnclipRatiop?: number
-  detectionUseDilate?: boolean
-  detectionUsePolygonScore?: boolean
-  detectionUseDirectionClassify?: boolean
-  onnxOptions?: {}       // Pass to ONNX Runtime
+  debugOutputDir?: string // Node only
+  recognitionImageMaxSize?: number // RN only
+  detectionThreshold?: number // RN only
+  detectionBoxThreshold?: number // RN only
+  detectionUnclipRatiop?: number // RN only
+  detectionUseDilate?: boolean // RN only
+  detectionUsePolygonScore?: boolean // RN only
+  detectionUseDirectionClassify?: boolean // RN only
+  onnxOptions?: {}       // Node only. Pass to ONNX Runtime
 }): Promise<Ocr>
 
 ocr.detect(imagePath, { 
-  onnxOptions?: {}     // Pass to ONNX Runtime
+  onnxOptions?: {}     // Node only. Pass to ONNX Runtime
 }): Promise<Result>
 ```
 
