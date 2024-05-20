@@ -2,7 +2,7 @@
 
 def main [] {}
 
-def 'main publish' [version: string, packages?: string = 'common,node,browser'] {
+def 'main publish' [version: string, packages?: string = 'common,node,browser,models,react-native'] {
   update-version $version
   let pkgs = ($packages | split row ',')
   for pkg in $pkgs {
