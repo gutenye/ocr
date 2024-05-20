@@ -21,6 +21,7 @@
     "!android/local.properties",
     "cpp",
     "!cpp/example",
+    "resources/*.{onnx,txt}",
     "*.podspec",
     "!**/__tests__",
     "!**/__fixtures__",
@@ -40,9 +41,6 @@
   "license": "MIT",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
-  },
-  "dependencies": {
-    "@gutenye/ocr-models": "^1.0.0"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^17.0.2",
