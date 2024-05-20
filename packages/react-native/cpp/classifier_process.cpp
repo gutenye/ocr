@@ -36,7 +36,9 @@ ClassifierResult ClassifierPredictor::predict(const cv::Mat &source_image, const
   std::vector<int64_t> input_shape {1, image.channels, image.height, image.width};
   timer.start();
   // TODO: hangs on run
+  std::cout << "[DEBUG] classifier run start" << std::endl;
   auto model_output = m_onnx.run(image.data, input_shape);
+  std::cout << "[DEBUG] classifier run end" << std::endl;
   timer.end();
   performance.predict_time = timer.get_average_ms();
 
