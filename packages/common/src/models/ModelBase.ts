@@ -1,13 +1,23 @@
 import { type InferenceSession as InferenceSessionCommon, Tensor } from 'onnxruntime-common'
-import type { ImageRaw, InferenceSession, ModelBaseConstructorArgs, ModelData, ReshapeOptions } from '#common/types'
+import type {
+  ImageRaw,
+  InferenceSession,
+  LineImage,
+  ModelBaseConstructorArg,
+  ModelBaseOptions,
+  ModelData,
+  ReshapeOptions,
+} from '#common/types'
 
 export class ModelBase {
   isDebug: boolean
+  options: ModelBaseOptions
   #model: InferenceSession
 
-  constructor({ model }: ModelBaseConstructorArgs) {
+  constructor({ model, options }: ModelBaseConstructorArg) {
     this.#model = model
     this.isDebug = false
+    this.options = options
   }
 
   async runModel({
@@ -48,9 +58,19 @@ export class ModelBase {
   }
 
   debugImage(image: ImageRaw, path: string) {
-    if (!this.isDebug) {
+    const { debugOutputDir } = this.options
+    if (!this.isDebug || !debugOutputDir) {
       return
     }
-    image.write(path)
+    image.write(`${debugOutputDir}/${path}`)
+  }
+
+  async debugBoxImage(sourceImage: ImageRaw, lineImages: LineImage[], path: string) {
+    const { debugOutputDir } = this.options
+    if (!this.isDebug || !debugOutputDir) {
+      return
+    }
+    const boxImage = await sourceImage.drawBox(lineImages)
+    boxImage.write(`${debugOutputDir}/${path}`)
   }
 }

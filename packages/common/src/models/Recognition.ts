@@ -1,13 +1,13 @@
 import type { InferenceSession as InferenceSessionCommon, Tensor } from 'onnxruntime-common'
 import invariant from 'tiny-invariant'
 import { FileUtils, InferenceSession, defaultModels } from '#common/backend'
-import type { Dictionary, Line, LineImage, ModelBaseConstructorArgs, ModelCreateOptions } from '#common/types'
+import type { Dictionary, Line, LineImage, ModelBaseConstructorArg, ModelCreateOptions } from '#common/types'
 import { ModelBase } from './ModelBase'
 
 export class Recognition extends ModelBase {
   #dictionary: Dictionary
 
-  static async create({ models, onnxOptions = {} }: ModelCreateOptions) {
+  static async create({ models, onnxOptions = {}, ...restOptions }: ModelCreateOptions) {
     const recognitionPath = models?.recognitionPath || defaultModels?.recognitionPath
     invariant(recognitionPath, 'recognitionPath is required')
     const dictionaryPath = models?.dictionaryPath || defaultModels?.dictionaryPath
@@ -15,11 +15,11 @@ export class Recognition extends ModelBase {
     const model = await InferenceSession.create(recognitionPath, onnxOptions)
     const dictionaryText = await FileUtils.read(dictionaryPath)
     const dictionary = [...dictionaryText.split('\n'), ' ']
-    return new Recognition({ model, dictionary })
+    return new Recognition({ model, options: restOptions }, dictionary)
   }
 
-  constructor({ model, dictionary }: ConstructorArg1) {
-    super({ model })
+  constructor(options: ModelBaseConstructorArg, dictionary: Dictionary) {
+    super(options)
     this.#dictionary = dictionary
   }
 
@@ -38,8 +38,8 @@ export class Recognition extends ModelBase {
         const image = await lineImage.image.resize({
           height: 48,
         })
-        this.debugImage(lineImage.image, `./output/out9-line-${index}.jpg`)
-        this.debugImage(image, `./output/out9-line-${index}-resized.jpg`)
+        // this.debugImage(lineImage.image, `./output/out9-line-${index}.jpg`)
+        // this.debugImage(image, `./output/out9-line-${index}-resized.jpg`)
 
         // transform image data to model data
         const modelData = this.imageToInput(image, {
@@ -211,7 +211,3 @@ function afAfRec(l: Line[]) {
 
 type pointType = [number, number]
 type BoxType = [pointType, pointType, pointType, pointType]
-
-interface ConstructorArg1 extends ModelBaseConstructorArgs {
-  dictionary: Dictionary
-}
