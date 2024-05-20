@@ -31,7 +31,9 @@ cv::Mat get_rotate_crop_image(cv::Mat source_image, std::vector<std::vector<int>
 void visualization(cv::Mat source_image, std::vector<std::vector<std::vector<int>>> boxes,
                    std::string output_image_path);
 
-NativeOcr::NativeOcr(std::unordered_map<std::string, std::any> rawOptions) : m_options {convertRawOptions(rawOptions)} {
+NativeOcr::NativeOcr(std::unordered_map<std::string, std::any> rawOptions, const std::string &assetDir,
+                     const std::string &debugOutputDir)
+    : m_options {convertRawOptions(rawOptions, assetDir, debugOutputDir)} {
   auto cpu_thread_num = 1;
   auto cpu_power_mode = "LITE_POWER_HIGH";
   // m_classifier_predictor.reset(
@@ -59,7 +61,7 @@ std::vector<std::string> NativeOcr::detect(std::string &image_path) {
   auto detection_result = m_detection_predictor->predict(image);
 
   if (m_options.is_debug) {
-    auto output_path = m_options.output_dir + "/boxes.jpg";
+    auto output_path = m_options.debug_output_dir + "/boxes.jpg";
     visualization(image, detection_result.data, output_path);
     std::cout << "[DEBUG] Detection visualized image saved in " << output_path << std::endl;
   }
@@ -79,7 +81,7 @@ std::vector<std::string> NativeOcr::detect(std::string &image_path) {
 
     // if (m_options.is_debug) {
     //   auto output_path =
-    //       m_options.output_dir + "/line-" + std::to_string(detection_result.data.size() - 1 - i) + ".jpg";
+    //       m_options.debug_output_dir + "/line-" + std::to_string(detection_result.data.size() - 1 - i) + ".jpg";
     //   cv::imwrite(output_path, crop_image);
     // }
 
@@ -94,7 +96,8 @@ std::vector<std::string> NativeOcr::detect(std::string &image_path) {
 
     // if (m_options.is_debug) {
     //   auto output_path =
-    //       m_options.output_dir + "/line-" + std::to_string(detection_result.data.size() - 1 - i) + "-resized.jpg";
+    //       m_options.debug_output_dir + "/line-" + std::to_string(detection_result.data.size() - 1 - i) +
+    //       "-resized.jpg";
     //   cv::imwrite(output_path, resized_image);
     // }
 

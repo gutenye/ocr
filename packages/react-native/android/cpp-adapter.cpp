@@ -14,21 +14,7 @@ using namespace facebook::jsi;
 
 std::unique_ptr<NativeOcr> _ocr;
 std::string _assetDir;
-std::string _debugOuputDir;
-
-void processOptions(std::unordered_map<std::string, std::any> &options) {
-  if (options.count("debugOuputDir") == 0) {
-    options["debugOuputDir"] = _debugOuputDir;
-  }
-  if (options.count("models") == 0) {
-    std::unordered_map<std::string, std::any> models {
-        {"detectionModelPath", _assetDir + "/ch_PP-OCRv4_det_infer.onnx"},
-        {"recognitionModelPath", _assetDir + "/ch_PP-OCRv4_rec_infer.onnx"},
-        {"classifierModelPath", _assetDir + "/ch_ppocr_mobile_v2.0_cls_infer.onnx"},
-        {"dictionaryPath", _assetDir + "/ppocr_keys_v1.txt"}};
-    options["models"] = models;
-  }
-}
+std::string _debugOutputDir;
 
 void install(Runtime &runtime) {
   auto create = Function::createFromHostFunction(
@@ -39,8 +25,7 @@ void install(Runtime &runtime) {
         }
         Object obj = arguments[0].asObject(runtime);
         auto options = convertJsiObject(runtime, obj);
-        processOptions(options);
-        _ocr = std::make_unique<NativeOcr>(options);
+        _ocr = std::make_unique<NativeOcr>(options, _assetDir, _debugOutputDir);
         return Value::undefined();
       });
   runtime.global().setProperty(runtime, "create", std::move(create));
@@ -59,16 +44,16 @@ void install(Runtime &runtime) {
 }
 
 extern "C" JNIEXPORT void JNICALL Java_com_ocr_RNOcrModule_nativeInstall(JNIEnv *env, jobject thiz, jlong jsi,
-                                                                         jstring assetDir, jstring debugOuputDir) {
+                                                                         jstring assetDir, jstring debugOutputDir) {
   auto runtime = reinterpret_cast<Runtime *>(jsi);
   install(*runtime);
 
   const char *cAssetDir = env->GetStringUTFChars(assetDir, nullptr);
-  const char *cDebugOuputDir = env->GetStringUTFChars(debugOuputDir, nullptr);
+  const char *cDebugOuputDir = env->GetStringUTFChars(debugOutputDir, nullptr);
   _assetDir = std::string(cAssetDir);
-  _debugOuputDir = std::string(cDebugOuputDir);
+  _debugOutputDir = std::string(cDebugOuputDir);
   env->ReleaseStringUTFChars(assetDir, cAssetDir);
-  env->ReleaseStringUTFChars(debugOuputDir, cDebugOuputDir);
+  env->ReleaseStringUTFChars(debugOutputDir, cDebugOuputDir);
 
   // JavaVM *java_vm;
   // jobject java_object;

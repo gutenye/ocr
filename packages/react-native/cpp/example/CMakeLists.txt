@@ -10,7 +10,7 @@ find_package(OpenCV REQUIRED)
 
 file(GLOB SOURCES "../*.cpp")
 
-add_executable(${PROJECT_NAME} cpp_example.cpp ${SOURCES})
+add_executable(${PROJECT_NAME} cpp-example.cpp ${SOURCES})
 
 include_directories(
 	${CMAKE_SOURCE_DIR}/..
