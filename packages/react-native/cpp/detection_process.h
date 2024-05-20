@@ -15,6 +15,8 @@
 #pragma once
 
 #include <map>
+#include <string>
+#include <vector>
 #include "onnx.h"
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"
@@ -22,7 +24,7 @@
 #include "shared.h"
 #include "utils.h"
 
-struct PreprocessResult {
+struct DetectionPreprocessResult {
   ImageRaw model_input {};
   cv::Mat resized_image {};
 };
@@ -36,15 +38,16 @@ struct DetectionResult {
 
 class DetectionPredictor {
 public:
-  explicit DetectionPredictor(Options &options, const int cpu_thread_num, const std::string &cpu_power_mode);
+  explicit DetectionPredictor(Options &options);
 
   DetectionResult predict(cv::Mat &rgb_image);
 
 private:
   Options m_options {};
+
   Onnx m_onnx;
 
-  PreprocessResult preprocess(const cv::Mat &image);
+  DetectionPreprocessResult preprocess(const cv::Mat &image);
 
   DetectionResultData postprocess(ModelOutput &model_output, const cv::Mat &source_image, const cv::Mat &resized_image,
                                   Options &options);

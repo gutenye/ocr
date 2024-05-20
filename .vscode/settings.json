@@ -90,7 +90,8 @@
     "*.ipp": "cpp",
     "format": "cpp",
     "type_traits": "cpp",
-    "__memory": "cpp"
+    "__memory": "cpp",
+    "memory": "cpp"
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

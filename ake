@@ -30,9 +30,13 @@ def 'main react-native example' [] {
 }
 
 # Runc cpp example
-def 'main cpp example' [] {
+def 'main cpp example' [path?: string] {
   cd packages/react-native/cpp/example
-  ./ake start
+  if $path == null {
+    ./ake start
+  } else {
+    ./ake start $path
+  }
 }
 
 def publish [package: string, version: string] {

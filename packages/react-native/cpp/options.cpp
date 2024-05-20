@@ -37,7 +37,7 @@ Options convertRawOptions(std::unordered_map<std::string, std::any>& rawOptions,
     options.detection_use_polygon_score = std::any_cast<bool>(rawOptions.at("detectionUsePolygonScore"));
   }
   if (rawOptions.count("detectionuseDirectionClassify") > 0) {
-    options.detection_use_direction_classify = std::any_cast<bool>(rawOptions.at("detectionuseDirectionClassify"));
+    options.use_direction_classify = std::any_cast<bool>(rawOptions.at("detectionuseDirectionClassify"));
   }
   if (rawOptions.count("models") == 0) {
     rawOptions["models"] = std::unordered_map<std::string, std::any> {

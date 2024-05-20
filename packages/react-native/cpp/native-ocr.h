@@ -21,6 +21,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include "classifier_process.h"
 #include "detection_process.h"
 #include "recognition_process.h"
 #include "shared.h"
@@ -35,7 +36,7 @@ public:
 private:
   Options m_options;
   std::vector<std::string> m_dictionary;
-  // std::shared_ptr<ClassifierPredictor> m_classifier_predictor;
+  std::shared_ptr<ClassifierPredictor> m_classifier_predictor;
   std::shared_ptr<DetectionPredictor> m_detection_predictor;
   std::shared_ptr<RecognitionPredictor> m_recognition_predictor;
 };

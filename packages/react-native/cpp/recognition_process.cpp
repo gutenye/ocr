@@ -18,32 +18,36 @@
 #include "timer.h"
 #include "utils.h"
 
-cv::Mat resize_image(cv::Mat image, int image_height);
+// TODO
+// index: 2 Got: 32 Expected: 48
+// const std::vector<int> recognition_image_shape {3, 32, 320};
+const std::vector<int> recognition_image_shape {3, 48, 480};
+
+cv::Mat recognition_resize_image(cv::Mat image, int resize_height, int resize_max_width, Options &options);
 template <class ForwardIterator>
 inline size_t argmax(ForwardIterator first, ForwardIterator last);
 
-RecognitionPredictor::RecognitionPredictor(Options &options, const int cpu_thread_num,
-                                           const std::string &cpu_power_mode)
+RecognitionPredictor::RecognitionPredictor(Options &options)
     : m_options {options}, m_onnx {Onnx {options.models.recognition_model_path}} {}
 
-RecognitionResult RecognitionPredictor::predict(const cv::Mat &rgba_image, std::vector<std::string> charactor_dict,
+RecognitionResult RecognitionPredictor::predict(const cv::Mat &source_image, std::vector<std::string> charactor_dict,
                                                 cv::Mat &resized_image) {
   ModelPerformance performance {};
   Timer timer;
   timer.start();
-  auto image = preprocess(rgba_image, resized_image);
+  auto image = preprocess(source_image, resized_image);
   timer.end();
   performance.preprocess_time = timer.get_average_ms();
 
   // Run predictor
-  std::vector<int64_t> input_shape = {1, image.channels, image.height, image.width};
+  std::vector<int64_t> input_shape {1, image.channels, image.height, image.width};
   timer.start();
   auto model_output = m_onnx.run(image.data, input_shape);
   timer.end();
   performance.predict_time = timer.get_average_ms();
 
   timer.start();
-  auto res = postprocess(model_output, rgba_image, charactor_dict);
+  auto res = postprocess(model_output, source_image, charactor_dict);
   timer.end();
   auto postprocessTime = timer.get_average_ms();
   performance.postprocess_time = timer.get_average_ms();
@@ -56,9 +60,9 @@ RecognitionResult RecognitionPredictor::predict(const cv::Mat &rgba_image, std::
 ImageRaw RecognitionPredictor::preprocess(const cv::Mat &source_image, cv::Mat &resized_image) {
   std::vector<float> mean = {0.5f, 0.5f, 0.5f};
   std::vector<float> scale = {1 / 0.5f, 1 / 0.5f, 1 / 0.5f};
-  // TODO
-  // cv::Mat resized_image = resize_image(source_image, 32);
-  resized_image = resize_image(source_image, 48);
+
+  resized_image =
+      recognition_resize_image(source_image, recognition_image_shape[1], recognition_image_shape[2], m_options);
 
   cv::Mat model_data;
   resized_image.convertTo(model_data, CV_32FC3, 1 / 255.f);
@@ -72,7 +76,7 @@ ImageRaw RecognitionPredictor::preprocess(const cv::Mat &source_image, cv::Mat &
   return image_raw;
 }
 
-std::pair<std::string, float> RecognitionPredictor::postprocess(ModelOutput &model_output, const cv::Mat &rgba_image,
+std::pair<std::string, float> RecognitionPredictor::postprocess(ModelOutput &model_output, const cv::Mat &source_image,
                                                                 std::vector<std::string> charactor_dict) {
   auto predict_batch = model_output.data;
   auto predict_shape = model_output.shape;
@@ -100,12 +104,21 @@ std::pair<std::string, float> RecognitionPredictor::postprocess(ModelOutput &mod
   return std::make_pair(text, score);
 }
 
-cv::Mat resize_image(cv::Mat image, int image_height) {
-  float wh_ratio = static_cast<float>(image.cols) / static_cast<float>(image.rows);
-  auto image_width = int(ceilf(image_height * wh_ratio));
-  cv::Mat resize_image;
-  cv::resize(image, resize_image, cv::Size(image_width, image_height), 0.f, 0.f, cv::INTER_LINEAR);
-  return resize_image;
+cv::Mat recognition_resize_image(cv::Mat source_image, int resize_height, int resize_max_width, Options &options) {
+  auto source_width = source_image.cols;
+  auto source_height = source_image.rows;
+  float wh_ratio = static_cast<float>(source_width) / static_cast<float>(source_height);
+  auto resize_width = int(ceilf(resize_height * wh_ratio));
+  if (resize_width > resize_max_width) {
+    resize_width = resize_max_width;
+  }
+  if (options.is_debug) {
+    // std::cout << "[DEBUG] Recognition resize image from " << source_width << "x" << source_height << " to "
+    //           << resize_width << "x" << resize_height << std::endl;
+  }
+  cv::Mat resized_image;
+  cv::resize(source_image, resized_image, cv::Size(resize_width, resize_height), 0.f, 0.f, cv::INTER_LINEAR);
+  return resized_image;
 }
 
 template <class ForwardIterator>

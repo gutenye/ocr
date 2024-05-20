@@ -13,6 +13,6 @@ export interface OcrOptions {
   detectionUnclipRatiop?: number
   detectionUseDilate?: boolean
   detectionUsePolygonScore?: boolean
-  detectionUseDirectionClassify?: boolean
+  useDirectionClassify?: boolean
   onnxOptions?: InferenceSession.SessionOptions
 }

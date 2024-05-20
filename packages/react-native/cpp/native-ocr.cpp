@@ -34,12 +34,9 @@ void visualization(cv::Mat source_image, std::vector<std::vector<std::vector<int
 NativeOcr::NativeOcr(std::unordered_map<std::string, std::any> rawOptions, const std::string &assetDir,
                      const std::string &debugOutputDir)
     : m_options {convertRawOptions(rawOptions, assetDir, debugOutputDir)} {
-  auto cpu_thread_num = 1;
-  auto cpu_power_mode = "LITE_POWER_HIGH";
-  // m_classifier_predictor.reset(
-  //     new ClassifierPredictor(m_options, cpu_thread_num, cpu_power_mode));
-  m_detection_predictor.reset(new DetectionPredictor(m_options, cpu_thread_num, cpu_power_mode));
-  m_recognition_predictor.reset(new RecognitionPredictor(m_options, cpu_thread_num, cpu_power_mode));
+  m_classifier_predictor.reset(new ClassifierPredictor(m_options));
+  m_detection_predictor.reset(new DetectionPredictor(m_options));
+  m_recognition_predictor.reset(new RecognitionPredictor(m_options));
   m_dictionary = read_dictionary(m_options.models.dictionary_path);
   m_dictionary.insert(m_dictionary.begin(), "#");
   m_dictionary.push_back(" ");
@@ -75,24 +72,34 @@ std::vector<std::string> NativeOcr::detect(std::string &image_path) {
 
   std::vector<std::string> recognition_text;
   std::vector<float> recognition_text_score;
+  std::vector<ClassifierResult> classifier_results;
   std::vector<RecognitionResult> recognition_results;
   for (int i = detection_result.data.size() - 1; i >= 0; i--) {
     auto crop_image = get_rotate_crop_image(image_copy, detection_result.data[i]);
 
-    // if (m_options.is_debug) {
-    //   auto output_path =
-    //       m_options.debug_output_dir + "/line-" + std::to_string(detection_result.data.size() - 1 - i) + ".jpg";
-    //   cv::imwrite(output_path, crop_image);
-    // }
+    if (m_options.is_debug) {
+      auto output_path =
+          m_options.debug_output_dir + "/line-" + std::to_string(detection_result.data.size() - 1 - i) + ".jpg";
+      cv::imwrite(output_path, crop_image);
+    }
 
-    // if (m_options.detection_use_direction_classify)
-    // {
-    //   crop_image =
-    //       m_classifier_predictor->predict(crop_image, nullptr, nullptr, nullptr, 0.9);
-    // }
+    if (m_options.use_direction_classify) {
+      auto threshold = 0.9;
+      auto classifier_result = m_classifier_predictor->predict(crop_image, threshold);
+      classifier_results.push_back(classifier_result);
+      crop_image = classifier_result.data;
+      if (m_options.is_debug) {
+        auto output_path = m_options.debug_output_dir + "/line-" +
+                           std::to_string(detection_result.data.size() - 1 - i) + "-direction.jpg";
+        cv::imwrite(output_path, crop_image);
+      }
+    }
 
     cv::Mat resized_image;
     auto recognition_result = m_recognition_predictor->predict(crop_image, m_dictionary, resized_image);
+    recognition_results.push_back(recognition_result);
+    recognition_text.push_back(recognition_result.data.first);
+    recognition_text_score.push_back(recognition_result.data.second);
 
     // if (m_options.is_debug) {
     //   auto output_path =
@@ -100,15 +107,27 @@ std::vector<std::string> NativeOcr::detect(std::string &image_path) {
     //       "-resized.jpg";
     //   cv::imwrite(output_path, resized_image);
     // }
-
-    recognition_results.push_back(recognition_result);
-    recognition_text.push_back(recognition_result.data.first);
-    recognition_text_score.push_back(recognition_result.data.second);
   }
 
   timer.end();
   auto total_time = timer.get_average_ms();
   if (m_options.is_debug) {
+    float classifier_total_sum = std::accumulate(
+        classifier_results.begin(), classifier_results.end(), 0.0f,
+        [](float accumulator, const ClassifierResult &result) { return accumulator + result.performance.total_time; });
+    float classifier_preprocess_sum = std::accumulate(classifier_results.begin(), classifier_results.end(), 0.0f,
+                                                      [](float accumulator, const ClassifierResult &result) {
+                                                        return accumulator + result.performance.preprocess_time;
+                                                      });
+    float classifier_predict_sum = std::accumulate(classifier_results.begin(), classifier_results.end(), 0.0f,
+                                                   [](float accumulator, const ClassifierResult &result) {
+                                                     return accumulator + result.performance.predict_time;
+                                                   });
+    float classifier_postproces_sum = std::accumulate(classifier_results.begin(), classifier_results.end(), 0.0f,
+                                                      [](float accumulator, const ClassifierResult &result) {
+                                                        return accumulator + result.performance.postprocess_time;
+                                                      });
+
     float recognition_total_sum = std::accumulate(
         recognition_results.begin(), recognition_results.end(), 0.0f,
         [](float accumulator, const RecognitionResult &result) { return accumulator + result.performance.total_time; });
