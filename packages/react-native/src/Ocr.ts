@@ -8,7 +8,8 @@ export class Ocr {
     return new Ocr()
   }
 
-  detect(imagePath: string): Promise<string[]> {
+  detect(rawImagePath: string): Promise<string[]> {
+    const imagePath = rawImagePath.replace('file://', '')
     return OcrModule.detect(imagePath)
   }
 }

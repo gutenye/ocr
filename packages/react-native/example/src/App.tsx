@@ -34,8 +34,7 @@ export default function App() {
       }
       try {
         setResultLines([])
-        const newImagePath = imagePath.replace('file://', '')
-        const lines = await ocr.detect(newImagePath)
+        const lines = await ocr.detect(imagePath)
         setResultLines(lines)
       } catch (error) {
         if (error instanceof Error) {
