@@ -53,11 +53,7 @@ const result = await ocr.detect('a.jpg')
 
 ```cpp
 #include "native-ocr.h"
-NativeOcr* ocr = new NativeOcr(RawOptions {
-  {"detectionModelPath", "./assets/ch_PP-OCRv4_det_infer.onnx"},
-  {"recognitionModelPath", "./assets/ch_PP-OCRv4_rec_infer.onnx"},
-  {"dictionaryPath", "./assets/ppocr_keys_v1.txt"}
-});
+NativeOcr* ocr = new NativeOcr(..)
 auto result = ocr->detect("a.jpg");
 ```
 
