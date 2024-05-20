@@ -2,6 +2,7 @@ import Ocr from '@gutenye/ocr-browser'
 
 async function main() {
   const ocr = await Ocr.create({
+    isDebug: true,
     models: {
       detectionPath: '/assets/ch_PP-OCRv4_det_infer.onnx',
       recognitionPath: '/assets/ch_PP-OCRv4_rec_infer.onnx',
@@ -13,7 +14,7 @@ async function main() {
 
   createApp(async ({ imageUrl }) => {
     const startTime = new Date().valueOf()
-    const result = await ocr.detect(imageUrl, { isDebug: true })
+    const result = await ocr.detect(imageUrl)
     const duration = new Date().valueOf() - startTime
 
     return {

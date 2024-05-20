@@ -23,12 +23,7 @@ export class Recognition extends ModelBase {
     this.#dictionary = dictionary
   }
 
-  async run(
-    lineImages: LineImage[],
-    { isDebug = false, onnxOptions = {} }: { isDebug?: boolean; onnxOptions?: InferenceSessionCommon.RunOptions } = {},
-  ) {
-    this.isDebug = isDebug
-
+  async run(lineImages: LineImage[], { onnxOptions = {} }: { onnxOptions?: InferenceSessionCommon.RunOptions } = {}) {
     const modelDatas = await Promise.all(
       // Detect text from each line image
       lineImages.map(async (lineImage, index) => {

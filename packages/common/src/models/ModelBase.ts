@@ -10,13 +10,11 @@ import type {
 } from '#common/types'
 
 export class ModelBase {
-  isDebug: boolean
   options: ModelBaseOptions
   #model: InferenceSession
 
   constructor({ model, options }: ModelBaseConstructorArg) {
     this.#model = model
-    this.isDebug = false
     this.options = options
   }
 
@@ -58,16 +56,16 @@ export class ModelBase {
   }
 
   debugImage(image: ImageRaw, path: string) {
-    const { debugOutputDir } = this.options
-    if (!this.isDebug || !debugOutputDir) {
+    const { debugOutputDir, isDebug } = this.options
+    if (!isDebug || !debugOutputDir) {
       return
     }
     image.write(`${debugOutputDir}/${path}`)
   }
 
   async debugBoxImage(sourceImage: ImageRaw, lineImages: LineImage[], path: string) {
-    const { debugOutputDir } = this.options
-    if (!this.isDebug || !debugOutputDir) {
+    const { debugOutputDir, isDebug } = this.options
+    if (!isDebug || !debugOutputDir) {
       return
     }
     const boxImage = await sourceImage.drawBox(lineImages)

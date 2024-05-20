@@ -14,12 +14,7 @@ export class Detection extends ModelBase {
     return new Detection({ model, options: restOptions })
   }
 
-  async run(
-    path: string,
-    { isDebug = false, onnxOptions = {} }: { isDebug?: boolean; onnxOptions?: InferenceSessionCommon.RunOptions } = {},
-  ) {
-    this.isDebug = isDebug
-
+  async run(path: string, { onnxOptions = {} }: { onnxOptions?: InferenceSessionCommon.RunOptions } = {}) {
     const image = await ImageRaw.open(path)
 
     // Resize image to multiple of 32
