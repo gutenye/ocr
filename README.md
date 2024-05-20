@@ -1,6 +1,6 @@
 # Guten OCR
 
-> [Demo](https://gutenye-ocr.netlify.app/)
+> [Demo](https://gutenye-ocr.netlify.app/) | [Roadmap](https://github.com/users/gutenye/projects/5/views/4)
 
 **an OCR Javascript library runs on Node.js, Browser, React Native and C++** 
 
