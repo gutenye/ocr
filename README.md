@@ -80,7 +80,14 @@ Ocr.create({
 
 ocr.detect(imagePath, { 
   onnxOptions?: {}     // Node only. Pass to ONNX Runtime
-}): Promise<Result>
+}): Promise<TextLine[]>
+
+TextLine {
+  text: string
+  score: number
+  frame: { top, left, width, height }
+}
+
 ```
 
 ## Development

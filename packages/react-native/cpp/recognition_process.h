@@ -21,10 +21,21 @@
 #include "shared.h"
 #include "utils.h"
 
-using RecognitionResultData = std::pair<std::string, float>;
+struct Frame {
+  double width {};
+  double height {};
+  double top {};
+  double left {};
+};
+
+struct TextLine {
+  std::string text {};
+  float score {};
+  Frame frame {};
+};
 
 struct RecognitionResult {
-  RecognitionResultData data {};
+  TextLine data {};
   ModelPerformance performance {};
 };
 
@@ -40,6 +51,5 @@ private:
 
   ImageRaw preprocess(const cv::Mat &rgba_image, cv::Mat &resized_image);
 
-  RecognitionResultData postprocess(ModelOutput &model_output, const cv::Mat &rgba_image,
-                                    std::vector<std::string> charactor_dict);
+  TextLine postprocess(ModelOutput &model_output, const cv::Mat &rgba_image, std::vector<std::string> charactor_dict);
 };

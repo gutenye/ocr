@@ -47,14 +47,13 @@ RecognitionResult RecognitionPredictor::predict(const cv::Mat &source_image, std
   performance.predict_time = timer.get_average_ms();
 
   timer.start();
-  auto res = postprocess(model_output, source_image, charactor_dict);
+  auto text_line = postprocess(model_output, source_image, charactor_dict);
   timer.end();
-  auto postprocessTime = timer.get_average_ms();
   performance.postprocess_time = timer.get_average_ms();
 
   performance.total_time = performance.preprocess_time + performance.predict_time + performance.postprocess_time;
 
-  return RecognitionResult {.data = res, .performance = performance};
+  return RecognitionResult {.data = text_line, .performance = performance};
 }
 
 ImageRaw RecognitionPredictor::preprocess(const cv::Mat &source_image, cv::Mat &resized_image) {
@@ -76,8 +75,8 @@ ImageRaw RecognitionPredictor::preprocess(const cv::Mat &source_image, cv::Mat &
   return image_raw;
 }
 
-std::pair<std::string, float> RecognitionPredictor::postprocess(ModelOutput &model_output, const cv::Mat &source_image,
-                                                                std::vector<std::string> charactor_dict) {
+TextLine RecognitionPredictor::postprocess(ModelOutput &model_output, const cv::Mat &source_image,
+                                           std::vector<std::string> charactor_dict) {
   auto predict_batch = model_output.data;
   auto predict_shape = model_output.shape;
 
@@ -101,7 +100,11 @@ std::pair<std::string, float> RecognitionPredictor::postprocess(ModelOutput &mod
     last_index = argmax_idx;
   }
   score /= count;
-  return std::make_pair(text, score);
+
+  return TextLine {
+      .text = text,
+      .score = score,
+  };
 }
 
 cv::Mat recognition_resize_image(cv::Mat source_image, int resize_height, int resize_max_width, Options &options) {

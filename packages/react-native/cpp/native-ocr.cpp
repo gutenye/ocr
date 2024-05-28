@@ -42,7 +42,7 @@ NativeOcr::NativeOcr(std::unordered_map<std::string, std::any> rawOptions, const
   m_dictionary.push_back(" ");
 }
 
-std::vector<std::string> NativeOcr::detect(std::string &image_path) {
+std::vector<TextLine> NativeOcr::detect(std::string &image_path) {
   Timer timer;
   timer.start();
 
@@ -70,8 +70,7 @@ std::vector<std::string> NativeOcr::detect(std::string &image_path) {
   cv::Mat image_copy;
   image.copyTo(image_copy);
 
-  std::vector<std::string> recognition_text;
-  std::vector<float> recognition_text_score;
+  std::vector<TextLine> text_lines;
   std::vector<ClassifierResult> classifier_results;
   std::vector<RecognitionResult> recognition_results;
   for (int i = detection_result.data.size() - 1; i >= 0; i--) {
@@ -98,8 +97,7 @@ std::vector<std::string> NativeOcr::detect(std::string &image_path) {
     cv::Mat resized_image;
     auto recognition_result = m_recognition_predictor->predict(crop_image, m_dictionary, resized_image);
     recognition_results.push_back(recognition_result);
-    recognition_text.push_back(recognition_result.data.first);
-    recognition_text_score.push_back(recognition_result.data.second);
+    text_lines.push_back(recognition_result.data);
 
     // if (m_options.is_debug) {
     //   auto output_path =
@@ -157,15 +155,14 @@ std::vector<std::string> NativeOcr::detect(std::string &image_path) {
   }
 
   // print recognized text
-  std::vector<std::string> lines(recognition_text.size());
-  for (int i = 0; i < lines.size(); i++) {
-    if (m_options.is_debug) {
-      std::cout << "[DEBUG] " << i << "\t" << recognition_text_score[i] << "\t" << recognition_text[i] << std::endl;
+  if (m_options.is_debug) {
+    for (size_t index = 0; index < text_lines.size(); index++) {
+      auto text_line = text_lines[index];
+      std::cout << "[DEBUG] " << index << "\t" << text_line.score << "\t" << text_line.text << std::endl;
     }
-    lines[i] = recognition_text[i];
   }
 
-  return lines;
+  return text_lines;
 }
 
 cv::Mat get_rotate_crop_image(cv::Mat source_image, std::vector<std::vector<int>> box) {
