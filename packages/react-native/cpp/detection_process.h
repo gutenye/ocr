@@ -40,7 +40,7 @@ class DetectionPredictor {
 public:
   explicit DetectionPredictor(Options &options);
 
-  DetectionResult predict(cv::Mat &rgb_image);
+  DetectionResult predict(const cv::Mat &source_image);
 
 private:
   Options m_options {};

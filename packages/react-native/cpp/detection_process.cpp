@@ -19,20 +19,17 @@
 #include "db_post_process.h"
 #include "timer.h"
 
-void resize_image(const cv::Mat image, cv::Mat &resized_image, Options &options);
+void resize_image(const cv::Mat &source_image, cv::Mat &resized_image, Options &options);
 
 DetectionPredictor::DetectionPredictor(Options &options)
     : m_options {options}, m_onnx {Onnx(options.models.detection_model_path)} {}
 
-DetectionResult DetectionPredictor::predict(cv::Mat &image) {
+DetectionResult DetectionPredictor::predict(const cv::Mat &source_image) {
   ModelPerformance performance {};
-
-  cv::Mat source_image;
-  image.copyTo(source_image);
 
   Timer timer;
   timer.start();
-  auto preprocess_result = preprocess(image);
+  auto preprocess_result = preprocess(source_image);
   timer.end();
   performance.preprocess_time = timer.get_average_ms();
 
@@ -103,9 +100,9 @@ DetectionResultData DetectionPredictor::postprocess(ModelOutput &model_output, c
 }
 
 // resize image to a size multiple of 32 which is required by the network
-void resize_image(const cv::Mat image, cv::Mat &resized_image, Options &options) {
-  int width = image.cols;
-  int height = image.rows;
+void resize_image(const cv::Mat &source_image, cv::Mat &resized_image, Options &options) {
+  int width = source_image.cols;
+  int height = source_image.rows;
   float ratio = 1.f;
 
   int max_wh = width >= height ? width : height;
