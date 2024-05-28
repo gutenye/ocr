@@ -36,7 +36,7 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.73.6)
   - fmt (6.2.1)
   - glog (0.3.5)
-  - GutenOCR (1.0.0):
+  - GutenOCR (1.4.1):
     - glog
     - onnxruntime-c
     - OpenCV (~> 4.3.0)
@@ -1300,7 +1300,7 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 11c76c87794f8f2563f4d6523e86091fc94d654b
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: c5d68082e772fa1c511173d6b30a9de2c05a69a2
-  GutenOCR: 65c4700c199465b67c50178b2e6616f6f3488949
+  GutenOCR: d6ba0cdfdbd6a24c089ee0438197df4e4597511d
   hermes-engine: 9cecf9953a681df7556b8cc9c74905de8f3293c0
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   onnxruntime-c: 065a3ed478da911448ff72612e6a0aaf4cb10fae

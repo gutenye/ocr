@@ -37,8 +37,8 @@ RCT_EXPORT_METHOD(detect
                   : (RCTPromiseRejectBlock)reject) {
   try {
     auto imagePath = convertNSString(rawImagePath);
-    auto lines = _ocr->detect(imagePath);
-    resolve(convertStdVector(lines));
+    auto textLines = _ocr->detect(imagePath);
+    resolve(convertStdTextLine(textLines));
   } catch (const std::exception &error) {
     auto message = std::string("Error: ") + error.what();
     reject(@"cpp_exception", convertStdString(message), nil);

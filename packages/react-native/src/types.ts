@@ -16,3 +16,16 @@ export interface OcrOptions {
   useDirectionClassify?: boolean
   onnxOptions?: InferenceSession.SessionOptions
 }
+
+export interface TextLine {
+  text: string
+  score: number
+  frame: Frame
+}
+
+export interface Frame {
+  top: number
+  left: number
+  width: number
+  height: number
+}

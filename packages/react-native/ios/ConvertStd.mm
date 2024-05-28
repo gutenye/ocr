@@ -11,3 +11,19 @@ NSArray<NSString *> *convertStdVector(const std::vector<std::string> &stdVector)
   }
   return nsArray;
 }
+
+NSArray *convertStdTextLine(const std::vector<TextLine> &textLines) {
+  NSMutableArray *array = [NSMutableArray arrayWithCapacity:textLines.size()];
+  for (const TextLine &textLine : textLines) {
+    NSString *text = [NSString stringWithUTF8String:textLine.text.c_str()];
+    NSDictionary *frameDict = @{
+      @"top" : @(textLine.frame.top),
+      @"left" : @(textLine.frame.left),
+      @"width" : @(textLine.frame.width),
+      @"height" : @(textLine.frame.height)
+    };
+    NSDictionary *textLineDict = @{@"text" : text, @"score" : @(textLine.score), @"frame" : frameDict};
+    [array addObject:textLineDict];
+  }
+  return [array copy];
+}

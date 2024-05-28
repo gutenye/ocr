@@ -21,12 +21,6 @@
 #include "shared.h"
 #include "utils.h"
 
-struct TextLine {
-  std::string text {};
-  float score {};
-  Frame frame {};
-};
-
 struct RecognitionResult {
   TextLine data {};
   ModelPerformance performance {};
