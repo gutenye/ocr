@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <vector>
 
 struct ImageRaw {
@@ -15,3 +16,12 @@ struct ModelPerformance {
   float predict_time {};
   float postprocess_time {};
 };
+
+struct Frame {
+  int top {};
+  int left {};
+  int width {};
+  int height {};
+};
+
+std::ostream& operator<<(std::ostream& os, const Frame& frame);

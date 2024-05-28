@@ -30,8 +30,8 @@ inline size_t argmax(ForwardIterator first, ForwardIterator last);
 RecognitionPredictor::RecognitionPredictor(Options &options)
     : m_options {options}, m_onnx {Onnx {options.models.recognition_model_path}} {}
 
-RecognitionResult RecognitionPredictor::predict(const cv::Mat &source_image, std::vector<std::string> charactor_dict,
-                                                cv::Mat &resized_image) {
+RecognitionResult RecognitionPredictor::predict(const cv::Mat &source_image, const Frame &frame,
+                                                std::vector<std::string> charactor_dict, cv::Mat &resized_image) {
   ModelPerformance performance {};
   Timer timer;
   timer.start();
@@ -47,7 +47,7 @@ RecognitionResult RecognitionPredictor::predict(const cv::Mat &source_image, std
   performance.predict_time = timer.get_average_ms();
 
   timer.start();
-  auto text_line = postprocess(model_output, source_image, charactor_dict);
+  auto text_line = postprocess(model_output, frame, source_image, charactor_dict);
   timer.end();
   performance.postprocess_time = timer.get_average_ms();
 
@@ -75,7 +75,7 @@ ImageRaw RecognitionPredictor::preprocess(const cv::Mat &source_image, cv::Mat &
   return image_raw;
 }
 
-TextLine RecognitionPredictor::postprocess(ModelOutput &model_output, const cv::Mat &source_image,
+TextLine RecognitionPredictor::postprocess(ModelOutput &model_output, const Frame &frame, const cv::Mat &source_image,
                                            std::vector<std::string> charactor_dict) {
   auto predict_batch = model_output.data;
   auto predict_shape = model_output.shape;
@@ -104,6 +104,7 @@ TextLine RecognitionPredictor::postprocess(ModelOutput &model_output, const cv::
   return TextLine {
       .text = text,
       .score = score,
+      .frame = frame,
   };
 }
 

@@ -21,13 +21,6 @@
 #include "shared.h"
 #include "utils.h"
 
-struct Frame {
-  double width {};
-  double height {};
-  double top {};
-  double left {};
-};
-
 struct TextLine {
   std::string text {};
   float score {};
@@ -43,7 +36,8 @@ class RecognitionPredictor {
 public:
   explicit RecognitionPredictor(Options &options);
 
-  RecognitionResult predict(const cv::Mat &rgba_image, std::vector<std::string> charactor_dict, cv::Mat &resized_image);
+  RecognitionResult predict(const cv::Mat &source_image, const Frame &frame, std::vector<std::string> charactor_dict,
+                            cv::Mat &resized_image);
 
 private:
   Options m_options {};
@@ -51,5 +45,6 @@ private:
 
   ImageRaw preprocess(const cv::Mat &rgba_image, cv::Mat &resized_image);
 
-  TextLine postprocess(ModelOutput &model_output, const cv::Mat &rgba_image, std::vector<std::string> charactor_dict);
+  TextLine postprocess(ModelOutput &model_output, const Frame &frame, const cv::Mat &rgba_image,
+                       std::vector<std::string> charactor_dict);
 };
