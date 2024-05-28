@@ -26,6 +26,11 @@
 #include "recognition_process.h"
 #include "shared.h"
 
+struct CropResult {
+  cv::Mat image;
+  Frame frame {};
+};
+
 class NativeOcr {
 public:
   NativeOcr(std::unordered_map<std::string, std::any> rawOptions, const std::string &assetDir,

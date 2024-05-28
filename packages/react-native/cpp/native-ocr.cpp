@@ -27,7 +27,7 @@
 namespace fs = std::filesystem;
 
 std::vector<std::string> read_dictionary(std::string path);
-cv::Mat get_rotate_crop_image(cv::Mat source_image, std::vector<std::vector<int>> box);
+CropResult get_rotate_crop_image(cv::Mat source_image, std::vector<std::vector<int>> box);
 void visualization(cv::Mat source_image, std::vector<std::vector<std::vector<int>>> boxes,
                    std::string output_image_path);
 
@@ -74,28 +74,29 @@ std::vector<TextLine> NativeOcr::detect(std::string &image_path) {
   std::vector<ClassifierResult> classifier_results;
   std::vector<RecognitionResult> recognition_results;
   for (int i = detection_result.data.size() - 1; i >= 0; i--) {
-    auto crop_image = get_rotate_crop_image(image_copy, detection_result.data[i]);
+    auto box = detection_result.data[i];
+    auto crop = get_rotate_crop_image(image_copy, box);
 
     if (m_options.is_debug) {
       auto output_path =
           m_options.debug_output_dir + "/line-" + std::to_string(detection_result.data.size() - 1 - i) + ".jpg";
-      cv::imwrite(output_path, crop_image);
+      cv::imwrite(output_path, crop.image);
     }
 
     if (m_options.use_direction_classify) {
       auto threshold = 0.9;
-      auto classifier_result = m_classifier_predictor->predict(crop_image, threshold);
+      auto classifier_result = m_classifier_predictor->predict(crop.image, threshold);
       classifier_results.push_back(classifier_result);
-      crop_image = classifier_result.data;
+      crop.image = classifier_result.data;
       if (m_options.is_debug) {
         auto output_path = m_options.debug_output_dir + "/line-" +
                            std::to_string(detection_result.data.size() - 1 - i) + "-direction.jpg";
-        cv::imwrite(output_path, crop_image);
+        cv::imwrite(output_path, crop.image);
       }
     }
 
     cv::Mat resized_image;
-    auto recognition_result = m_recognition_predictor->predict(crop_image, m_dictionary, resized_image);
+    auto recognition_result = m_recognition_predictor->predict(crop.image, crop.frame, m_dictionary, resized_image);
     recognition_results.push_back(recognition_result);
     text_lines.push_back(recognition_result.data);
 
@@ -158,14 +159,15 @@ std::vector<TextLine> NativeOcr::detect(std::string &image_path) {
   if (m_options.is_debug) {
     for (size_t index = 0; index < text_lines.size(); index++) {
       auto text_line = text_lines[index];
-      std::cout << "[DEBUG] " << index << "\t" << text_line.score << "\t" << text_line.text << std::endl;
+      std::cout << "[DEBUG] " << index << "\t" << text_line.score << "\t" << text_line.text << "\t" << text_line.frame
+                << std::endl;
     }
   }
 
   return text_lines;
 }
 
-cv::Mat get_rotate_crop_image(cv::Mat source_image, std::vector<std::vector<int>> box) {
+CropResult get_rotate_crop_image(cv::Mat source_image, std::vector<std::vector<int>> box) {
   cv::Mat image;
   source_image.copyTo(image);
   std::vector<std::vector<int>> points = box;
@@ -176,9 +178,17 @@ cv::Mat get_rotate_crop_image(cv::Mat source_image, std::vector<std::vector<int>
   int right = int(*std::max_element(x_collect, x_collect + 4));
   int top = int(*std::min_element(y_collect, y_collect + 4));
   int bottom = int(*std::max_element(y_collect, y_collect + 4));
+  int width = right - left;
+  int height = bottom - top;
+  Frame frame {
+      .top = top,
+      .left = left,
+      .width = width,
+      .height = height,
+  };
 
   cv::Mat img_crop;
-  image(cv::Rect(left, top, right - left, bottom - top)).copyTo(img_crop);
+  image(cv::Rect(left, top, width, height)).copyTo(img_crop);
 
   for (int i = 0; i < points.size(); i++) {
     points[i][0] -= left;
@@ -212,9 +222,9 @@ cv::Mat get_rotate_crop_image(cv::Mat source_image, std::vector<std::vector<int>
     cv::Mat srcCopy = cv::Mat(dst_img.rows, dst_img.cols, dst_img.depth());
     cv::transpose(dst_img, srcCopy);
     cv::flip(srcCopy, srcCopy, 0);
-    return srcCopy;
+    return CropResult {.image = srcCopy, .frame = frame};
   } else {
-    return dst_img;
+    return CropResult {.image = dst_img, .frame = frame};
   }
 }
 
