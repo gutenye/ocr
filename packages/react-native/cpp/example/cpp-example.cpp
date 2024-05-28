@@ -26,10 +26,10 @@ int main(int argc, char* argv[]) {
     fs::remove_all(debug_output_dir);
     fs::create_directory(debug_output_dir);
     NativeOcr* ocr = new NativeOcr(rawOptions, asset_dir, debug_output_dir);
-    auto lines = ocr->detect(image_path);
+    auto text_lines = ocr->detect(image_path);
 
-    // for (auto line : lines) {
-    //   std::cout << line << std::endl;
+    // for (auto text_line : text_lines) {
+    //   std::cout << text_line.score << " " << text_line.text << std::endl;
     // }
     return 0;
   } catch (const std::exception& e) {

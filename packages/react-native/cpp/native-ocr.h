@@ -31,7 +31,7 @@ public:
   NativeOcr(std::unordered_map<std::string, std::any> rawOptions, const std::string &assetDir,
             const std::string &debugOutputDir);
 
-  std::vector<std::string> detect(std::string &image_path);
+  std::vector<TextLine> detect(std::string &image_path);
 
 private:
   Options m_options;
