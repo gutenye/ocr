@@ -27,7 +27,7 @@
 namespace fs = std::filesystem;
 
 std::vector<std::string> read_dictionary(std::string path);
-CropResult get_rotate_crop_image(cv::Mat source_image, std::vector<std::vector<int>> box);
+CropResult get_rotate_crop_image(cv::Mat &source_image, std::vector<std::vector<int>> box);
 void visualization(cv::Mat source_image, std::vector<std::vector<std::vector<int>>> boxes,
                    std::string output_image_path);
 
@@ -53,13 +53,13 @@ std::vector<TextLine> NativeOcr::detect(std::string &image_path) {
   if (m_options.is_debug) {
     std::cout << "[DEBUG] Start detection" << std::endl;
   }
-  auto image = cv::imread(image_path);
+  auto source_image = cv::imread(image_path);
 
-  auto detection_result = m_detection_predictor->predict(image);
+  auto detection_result = m_detection_predictor->predict(source_image);
 
   if (m_options.is_debug) {
     auto output_path = m_options.debug_output_dir + "/boxes.jpg";
-    visualization(image, detection_result.data, output_path);
+    visualization(source_image, detection_result.data, output_path);
     std::cout << "[DEBUG] Detection visualized image saved in " << output_path << std::endl;
   }
 
@@ -67,20 +67,18 @@ std::vector<TextLine> NativeOcr::detect(std::string &image_path) {
     std::cout << "[DEBUG] Start recognition" << std::endl;
   }
 
-  cv::Mat image_copy;
-  image.copyTo(image_copy);
-
   std::vector<TextLine> text_lines;
   std::vector<ClassifierResult> classifier_results;
   std::vector<RecognitionResult> recognition_results;
   for (int i = detection_result.data.size() - 1; i >= 0; i--) {
     auto box = detection_result.data[i];
-    auto crop = get_rotate_crop_image(image_copy, box);
+    // box: [p1, p2, p3, p4], p: [x,y]
+    auto crop = get_rotate_crop_image(source_image, box);
 
     if (m_options.is_debug) {
-      auto output_path =
-          m_options.debug_output_dir + "/line-" + std::to_string(detection_result.data.size() - 1 - i) + ".jpg";
-      cv::imwrite(output_path, crop.image);
+      // auto output_path =
+      //     m_options.debug_output_dir + "/line-" + std::to_string(detection_result.data.size() - 1 - i) + ".jpg";
+      // cv::imwrite(output_path, crop.image);
     }
 
     if (m_options.use_direction_classify) {
@@ -167,7 +165,7 @@ std::vector<TextLine> NativeOcr::detect(std::string &image_path) {
   return text_lines;
 }
 
-CropResult get_rotate_crop_image(cv::Mat source_image, std::vector<std::vector<int>> box) {
+CropResult get_rotate_crop_image(cv::Mat &source_image, std::vector<std::vector<int>> box) {
   cv::Mat image;
   source_image.copyTo(image);
   std::vector<std::vector<int>> points = box;
