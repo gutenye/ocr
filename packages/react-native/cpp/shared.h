@@ -25,3 +25,9 @@ struct Frame {
 };
 
 std::ostream& operator<<(std::ostream& os, const Frame& frame);
+
+struct TextLine {
+  std::string text {};
+  float score {};
+  Frame frame {};
+};

@@ -1,5 +1,5 @@
 import OcrModule from './OcrModule'
-import type { OcrOptions } from './types'
+import type { OcrOptions, TextLine } from './types'
 
 export class Ocr {
   // default options is at shared.h
@@ -8,7 +8,7 @@ export class Ocr {
     return new Ocr()
   }
 
-  detect(rawImagePath: string): Promise<string[]> {
+  detect(rawImagePath: string): Promise<TextLine[]> {
     const imagePath = rawImagePath.replace('file://', '')
     return OcrModule.detect(imagePath)
   }
