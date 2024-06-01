@@ -1,18 +1,18 @@
 import cv from '@techstark/opencv-js'
 import clipper from 'js-clipper'
 import { ImageRaw } from '#common/backend'
-import type { LineImage } from '#common/types'
+import type { LineImage, ImageRaw as ImageRawType } from '#common/types'
 
 type pointType = [number, number]
 type BoxType = [pointType, pointType, pointType, pointType]
 type pointsType = pointType[]
 
-export async function splitIntoLineImages(image: ImageRaw, sourceImage: ImageRaw): Promise<LineImage[]> {
+export async function splitIntoLineImages(image: ImageRawType, sourceImage: ImageRawType): Promise<LineImage[]> {
   const w = image.width
   const h = image.height
   const srcData = sourceImage
 
-  const edgeRect: { box: BoxType; image: ImageRaw }[] = []
+  const edgeRect: { box: BoxType; image: ImageRawType }[] = []
 
   const src = cvImread(image)
 
@@ -31,7 +31,7 @@ export async function splitIntoLineImages(image: ImageRaw, sourceImage: ImageRaw
 
     const clipBox = unclip(points)
 
-    const boxMap = new cv.matFromArray(clipBox.length / 2, 1, cv.CV_32SC2, clipBox)
+    const boxMap = cv.matFromArray(clipBox.length / 2, 1, cv.CV_32SC2, clipBox)
 
     const resultObj = getMiniBoxes(boxMap)
     const box = resultObj.points
@@ -109,7 +109,7 @@ function unclip(box: pointsType) {
   const area = Math.abs(polygonPolygonArea(box))
   const length = polygonPolygonLength(box)
   const distance = (area * unclip_ratio) / length
-  const tmpArr = []
+  const tmpArr: { X: number; Y: number }[] = []
   box.forEach((item) => {
     const obj = {
       X: 0,
@@ -128,7 +128,7 @@ function unclip(box: pointsType) {
     expanded[0].forEach((item) => {
       expandedArr.push([item.X, item.Y])
     })
-  expandedArr = [].concat(...expandedArr)
+  expandedArr = [].concat(...(<any>expandedArr))
 
   return expandedArr
 }
@@ -158,7 +158,7 @@ function int(num: number) {
   return num > 0 ? Math.floor(num) : Math.ceil(num)
 }
 
-function getRotateCropImage(imageRaw: ImageRaw, points: BoxType): ImageRaw {
+function getRotateCropImage(imageRaw: ImageRawType, points: BoxType): ImageRawType {
   const img_crop_width = int(Math.max(linalgNorm(points[0], points[1]), linalgNorm(points[2], points[3])))
   const img_crop_height = int(Math.max(linalgNorm(points[0], points[3]), linalgNorm(points[1], points[2])))
   const pts_std = [
@@ -179,8 +179,8 @@ function getRotateCropImage(imageRaw: ImageRaw, points: BoxType): ImageRaw {
   // 透视转换
   cv.warpPerspective(src, dst, M, dsize, cv.INTER_CUBIC, cv.BORDER_REPLICATE, new cv.Scalar())
 
-  const dst_img_height = dst.matSize[0]
-  const dst_img_width = dst.matSize[1]
+  const dst_img_height = (<any>dst).matSize[0]
+  const dst_img_width = (<any>dst).matSize[1]
   let dst_rot
   // 图像旋转
   if (dst_img_height / dst_img_width >= 1.5) {
@@ -287,10 +287,10 @@ function flatten(arr: number[] | number[][]) {
     .map((item) => +item)
 }
 
-function cvImread(image: ImageRaw) {
+function cvImread(image: ImageRawType) {
   return cv.matFromImageData(image)
 }
 
-function cvImshow(mat: cv.Mat): ImageRaw {
+function cvImshow(mat: cv.Mat): ImageRawType {
   return new ImageRaw({ data: mat.data, width: mat.cols, height: mat.rows })
 }
