@@ -14,8 +14,8 @@ let defaultModels: ModelCreateOptionsType['models'] = undefined as unknown as Mo
 
 export function registerBackend(backend: {
   FileUtils: FileUtilsType
-  ImageRaw: ImageRawType
-  InferenceSession: InferenceSessionType
+  ImageRaw: ImageRawType | any
+  InferenceSession: InferenceSessionType | any
   splitIntoLineImages: SplitIntoLineImagesType
   defaultModels: ModelCreateOptionsType['models']
 }) {
