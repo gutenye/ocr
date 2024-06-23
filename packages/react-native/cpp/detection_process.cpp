@@ -140,5 +140,5 @@ void resize_image(const cv::Mat &source_image, cv::Mat &resized_image, Options &
               << resize_height << std::endl;
   }
 
-  cv::resize(image, resized_image, cv::Size(resize_width, resize_height));
+  cv::resize(source_image, resized_image, cv::Size(resize_width, resize_height));
 }
