@@ -30,7 +30,7 @@ export class Recognition extends ModelBase {
         // Resize Image to 48px height
         //  - height must <= 48
         //  - height: 48 is more accurate then 40, but same as 30
-        const image = await lineImage.image.resize({
+        const image = await (lineImage.image as any).resize({
           height: 48,
         })
         // this.debugImage(lineImage.image, `./output/out9-line-${index}.jpg`)
@@ -141,7 +141,8 @@ function afAfRec(l: Line[]) {
   const line: Line[] = []
   const ind: Map<BoxType, number> = new Map()
   for (const i in l) {
-    ind.set(l[i].box, Number(i))
+    let item: any = l[i].box
+    ind.set(item, Number(i))
   }
 
   function calculateAverageHeight(boxes: BoxType[]): number {
@@ -191,14 +192,19 @@ function afAfRec(l: Line[]) {
     const t = []
     let m = 0
     for (const j of i) {
-      const x = l[ind.get(j)]
+      if(!ind.get(j)) continue;
+      const x = l[ind.get(j)!]
       t.push(x.text)
       m += x.mean
+    }
+    let box = undefined
+    if(i.at(0) && i.at(-1)) {
+        box = [i.at(0)![0], i.at(-1)![1], i.at(-1)![2], i.at(0)![3]]
     }
     line.push({
       mean: m / i.length,
       text: t.join(' '),
-      box: [i.at(0)[0], i.at(-1)[1], i.at(-1)[2], i.at(0)[3]],
+      box: box,
     })
   }
   return line
