@@ -55,7 +55,7 @@ export class ModelBase {
     }
   }
 
-  debugImage(image: ImageRaw, path: string) {
+  debugImage(image: ImageRaw | any, path: string) {
     const { debugOutputDir, isDebug } = this.options
     if (!isDebug || !debugOutputDir) {
       return
@@ -63,7 +63,7 @@ export class ModelBase {
     image.write(`${debugOutputDir}/${path}`)
   }
 
-  async debugBoxImage(sourceImage: ImageRaw, lineImages: LineImage[], path: string) {
+  async debugBoxImage(sourceImage: ImageRaw | any, lineImages: LineImage[], path: string) {
     const { debugOutputDir, isDebug } = this.options
     if (!isDebug || !debugOutputDir) {
       return

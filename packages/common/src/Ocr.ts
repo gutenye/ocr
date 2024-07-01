@@ -22,7 +22,7 @@ export class Ocr {
     this.#recognition = recognition
   }
 
-  async detect(image: ImageRaw, options = {}) {
+  async detect(image: string, options = {}) {
     const lineImages = await this.#detection.run(image, options)
     const texts = await this.#recognition.run(lineImages, options)
     return texts

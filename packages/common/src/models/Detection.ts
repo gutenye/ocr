@@ -1,7 +1,7 @@
 import type { InferenceSession as InferenceSessionCommon, Tensor } from 'onnxruntime-common'
 import invariant from 'tiny-invariant'
 import { ImageRaw, InferenceSession, defaultModels, splitIntoLineImages } from '#common/backend'
-import type { ModelCreateOptions, Size } from '#common/types'
+import type { ModelCreateOptions, Size, ImageRaw as ImageRawType } from '#common/types'
 import { ModelBase } from './ModelBase'
 
 const BASE_SIZE = 32
@@ -53,7 +53,7 @@ export class Detection extends ModelBase {
   }
 }
 
-function multipleOfBaseSize(image: ImageRaw, { maxSize }: { maxSize?: number } = {}): Size {
+function multipleOfBaseSize(image: ImageRawType, { maxSize }: { maxSize?: number } = {}): Size {
   let width = image.width
   let height = image.height
   if (maxSize && Math.max(width, height) > maxSize) {
@@ -71,7 +71,7 @@ function multipleOfBaseSize(image: ImageRaw, { maxSize }: { maxSize?: number } =
   return { width: newWidth, height: newHeight }
 }
 
-function outputToImage(output: Tensor, threshold: number): ImageRaw {
+function outputToImage(output: Tensor, threshold: number): ImageRawType {
   const height = output.dims[2]
   const width = output.dims[3]
   const data = new Uint8Array(width * height * 4)
