@@ -46,7 +46,7 @@ export class Recognition extends ModelBase {
     )
 
     const allLines: Line[] = []
-    console.time('Recognition')
+    // console.time('Recognition')
     for (const modelData of modelDatas) {
       // Run model for each line image
       const output = await this.runModel({ modelData, onnxOptions })
@@ -54,7 +54,7 @@ export class Recognition extends ModelBase {
       const lines = await this.decodeText(output)
       allLines.unshift(...lines)
     }
-    console.timeEnd('Recognition')
+    // console.timeEnd('Recognition')
     const result = calculateBox({ lines: allLines, lineImages })
     return result
   }
