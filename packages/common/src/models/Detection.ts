@@ -33,9 +33,9 @@ export class Detection extends ModelBase {
     })
 
     // Run the model
-    console.time('Detection')
+    // console.time('Detection')
     const modelOutput = await this.runModel({ modelData, onnxOptions })
-    console.timeEnd('Detection')
+    // console.timeEnd('Detection')
 
     // Convert output data back to image data
     //   - output value is from 0 to 1, a probability, if value > 0.3, it is a text
