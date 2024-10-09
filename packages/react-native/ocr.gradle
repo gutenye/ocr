@@ -1,0 +1,43 @@
+/**
+ * Register font asset source folder
+ */
+android.sourceSets.main.assets.srcDirs += file("$buildDir/intermediates/GutenOCR")
+
+/**
+ * Task to copy icon font files
+ */
+afterEvaluate {
+    def config = project.hasProperty("gutenocr") ? project.gutenocr : [];
+    def resourceDir = config.resourceDir ?: "../../node_modules/@gutenye/ocr-react-native/resources";
+    def resourceNames = config.resourceNames ?: [ "*" ];
+
+    def ocrResourceCopyTask = tasks.create(
+        name: "copyGutenOCRResourceFiles",
+        type: Copy) {
+        description = "copy OCR Resource files"
+        into "$buildDir/intermediates/GutenOCR/guten-ocr.bundle"
+
+        resourceNames.each { resourceName ->
+            from(resourceDir) {
+                include(resourceName)
+            }
+        }
+    }
+
+    android.applicationVariants.all { def variant ->
+        def targetName = variant.name.capitalize()
+        def lintVitalAnalyzeTask = tasks.findByName("lintVitalAnalyze${targetName}")
+      
+        if (lintVitalAnalyzeTask) {
+        lintVitalAnalyzeTask.dependsOn(ocrResourceCopyTask)
+        }
+
+        def generateReportTask = tasks.findByName("generate${targetName}LintVitalReportModel")
+        if (generateReportTask) {
+            generateReportTask.dependsOn(ocrResourceCopyTask)
+        }
+      
+        def generateAssetsTask = tasks.findByName("generate${targetName}Assets")
+        generateAssetsTask.dependsOn(ocrResourceCopyTask)
+      }
+}
