@@ -11,4 +11,4 @@ String convertStdString(Runtime& runtime, const string& stdString);
 
 Array convertStdVector(Runtime& runtime, const vector<string>& stdVector);
 
-Array convertStdVectorTextLine(Runtime& runtime, const vector<string>& stdVector);
+Array convertStdVectorTextLine(Runtime& runtime, const vector<TextLine>& stdVector);
