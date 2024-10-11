@@ -35,7 +35,7 @@ export default function App() {
       try {
         setResultLines([])
         const lines = await ocr.detect(imagePath)
-        console.log(':: lines', lines)
+        console.log('lines', lines)
         setResultLines(lines.map((v) => v.text))
       } catch (error) {
         if (error instanceof Error) {
