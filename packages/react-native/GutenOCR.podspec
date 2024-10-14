@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   # }
 
   s.resource_bundles = {
-    'guten-ocr' => ['resources/*']
+    'guten-ocr' => ['android/src/main/assets/guten-ocr.bundle/*']
   }
 
   # s.dependency "onnxruntime-mobile-c", "~>1.14.0"
