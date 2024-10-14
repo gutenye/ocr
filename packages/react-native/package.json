@@ -11,7 +11,7 @@
     "android",
     "expo"
   ],
-  "version": "1.4.4",
+  "version": "1.4.5",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "react-native": "src/index",
