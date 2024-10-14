@@ -1,16 +1,7 @@
 {
   "name": "@gutenye/ocr-react-native",
   "description": "Guten OCR is a high accurate text detection (OCR) Javascript/Typescript library that runs on Node.js, Browser, React Native and C++. Based on PaddleOCR and ONNX runtime",
-  "keywords": [
-    "ocr",
-    "paddleocr",
-    "typescript",
-    "onnxruntime",
-    "react-native",
-    "ios",
-    "android",
-    "expo"
-  ],
+  "keywords": ["ocr", "paddleocr", "typescript", "onnxruntime", "react-native", "ios", "android", "expo"],
   "version": "1.4.5",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -23,15 +14,15 @@
     "ios",
     "!ios/build",
     "android",
-    "ocr.gradle",
+    "!android/src/main/assets/guten-ocr.bundle/*.jpg",
     "!android/build",
     "!android/gradle",
     "!android/gradlew",
     "!android/gradlew.bat",
     "!android/local.properties",
+    "ocr.gradle",
     "cpp",
     "!cpp/example",
-    "resources/*.{onnx,txt}",
     "*.podspec",
     "!**/__tests__",
     "!**/__fixtures__",
@@ -69,15 +60,10 @@
   },
   "jest": {
     "preset": "react-native",
-    "modulePathIgnorePatterns": [
-      "<rootDir>/example/node_modules",
-      "<rootDir>/lib/"
-    ]
+    "modulePathIgnorePatterns": ["<rootDir>/example/node_modules", "<rootDir>/lib/"]
   },
   "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
+    "extends": ["@commitlint/config-conventional"]
   },
   "release-it": {
     "git": {
