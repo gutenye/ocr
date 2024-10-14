@@ -38,7 +38,7 @@ void install(Runtime &runtime) {
         }
         auto imagePath = arguments[0].asString(runtime).utf8(runtime);
         auto lines = _ocr->detect(imagePath);
-        return convertStdVector(runtime, lines);
+        return convertStdVectorTextLine(runtime, lines);
       });
   runtime.global().setProperty(runtime, "detect", std::move(detect));
 }
