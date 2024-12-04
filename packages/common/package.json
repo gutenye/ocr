@@ -12,14 +12,13 @@
   "exports": {
     ".": {
       "bun": "./src/index.ts",
-      "node": "./build/index.js",
       "react-native": "./src/index.ts",
-      "default": "./src/index.ts"
+      "default": "./build/index.js"
     },
     "./splitIntoLineImages": {
       "bun": "./src/backend/splitIntoLineImages.ts",
-      "node": "./build/backend/splitIntoLineImages.js",
-      "default": "./src/backend/splitIntoLineImages.ts"
+      "react-native": "./src/backend/splitIntoLineImages.ts",
+      "default": "./build/backend/splitIntoLineImages.js"
     }
   },
   "files": ["src", "build", "tsconfig.json", "!**/__tests__"],
