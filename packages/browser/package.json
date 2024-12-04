@@ -14,7 +14,7 @@
     "bun": "./src/index.ts",
     "node": "./build/index.js",
     "react-native": "./src/index.ts",
-    "default": "./src/index.ts"
+    "default": "./build/index.js"
   },
   "files": ["src", "build", "!**/__tests__"],
   "scripts": {
