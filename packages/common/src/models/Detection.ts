@@ -1,7 +1,7 @@
 import type { InferenceSession as InferenceSessionCommon, Tensor } from 'onnxruntime-common'
 import invariant from 'tiny-invariant'
 import { ImageRaw, InferenceSession, defaultModels, splitIntoLineImages } from '#common/backend'
-import type { ModelCreateOptions, Size, ImageRaw as ImageRawType } from '#common/types'
+import type { ImageRaw as ImageRawType, ModelCreateOptions, Size } from '#common/types'
 import { ModelBase } from './ModelBase'
 
 const BASE_SIZE = 32
@@ -22,7 +22,7 @@ export class Detection extends ModelBase {
     //   - bigger image -> more accurate result, but takes longer time
     // inputImage = await Image.resize(image, multipleOfBaseSize(image, { maxSize: 960 }))
     const inputImage = await image.resize(multipleOfBaseSize(image))
-    // this.debugImage(inputImage, 'out1-multiple-of-base-size.jpg')
+    this.debugImage(inputImage, 'out1-multiple-of-base-size.jpg')
 
     // Covert image data to model data
     //   - Using `(RGB / 255 - mean) / std` formula
@@ -41,7 +41,7 @@ export class Detection extends ModelBase {
     //   - output value is from 0 to 1, a probability, if value > 0.3, it is a text
     //   - returns a black and white image
     const outputImage = outputToImage(modelOutput, 0.03)
-    // this.debugImage(outputImage, 'out2-black-white.jpg')
+    this.debugImage(outputImage, 'out2-black-white.jpg')
 
     // Find text boxes, split image into lines
     //   - findContours from the image
