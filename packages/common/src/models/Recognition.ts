@@ -33,8 +33,8 @@ export class Recognition extends ModelBase {
         const image = await (lineImage.image as any).resize({
           height: 48,
         })
-        // this.debugImage(lineImage.image, `./output/out9-line-${index}.jpg`)
-        // this.debugImage(image, `./output/out9-line-${index}-resized.jpg`)
+        this.debugImage(lineImage.image, `out9-line-${index}.jpg`)
+        this.debugImage(image, `out9-line-${index}-resized.jpg`)
 
         // transform image data to model data
         const modelData = this.imageToInput(image, {
@@ -137,77 +137,80 @@ function calculateBox({
   return mainLine
 }
 
-function afAfRec(l: Line[]) {
-  const line: Line[] = []
-  const ind: Map<BoxType, number> = new Map()
-  for (const i in l) {
-    let item: any = l[i].box
-    ind.set(item, Number(i))
+function afAfRec(lines: Line[]) {
+  const outputLines: Line[] = []
+  const indexes: Map<BoxType, number> = new Map()
+  for (const index in lines) {
+    const box: any = lines[index].box
+    indexes.set(box, Number(index))
   }
 
-  function calculateAverageHeight(boxes: BoxType[]): number {
-    let totalHeight = 0
-    for (const box of boxes) {
-      const [[, y1], , [, y2]] = box
-      const height = y2 - y1
-      totalHeight += height
-    }
-    return totalHeight / boxes.length
-  }
+  const groupedBoxes = groupBoxesByMidlineDifference([...indexes.keys()])
 
-  function groupBoxesByMidlineDifference(boxes: BoxType[]): BoxType[][] {
-    const averageHeight = calculateAverageHeight(boxes)
-    const result: BoxType[][] = []
+  for (const boxes of groupedBoxes) {
+    const texts = []
+    let mean = 0
     for (const box of boxes) {
-      const [[, y1], , [, y2]] = box
-      const midline = (y1 + y2) / 2
-      const group = result.find((b) => {
-        const [[, groupY1], , [, groupY2]] = b[0]
-        const groupMidline = (groupY1 + groupY2) / 2
-        return Math.abs(groupMidline - midline) < averageHeight / 2
-      })
-      if (group) {
-        group.push(box)
-      } else {
-        result.push([box])
+      const index = indexes.get(box)
+      if (index === undefined) {
+        continue
       }
+      const line = lines[index]
+      texts.push(line.text)
+      mean += line.mean
     }
-
-    for (const group of result) {
-      group.sort((a, b) => {
-        const [ltA] = a
-        const [ltB] = b
-        return ltA[0] - ltB[0]
-      })
+    let outputBox = undefined
+    if (boxes.at(0) && boxes.at(-1)) {
+      outputBox = [boxes.at(0)![0], boxes.at(-1)![1], boxes.at(-1)![2], boxes.at(0)![3]]
     }
-
-    result.sort((a, b) => a[0][0][1] - b[0][0][1])
-
-    return result
-  }
-
-  const boxes = groupBoxesByMidlineDifference([...ind.keys()])
-
-  for (const i of boxes) {
-    const t = []
-    let m = 0
-    for (const j of i) {
-      if(!ind.get(j)) continue;
-      const x = l[ind.get(j)!]
-      t.push(x.text)
-      m += x.mean
-    }
-    let box = undefined
-    if(i.at(0) && i.at(-1)) {
-        box = [i.at(0)![0], i.at(-1)![1], i.at(-1)![2], i.at(0)![3]]
-    }
-    line.push({
-      mean: m / i.length,
-      text: t.join(' '),
-      box: box,
+    outputLines.push({
+      mean: mean / boxes.length,
+      text: texts.join(' '),
+      box: outputBox,
     })
   }
-  return line
+  return outputLines
+}
+
+function calculateAverageHeight(boxes: BoxType[]): number {
+  let totalHeight = 0
+  for (const box of boxes) {
+    const [[, y1], , [, y2]] = box
+    const height = y2 - y1
+    totalHeight += height
+  }
+  return totalHeight / boxes.length
+}
+
+function groupBoxesByMidlineDifference(boxes: BoxType[]): BoxType[][] {
+  const averageHeight = calculateAverageHeight(boxes)
+  const result: BoxType[][] = []
+  for (const box of boxes) {
+    const [[, y1], , [, y2]] = box
+    const midline = (y1 + y2) / 2
+    const group = result.find((b) => {
+      const [[, groupY1], , [, groupY2]] = b[0]
+      const groupMidline = (groupY1 + groupY2) / 2
+      return Math.abs(groupMidline - midline) < averageHeight / 2
+    })
+    if (group) {
+      group.push(box)
+    } else {
+      result.push([box])
+    }
+  }
+
+  for (const group of result) {
+    group.sort((a, b) => {
+      const [ltA] = a
+      const [ltB] = b
+      return ltA[0] - ltB[0]
+    })
+  }
+
+  result.sort((a, b) => a[0][0][1] - b[0][0][1])
+
+  return result
 }
 
 type pointType = [number, number]
