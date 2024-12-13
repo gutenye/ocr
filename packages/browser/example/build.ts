@@ -2,7 +2,7 @@ import fs from 'node:fs/promises'
 import { $ } from 'bun'
 
 const result = await Bun.build({
-  entrypoints: ['./browser.ts'],
+  entrypoints: ['./browser-example.ts'],
   outdir: './build',
   target: 'browser',
   sourcemap: 'external',

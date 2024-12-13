@@ -1,6 +1,7 @@
 {
   "name": "browser-example",
   "dependencies": {
-    "@gutenye/ocr-browser": "*"
+    "@gutenye/ocr-browser": "^1.4.7",
+    "@gutenye/ocr-common": "^1.4.7"
   }
 }
