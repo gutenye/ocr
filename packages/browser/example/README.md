@@ -4,7 +4,7 @@
 
 ```
 cd ../.. && bun install
-cd examples/web
+cd browser/example
 bun install
 ./ake start
 ```
