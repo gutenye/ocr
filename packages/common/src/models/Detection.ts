@@ -51,8 +51,8 @@ export class Detection extends ModelBase {
 
     return {
       lineImages,
-      resizedImageWidth: image.width,
-      resizedImageHeight: image.height,
+      resizedImageWidth: inputImage.width,
+      resizedImageHeight: inputImage.height,
     }
   }
 }
