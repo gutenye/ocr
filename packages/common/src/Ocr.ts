@@ -23,8 +23,12 @@ export class Ocr {
   }
 
   async detect(image: string, options = {}) {
-    const lineImages = await this.#detection.run(image, options)
+    const { lineImages, resizedImageWidth, resizedImageHeight } = await this.#detection.run(image, options)
     const texts = await this.#recognition.run(lineImages, options)
-    return texts
+    return {
+      texts,
+      resizedImageWidth,
+      resizedImageHeight,
+    }
   }
 }

@@ -49,7 +49,11 @@ export class Detection extends ModelBase {
     const lineImages = await splitIntoLineImages(outputImage, inputImage)
     this.debugBoxImage(inputImage, lineImages, 'boxes.jpg')
 
-    return lineImages
+    return {
+      lineImages,
+      resizedImageWidth: image.width,
+      resizedImageHeight: image.height,
+    }
   }
 }
 
