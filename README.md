@@ -78,7 +78,7 @@ Ocr.create({
   onnxOptions?: {}       // Node only. Pass to ONNX Runtime
 }): Promise<Ocr>
 
-ocr.detect(imagePath, { 
+ocr.detect(imagePath: string | {data: Uint8Array | Uint8ClampedArray | Buffer, width: number, height: number}, {
   onnxOptions?: {}     // Node only. Pass to ONNX Runtime
 }): Promise<{texts: TextLine[], resizedImageWidth: number, resizedImageHeight: number}>
 

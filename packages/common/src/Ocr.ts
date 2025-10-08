@@ -1,4 +1,4 @@
-import type { ModelCreateOptions } from '#common/types'
+import type { ImageRawData, ModelCreateOptions } from '#common/types'
 import { Detection, Recognition } from './models'
 
 export class Ocr {
@@ -22,7 +22,7 @@ export class Ocr {
     this.#recognition = recognition
   }
 
-  async detect(image: string, options = {}) {
+  async detect(image: string | ImageRawData, options = {}) {
     const { lineImages, resizedImageWidth, resizedImageHeight } = await this.#detection.run(image, options)
     const texts = await this.#recognition.run(lineImages, options)
     return {
