@@ -42,7 +42,7 @@ const result = await ocr.detect('/a.jpg')
 
 ```ts
 bun add @gutenye/ocr-react-native
-import Ocr from '@guenye/ocr-react-native'
+import Ocr from '@gutenye/ocr-react-native'
 const ocr = await Ocr.create()
 const result = await ocr.detect('a.jpg')
 ```
