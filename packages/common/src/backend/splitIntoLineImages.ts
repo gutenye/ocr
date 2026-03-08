@@ -1,13 +1,18 @@
 import cv from '@techstark/opencv-js'
 import clipper from 'js-clipper'
 import { ImageRaw } from '#common/backend'
-import type { LineImage, ImageRaw as ImageRawType } from '#common/types'
+import type { ImageRaw as ImageRawType, LineImage } from '#common/types'
 
 type pointType = [number, number]
 type BoxType = [pointType, pointType, pointType, pointType]
 type pointsType = pointType[]
 
-export async function splitIntoLineImages(image: ImageRawType, sourceImage: ImageRawType): Promise<LineImage[]> {
+export async function splitIntoLineImages(
+  image: ImageRawType,
+  sourceImage: ImageRawType,
+  unclipRatio = 1.5,
+  boxThreshold = 0.6,
+): Promise<LineImage[]> {
   const w = image.width
   const h = image.height
   const srcData = sourceImage
@@ -29,7 +34,7 @@ export async function splitIntoLineImages(image: ImageRawType, sourceImage: Imag
     if (sside < minSize) continue
     // TODO sort fast
 
-    const clipBox = unclip(points)
+    const clipBox = unclip(points, unclipRatio)
 
     const boxMap = cv.matFromArray(clipBox.length / 2, 1, cv.CV_32SC2, clipBox)
 
@@ -80,10 +85,10 @@ function getMiniBoxes(contour: any) {
     (a, b) => a[0] - b[0],
   ) as pointsType
 
-  let index_1 = 0,
-    index_2 = 1,
-    index_3 = 2,
-    index_4 = 3
+  let index_1 = 0
+  let index_2 = 1
+  let index_3 = 2
+  let index_4 = 3
   if (points[1][1] > points[0][1]) {
     index_1 = 0
     index_4 = 1
@@ -104,8 +109,7 @@ function getMiniBoxes(contour: any) {
   return { points: box, sside: side }
 }
 
-function unclip(box: pointsType) {
-  const unclip_ratio = 1.5
+function unclip(box: pointsType, unclip_ratio = 1.5) {
   const area = Math.abs(polygonPolygonArea(box))
   const length = polygonPolygonLength(box)
   const distance = (area * unclip_ratio) / length
@@ -124,10 +128,9 @@ function unclip(box: pointsType) {
   const expanded: { X: number; Y: number }[][] = []
   offset.Execute(expanded, distance)
   let expandedArr: pointsType = []
-  expanded[0] &&
-    expanded[0].forEach((item) => {
-      expandedArr.push([item.X, item.Y])
-    })
+  expanded[0]?.forEach((item) => {
+    expandedArr.push([item.X, item.Y])
+  })
   expandedArr = [].concat(...(<any>expandedArr))
 
   return expandedArr
@@ -151,7 +154,7 @@ function orderPointsClockwise(pts: BoxType) {
 }
 
 function linalgNorm(p0: pointType, p1: pointType) {
-  return Math.sqrt(Math.pow(p0[0] - p1[0], 2) + Math.pow(p0[1] - p1[1], 2))
+  return Math.sqrt((p0[0] - p1[0]) ** 2 + (p0[1] - p1[1]) ** 2)
 }
 
 function int(num: number) {
@@ -241,11 +244,11 @@ function boxPoints(center: { x: number; y: number }, size: { width: number; heig
 }
 
 function polygonPolygonArea(polygon: pointsType) {
-  let i = -1,
-    n = polygon.length,
-    a: pointType,
-    b = polygon[n - 1],
-    area = 0
+  let i = -1
+  const n = polygon.length
+  let a: pointType
+  let b = polygon[n - 1]
+  let area = 0
 
   while (++i < n) {
     a = b
@@ -257,14 +260,14 @@ function polygonPolygonArea(polygon: pointsType) {
 }
 
 function polygonPolygonLength(polygon: pointsType) {
-  let i = -1,
-    n = polygon.length,
-    b = polygon[n - 1],
-    xa: number,
-    ya: number,
-    xb = b[0],
-    yb = b[1],
-    perimeter = 0
+  let i = -1
+  const n = polygon.length
+  let b = polygon[n - 1]
+  let xa: number
+  let ya: number
+  let xb = b[0]
+  let yb = b[1]
+  let perimeter = 0
 
   while (++i < n) {
     xa = xb

@@ -75,4 +75,8 @@ export interface ModelCreateOptions extends ModelBaseOptions {
     dictionaryPath: string
   }
   onnxOptions?: InferenceSession.SessionOptions
+  detectionThreshold?: number // Default: 0.3
+  boxThreshold?: number // Default: 0.6
+  unclipRatio?: number // Default: 1.5 for v5, 2.0 for v4
+  recognitionThreshold?: number // Default: 0.5
 }

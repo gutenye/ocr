@@ -3,5 +3,5 @@ declare module 'onnxruntime-node' {
 }
 
 declare module 'js-clipper' {
-    export default any;
-};
+  export default any
+}

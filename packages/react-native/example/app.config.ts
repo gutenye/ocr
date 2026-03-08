@@ -2,7 +2,7 @@ const withEntitlementsPlist = require('@expo/config-plugins').withEntitlementsPl
 
 const withRemoveiOSNotificationEntitlement = (config) => {
   return withEntitlementsPlist(config, (mod) => {
-    delete mod.modResults['aps-environment']
+    mod.modResults['aps-environment'] = undefined
     return mod
   })
 }

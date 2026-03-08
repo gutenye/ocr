@@ -7,15 +7,33 @@ import { ModelBase } from './ModelBase'
 const BASE_SIZE = 32
 
 export class Detection extends ModelBase {
-  static async create({ models, onnxOptions = {}, ...restOptions }: ModelCreateOptions) {
+  private detectionThreshold!: number
+  private boxThreshold!: number
+  private unclipRatio!: number
+
+  static async create({
+    models,
+    onnxOptions = {},
+    detectionThreshold = 0.3,
+    boxThreshold = 0.6,
+    unclipRatio = 1.5,
+    ...restOptions
+  }: ModelCreateOptions) {
     const detectionPath = models?.detectionPath || defaultModels?.detectionPath
     invariant(detectionPath, 'detectionPath is required')
     const model = await InferenceSession.create(detectionPath, onnxOptions)
-    return new Detection({ model, options: restOptions })
+    const instance = new Detection({ model, options: restOptions })
+    instance.detectionThreshold = detectionThreshold
+    instance.boxThreshold = boxThreshold
+    instance.unclipRatio = unclipRatio
+    return instance
   }
 
-  async run(path: string | ImageRawData, { onnxOptions = {} }: { onnxOptions?: InferenceSessionCommon.RunOptions } = {}) {
-    const image = typeof path === "string" ? await ImageRaw.open(path) : new ImageRaw(path)
+  async run(
+    path: string | ImageRawData,
+    { onnxOptions = {} }: { onnxOptions?: InferenceSessionCommon.RunOptions } = {},
+  ) {
+    const image = typeof path === 'string' ? await ImageRaw.open(path) : new ImageRaw(path)
 
     // Resize image to multiple of 32
     //   - image width and height must be a multiple of 32
@@ -38,15 +56,16 @@ export class Detection extends ModelBase {
     // console.timeEnd('Detection')
 
     // Convert output data back to image data
-    //   - output value is from 0 to 1, a probability, if value > 0.3, it is a text
+    //   - output value is from 0 to 1, a probability, if value > threshold, it is a text
     //   - returns a black and white image
-    const outputImage = outputToImage(modelOutput, 0.03)
+    //   - v5 models work better with higher threshold (0.3) vs v4 (0.03)
+    const outputImage = outputToImage(modelOutput, this.detectionThreshold)
     this.debugImage(outputImage, 'out2-black-white.jpg')
 
     // Find text boxes, split image into lines
     //   - findContours from the image
     //   - returns text boxes and line images
-    const lineImages = await splitIntoLineImages(outputImage, inputImage)
+    const lineImages = await splitIntoLineImages(outputImage, inputImage, this.unclipRatio, this.boxThreshold)
     this.debugBoxImage(inputImage, lineImages, 'boxes.jpg')
 
     return {

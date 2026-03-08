@@ -25,10 +25,7 @@ export class Ocr {
   async detect(image: string | ImageRawData, options = {}) {
     const { lineImages, resizedImageWidth, resizedImageHeight } = await this.#detection.run(image, options)
     const texts = await this.#recognition.run(lineImages, options)
-    return {
-      texts,
-      resizedImageWidth,
-      resizedImageHeight,
-    }
+    // Return texts array directly for backward compatibility
+    return texts
   }
 }
