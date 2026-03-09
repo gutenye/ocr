@@ -2,3 +2,7 @@
 publish = "build2"  
 base = "packages/browser/example"
 command = "./netlify-build.sh"
+
+[build.environment]
+GIT_LFS_ENABLED = "true"
+GIT_LFS_FETCH_INCLUDE = "assets/*"

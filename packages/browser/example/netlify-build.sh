@@ -17,4 +17,6 @@ bun run tsc-alias --project tsconfig.build.json
 cd example
 bun run build.ts
 
+# Copy build output and assets
 cp -rL build build2
+cp -rL assets build2/assets
