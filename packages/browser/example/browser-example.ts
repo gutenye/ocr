@@ -1,18 +1,32 @@
 import Ocr from '@gutenye/ocr-browser'
 
 async function main() {
-  const ocr = await Ocr.create({
-    isDebug: true,
-    detectionThreshold: 0.3,
-    boxThreshold: 0.6,
-    unclipRatio: 1.5,
-    recognitionThreshold: 0.5,
-    models: {
-      detectionPath: '/assets/PP-OCRv5_server_det_infer.onnx',
-      recognitionPath: '/assets/PP-OCRv5_server_rec_infer.onnx',
-      dictionaryPath: '/assets/ppocr_keys_v5.txt',
-    },
-  })
+  try {
+    const ocr = await Ocr.create({
+      isDebug: true,
+      detectionThreshold: 0.3,
+      boxThreshold: 0.6,
+      unclipRatio: 1.5,
+      recognitionThreshold: 0.5,
+      onnxOptions: {
+        executionProviders: ['wasm'],
+        graphOptimizationLevel: 'all',
+      },
+      models: {
+        detectionPath: '/assets/PP-OCRv5_server_det_infer.onnx',
+        recognitionPath: '/assets/PP-OCRv5_server_rec_infer.onnx',
+        dictionaryPath: '/assets/ppocr_keys_v5.txt',
+      },
+    })
+  } catch (error) {
+    console.error('Failed to create OCR:', error)
+    document.querySelector('#title')!.textContent = 'OCR Failed to Load'
+    const resultText = document.querySelector('#result-text')
+    if (resultText) {
+      resultText.textContent = `Error: ${error instanceof Error ? error.message : String(error)}\n\nv5 server models (165MB) may be too large for browsers. Try v4 models or use Node.js for v5.`
+    }
+    throw error
+  }
   const hideElement = document.querySelector('.hide')
   if (hideElement) {
     (hideElement as HTMLElement).style.visibility = 'visible'
