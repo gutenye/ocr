@@ -9,7 +9,10 @@ async function main() {
       dictionaryPath: '/assets/ppocr_keys_v1.txt',
     },
   })
-  document.querySelector('.hide')?.style.visibility = 'visible'
+  const hideElement = document.querySelector('.hide')
+  if (hideElement) {
+    (hideElement as HTMLElement).style.visibility = 'visible'
+  }
   document.querySelector('#title')!.textContent = 'OCR is ready'
 
   createApp(async ({ imageUrl }) => {
