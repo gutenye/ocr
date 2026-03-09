@@ -23,7 +23,7 @@ async function main() {
     document.querySelector('#title')!.textContent = 'OCR Failed to Load'
     const resultText = document.querySelector('#result-text')
     if (resultText) {
-      resultText.textContent = `Error: ${error instanceof Error ? error.message : String(error)}\n\nv5 server models (165MB) may be too large for browsers. Try v4 models or use Node.js for v5.`
+      resultText.textContent = `Error: ${error instanceof Error ? error.message : String(error)}`
     }
     throw error
   }
