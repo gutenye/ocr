@@ -3,10 +3,14 @@ import Ocr from '@gutenye/ocr-browser'
 async function main() {
   const ocr = await Ocr.create({
     isDebug: true,
+    detectionThreshold: 0.3,
+    boxThreshold: 0.6,
+    unclipRatio: 1.5,
+    recognitionThreshold: 0.5,
     models: {
-      detectionPath: '/assets/ch_PP-OCRv4_det_infer.onnx',
-      recognitionPath: '/assets/ch_PP-OCRv4_rec_infer.onnx',
-      dictionaryPath: '/assets/ppocr_keys_v1.txt',
+      detectionPath: '/assets/PP-OCRv5_server_det_infer.onnx',
+      recognitionPath: '/assets/PP-OCRv5_server_rec_infer.onnx',
+      dictionaryPath: '/assets/ppocr_keys_v5.txt',
     },
   })
   const hideElement = document.querySelector('.hide')
