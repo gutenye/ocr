@@ -1,4 +1,10 @@
 import Ocr from '@gutenye/ocr-browser'
+import * as ort from 'onnxruntime-web'
+
+// Configure ONNX Runtime for large models
+ort.env.wasm.numThreads = 1 // Disable threading to save memory
+ort.env.wasm.simd = true
+// ort.env.wasm.proxy = false // Disable worker to save memory
 
 async function main() {
   try {
