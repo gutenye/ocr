@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Build script for browser example with v5 models
 
 export DEFAULT_IMAGE_PATH='/assets/cn-01.jpg'
 
