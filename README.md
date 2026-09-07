@@ -109,3 +109,18 @@ git clone git@github.com:gutenye/ocr.git
 | [paddleocr-onnx](https://github.com/backrunner/paddleocr-onnx) | Node      | Recogination part is incomplete |
 | [ocrjs](https://github.com/SOVLOOKUP/ocrjs)                    | Node      | Recogination part is incomplete |
 | [Paddle-Lite-Demo](https://github.com/PaddlePaddle/Paddle-Lite-Demo) | Mobile, C++ | |
+
+## License
+
+The source code of this project is licensed under the [MIT](./LICENSE) license.
+
+The model and dictionary assets in `packages/models/assets` are **not** covered by the MIT license. They come from [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) and remain under its [Apache-2.0](https://github.com/PaddlePaddle/PaddleOCR/blob/main/LICENSE) license:
+
+| Asset                                     | Origin                                                            |
+| ----------------------------------------- | ----------------------------------------------------------------- |
+| `ch_PP-OCRv4_det_infer.onnx`              | PaddleOCR `ch_PP-OCRv4_det_infer`, converted with paddle2onnx     |
+| `ch_PP-OCRv4_rec_infer.onnx`              | PaddleOCR `ch_PP-OCRv4_rec_infer`, converted with paddle2onnx     |
+| `ch_ppocr_mobile_v2.0_cls_infer.onnx`     | PaddleOCR `ch_ppocr_mobile_v2.0_cls_infer`, converted with paddle2onnx |
+| `ppocr_keys_v1.txt`                       | PaddleOCR `ppocr/utils/ppocr_keys_v1.txt`, unmodified             |
+
+Converting a model to ONNX does not change the license of its weights. If you redistribute these assets, include the Apache-2.0 license text and keep the PaddleOCR attribution.
