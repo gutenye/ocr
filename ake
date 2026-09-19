@@ -1,50 +1,49 @@
-#!/usr/bin/env nu
+#!/usr/bin/env bun
 
-def main [] {}
+import { $, app } from '@gutenye/script.js'
 
-# skip models, which is large
-def 'main publish' [version: string, packages?: string = 'common,node,browser,react-native'] {
-  update-version $version
-  let pkgs = ($packages | split row ',')
-  for pkg in $pkgs {
-    publish $pkg $version
-  }
+const PUBLISH_PACKAGES = ['common', 'node', 'browser', 'react-native']
+
+// skip models, which is large
+app
+  .cmd('publish', 'Bump the version and publish packages')
+  .add('<version>', 'Version to publish')
+  .add('[packages]', `Comma-separated packages (default: ${PUBLISH_PACKAGES.join(',')})`)
+  .add(async (version, packages) => {
+    await updateVersion('package.json', version)
+    for (const pkg of packages?.split(',') ?? PUBLISH_PACKAGES) {
+      await updateVersion(`packages/${pkg}/package.json`, version)
+      await $`./ake publish`.cwd(`packages/${pkg}`)
+    }
+  })
+
+app
+  .cmd('node example', 'Run the node example')
+  .add('[...args]', 'Extra example args')
+  .add(async (_args, { argv }) => {
+    await $`./ake start ${argv}`.cwd('packages/node/example')
+  })
+
+app.cmd('browser example', 'Run the browser example').add(async () => {
+  await $`./ake start`.cwd('packages/browser/example')
+})
+
+app.cmd('react-native example', 'Run the ReactNative example').add(async () => {
+  await $`./ake start`.cwd('packages/react-native/example')
+})
+
+app
+  .cmd('cpp example', 'Run the cpp example')
+  .add('[path]', 'Image path', ['$files'])
+  .add(async (path) => {
+    const args = path ? [path] : []
+    await $`./ake start ${args}`.cwd('packages/react-native/cpp/example')
+  })
+
+async function updateVersion(path: string, version: string) {
+  const file = Bun.file(path)
+  const content = await file.text()
+  await Bun.write(file, content.replace(/"version": ".*"/, `"version": "${version}"`))
 }
 
-# Run node example
-def --wrapped 'main node example' [...args] {
-  cd packages/node/example
-  ./ake start ...$args
-}
-
-# Run browser example
-def 'main browser example' [] {
-  cd packages/browser/example
-  ./ake start
-}
-
-# Run ReactNative example
-def 'main react-native example' [] {
-  cd packages/react-native/example
-  ./ake start
-}
-
-# Runc cpp example
-def 'main cpp example' [path?: string] {
-  cd packages/react-native/cpp/example
-  if $path == null {
-    ./ake start
-  } else {
-    ./ake start $path
-  }
-}
-
-def publish [package: string, version: string] {
-  cd $'packages/($package)'
-  update-version $version
-  ./ake publish
-}
-
-def update-version [version: string] {
-  sed -i $'s/"version": ".*"/"version": "($version)"/' package.json
-}
+await app.run()
