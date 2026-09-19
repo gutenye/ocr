@@ -11,7 +11,7 @@ async function main() {
   })
   const hideElement = document.querySelector('.hide')
   if (hideElement) {
-    (hideElement as HTMLElement).style.visibility = 'visible'
+    ;(hideElement as HTMLElement).style.visibility = 'visible'
   }
   document.querySelector('#title')!.textContent = 'OCR is ready'
 
@@ -21,7 +21,7 @@ async function main() {
     const duration = new Date().valueOf() - startTime
 
     return {
-      text: result.map((v) => `${v.mean.toFixed(2)} ${v.text}`).join('\n'),
+      text: result.texts.map((v) => `${v.mean.toFixed(2)} ${v.text}`).join('\n'),
       duration,
     }
   })
