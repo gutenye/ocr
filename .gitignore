@@ -181,4 +181,9 @@ dist
 .netlify
 
 venv
-vscode
+
+# Model assets - not stored in git, fetch with `packages/models/ake fetch`
+packages/models/assets/*.onnx
+packages/models/assets/ppocr_keys_*.txt
+packages/react-native/android/src/main/assets/guten-ocr.bundle/*.onnx
+packages/react-native/android/src/main/assets/guten-ocr.bundle/ppocr_keys_*.txt

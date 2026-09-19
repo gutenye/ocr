@@ -1,8 +1,29 @@
 #!/usr/bin/env bun
 
+import path from 'node:path'
 import { $, app } from '@gutenye/script.js'
 
+const BUNDLE_DIR = path.join(import.meta.dir, 'android/src/main/assets/guten-ocr.bundle')
+const MODELS_DIR = path.join(import.meta.dir, '../models')
+
+// The bundled models are shipped inside the npm package and compiled into the app,
+// so they must be present before bob builds or npm publishes.
+const BUNDLED_ASSETS = [
+  'ch_PP-OCRv4_det_infer.onnx',
+  'ch_PP-OCRv4_rec_infer.onnx',
+  'ch_ppocr_mobile_v2.0_cls_infer.onnx',
+  'ppocr_keys_v1.txt',
+]
+
+app.cmd('fetch', 'Download the models bundled into the native app').add(async () => {
+  await $`./ake fetch ${BUNDLED_ASSETS.join(',')}`.cwd(MODELS_DIR)
+  for (const name of BUNDLED_ASSETS) {
+    await $`cp ${path.join(MODELS_DIR, 'assets', name)} ${path.join(BUNDLE_DIR, name)}`
+  }
+})
+
 app.cmd('build', 'Build the package with bob').add(async () => {
+  await $`./ake fetch`.cwd(import.meta.dir)
   await $`bun run bob build`.nothrow()
 })
 
