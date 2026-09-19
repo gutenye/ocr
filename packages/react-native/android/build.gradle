@@ -127,6 +127,7 @@ android {
       "**/libjsi.so",
       "**/libreact_nativemodule_core.so",
       "**/libreactnativejni.so",
+      "**/libreactnative.so",
       "**/libturbomodulejsijni.so",
       "**/libc++_shared.so"
     ]
@@ -141,10 +142,8 @@ repositories {
 def kotlin_version = getExtOrDefault("kotlinVersion")
 
 dependencies {
-  // For < 0.71, this will be from the local maven repo
-  // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
-  //noinspection GradleDynamicVersion
-  implementation "com.facebook.react:react-native:+"
+  // Version comes from the react-native Gradle plugin, so prefab reports the app's real RN version.
+  implementation "com.facebook.react:react-android"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 

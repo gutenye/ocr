@@ -23,11 +23,18 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/build/onnxruntime/headers
 )
 
+# RN 0.76 merged the native libs into libreactnative.so; earlier versions expose reactnativejni.
+if(ReactAndroid_VERSION_MINOR GREATER_EQUAL 76)
+  set(REACT_NATIVE_CORE ReactAndroid::reactnative)
+else()
+  set(REACT_NATIVE_CORE ReactAndroid::reactnativejni)
+endif()
+
 target_link_libraries(
   ${PROJECT_NAME} 
   ${OpenCV_LIBS}
   ${CMAKE_SOURCE_DIR}/build/onnxruntime/jni/${CMAKE_ANDROID_ARCH_ABI}/libonnxruntime.so
   ReactAndroid::jsi
-  ReactAndroid::reactnativejni
+  ${REACT_NATIVE_CORE}
 )
 
