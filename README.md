@@ -4,7 +4,7 @@
 
 **an OCR Javascript library runs on Node.js, Browser, React Native and C++** 
 
-Based on [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) and [ONNX Runtime](https://github.com/microsoft/onnxruntime), supports PP-OCRv4 model
+Based on [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) and [ONNX Runtime](https://github.com/microsoft/onnxruntime), supports PP-OCRv4 and PP-OCRv5 models
 
 ## Getting Started
 
@@ -35,6 +35,8 @@ const ocr = await Ocr.create({
 })
 const result = await ocr.detect('/a.jpg')
 ```
+
+The browser build has no default models, so `models` is required. The PP-OCRv5 server models are ~88MB each, which is usually too large to download in a browser — prefer PP-OCRv4 here and use PP-OCRv5 on Node, where it is the default.
 
 ### React Native
 
@@ -68,14 +70,17 @@ Ocr.create({
   },
   isDebug?: boolean
   debugOutputDir?: string // Node only
+  detectionThreshold?: number // Default: 0.3. Node and Browser
+  boxThreshold?: number // Default: 0.6. Node and Browser
+  unclipRatio?: number // Default: 1.5. Node and Browser
+  recognitionThreshold?: number // Default: 0.5. Node and Browser
   recognitionImageMaxSize?: number // RN only
-  detectionThreshold?: number // RN only
   detectionBoxThreshold?: number // RN only
   detectionUnclipRatiop?: number // RN only
   detectionUseDilate?: boolean // RN only
   detectionUsePolygonScore?: boolean // RN only
   useDirectionClassify?: boolean // RN only
-  onnxOptions?: {}       // Node only. Pass to ONNX Runtime
+  onnxOptions?: {}       // Node and Browser. Pass to ONNX Runtime
 }): Promise<Ocr>
 
 ocr.detect(imagePath: string | {data: Uint8Array | Uint8ClampedArray | Buffer, width: number, height: number}, {
