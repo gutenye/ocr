@@ -4,7 +4,7 @@ import { InferenceSession } from 'onnxruntime-web'
 import { FileUtils } from './FileUtils'
 import { ImageRaw } from './ImageRaw'
 
-registerBackend({ FileUtils, ImageRaw, InferenceSession, splitIntoLineImages, defaultModels: undefined })
+registerBackend({ FileUtils, ImageRaw, InferenceSession, splitIntoLineImages })
 
 export * from '@gutenye/ocr-common'
 export default Ocr
