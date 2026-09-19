@@ -4,9 +4,9 @@ async function main() {
   const ocr = await Ocr.create({
     isDebug: true,
     models: {
-      detectionPath: '/assets/ch_PP-OCRv4_det_infer.onnx',
-      recognitionPath: '/assets/ch_PP-OCRv4_rec_infer.onnx',
-      dictionaryPath: '/assets/ppocr_keys_v1.txt',
+      detectionPath: '/assets/mobile_det.onnx',
+      recognitionPath: '/assets/mobile_rec.onnx',
+      dictionaryPath: '/assets/ppocrv5_dict.txt',
     },
   })
   document.querySelector('.hide')!.style.visibility = 'visible'

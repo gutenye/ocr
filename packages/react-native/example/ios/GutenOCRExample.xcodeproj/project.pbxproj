@@ -25,9 +25,9 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = GutenOCRExample/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = GutenOCRExample/main.m; sourceTree = "<group>"; };
 		1A4CA9A82BEC6C9A0060D483 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = "third-party/opencv2.framework"; sourceTree = "<group>"; };
-		1ADC65452BEA5FE10026B7CA /* ch_PP-OCRv4_det_infer.onnx */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ch_PP-OCRv4_det_infer.onnx"; sourceTree = "<group>"; };
-		1ADC65462BEA5FE10026B7CA /* ch_PP-OCRv4_rec_infer.onnx */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ch_PP-OCRv4_rec_infer.onnx"; sourceTree = "<group>"; };
-		1ADC65472BEA5FE10026B7CA /* ppocr_keys_v1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ppocr_keys_v1.txt; sourceTree = "<group>"; };
+		1ADC65452BEA5FE10026B7CA /* mobile_det.onnx */ = {isa = PBXFileReference; lastKnownFileType = file; path = "mobile_det.onnx"; sourceTree = "<group>"; };
+		1ADC65462BEA5FE10026B7CA /* mobile_rec.onnx */ = {isa = PBXFileReference; lastKnownFileType = file; path = "mobile_rec.onnx"; sourceTree = "<group>"; };
+		1ADC65472BEA5FE10026B7CA /* ppocrv5_dict.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ppocrv5_dict.txt; sourceTree = "<group>"; };
 		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-GutenOCRExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GutenOCRExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C2E3173556A471DD304B334 /* Pods-GutenOCRExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GutenOCRExample.debug.xcconfig"; path = "Target Support Files/Pods-GutenOCRExample/Pods-GutenOCRExample.debug.xcconfig"; sourceTree = "<group>"; };
 		7A4D352CD337FB3A3BF06240 /* Pods-GutenOCRExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GutenOCRExample.release.xcconfig"; path = "Target Support Files/Pods-GutenOCRExample/Pods-GutenOCRExample.release.xcconfig"; sourceTree = "<group>"; };
@@ -70,9 +70,9 @@
 		1ADC65482BEA5FE10026B7CA /* resources */ = {
 			isa = PBXGroup;
 			children = (
-				1ADC65452BEA5FE10026B7CA /* ch_PP-OCRv4_det_infer.onnx */,
-				1ADC65462BEA5FE10026B7CA /* ch_PP-OCRv4_rec_infer.onnx */,
-				1ADC65472BEA5FE10026B7CA /* ppocr_keys_v1.txt */,
+				1ADC65452BEA5FE10026B7CA /* mobile_det.onnx */,
+				1ADC65462BEA5FE10026B7CA /* mobile_rec.onnx */,
+				1ADC65472BEA5FE10026B7CA /* ppocrv5_dict.txt */,
 			);
 			name = resources;
 			path = ../resources;

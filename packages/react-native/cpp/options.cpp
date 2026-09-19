@@ -41,10 +41,10 @@ Options convertRawOptions(std::unordered_map<std::string, std::any>& rawOptions,
   }
   if (rawOptions.count("models") == 0) {
     rawOptions["models"] = std::unordered_map<std::string, std::any> {
-        {"detectionModelPath", assetDir + "/ch_PP-OCRv4_det_infer.onnx"},
-        {"recognitionModelPath", assetDir + "/ch_PP-OCRv4_rec_infer.onnx"},
+        {"detectionModelPath", assetDir + "/mobile_det.onnx"},
+        {"recognitionModelPath", assetDir + "/mobile_rec.onnx"},
         {"classifierModelPath", assetDir + "/ch_ppocr_mobile_v2.0_cls_infer.onnx"},
-        {"dictionaryPath", assetDir + "/ppocr_keys_v1.txt"}};
+        {"dictionaryPath", assetDir + "/ppocrv5_dict.txt"}};
   }
   auto rawModels = std::any_cast<std::unordered_map<std::string, std::any>>(rawOptions.at("models"));
   auto& models = options.models;
