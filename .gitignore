@@ -183,6 +183,7 @@ dist
 venv
 
 # Model assets - not stored in git, fetch with `packages/models/ake fetch`
+# assets/ keeps tracked symlinks to these, which is why only the real files are listed
 packages/models/assets/*.onnx
 packages/models/assets/ppocr_keys_*.txt
 packages/react-native/android/src/main/assets/guten-ocr.bundle/*.onnx
