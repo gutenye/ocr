@@ -1,9 +1,93 @@
 #!/usr/bin/env bun
 
+import { createHash } from 'node:crypto'
+import fs from 'node:fs/promises'
+import path from 'node:path'
 import { $, app } from '@gutenye/script.js'
 
+const ASSETS_DIR = path.join(import.meta.dir, 'assets')
+const MANIFEST = path.join(import.meta.dir, 'assets.json')
+
+app
+  .cmd('fetch', 'Download the model assets into assets/ and verify their checksums')
+  .add('[names]', 'Comma-separated asset names (default: all)')
+  .add(async (names) => {
+    const { baseUrl, assets } = await Bun.file(MANIFEST).json()
+    const base = process.env.GUTEN_OCR_MODELS_BASE_URL || baseUrl
+    const wanted = names?.split(',').map((v) => v.trim())
+    const selected = wanted ? assets.filter((v) => wanted.includes(v.name)) : assets
+    if (!selected.length) {
+      throw new Error(`No asset matches ${names}. Available: ${assets.map((v) => v.name).join(', ')}`)
+    }
+    await fs.mkdir(ASSETS_DIR, { recursive: true })
+    for (const asset of selected) {
+      await fetchAsset(asset, base)
+    }
+  })
+
+app.cmd('verify', 'Check the assets already in assets/ against the manifest').add(async () => {
+  const { assets } = await Bun.file(MANIFEST).json()
+  let missing = 0
+  for (const asset of assets) {
+    const target = path.join(ASSETS_DIR, asset.name)
+    const actual = await sha256(target)
+    if (!actual) {
+      console.log(`missing  ${asset.name}`)
+      missing++
+    } else if (actual !== asset.sha256) {
+      console.log(`CORRUPT  ${asset.name} (expected ${asset.sha256}, got ${actual})`)
+      missing++
+    } else {
+      console.log(`ok       ${asset.name}`)
+    }
+  }
+  if (missing) {
+    throw new Error(`${missing} asset(s) missing or corrupt. Run ./ake fetch`)
+  }
+})
+
 app.cmd('publish', 'Publish to npm').add(async () => {
+  const { assets } = await Bun.file(MANIFEST).json()
+  for (const asset of assets) {
+    const actual = await sha256(path.join(ASSETS_DIR, asset.name))
+    if (actual !== asset.sha256) {
+      throw new Error(`${asset.name} is missing or does not match the manifest. Run ./ake fetch first.`)
+    }
+  }
   await $`npm publish`
 })
+
+async function fetchAsset(asset, base) {
+  const target = path.join(ASSETS_DIR, asset.name)
+  if ((await sha256(target)) === asset.sha256) {
+    console.log(`ok       ${asset.name} (already downloaded)`)
+    return
+  }
+  const url = `${base}/${asset.name}`
+  console.log(`fetching ${asset.name} (${(asset.size / 1024 / 1024).toFixed(1)} MB) from ${url}`)
+  const response = await fetch(url)
+  if (!response.ok) {
+    throw new Error(`Failed to download ${url}: ${response.status} ${response.statusText}`)
+  }
+  const temp = `${target}.download`
+  await Bun.write(temp, response)
+  const actual = await sha256(temp)
+  if (actual !== asset.sha256) {
+    await fs.rm(temp, { force: true })
+    throw new Error(`Checksum mismatch for ${asset.name}: expected ${asset.sha256}, got ${actual}`)
+  }
+  await fs.rename(temp, target)
+  console.log(`ok       ${asset.name}`)
+}
+
+async function sha256(filePath) {
+  try {
+    const hash = createHash('sha256')
+    hash.update(new Uint8Array(await Bun.file(filePath).arrayBuffer()))
+    return hash.digest('hex')
+  } catch {
+    return undefined
+  }
+}
 
 await app.run()

@@ -2,9 +2,7 @@
   "configurations": [
     {
       "name": "Mac",
-      "includePath": [
-        "packages/react-native/example/ios/Pods/onnxruntime-c/Headers"
-      ],
+      "includePath": ["packages/react-native/example/ios/Pods/onnxruntime-c/Headers"],
       "defines": [],
       "macFrameworkPath": [
         "packages/react-native/example/ios/Pods/OpenCV",

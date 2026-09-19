@@ -7,6 +7,10 @@ app
   // the inline `[path=...]` default would lose the dot in the filename
   .add('[path]', 'Image path (default: assets/cn-01.jpg)', ['$files'])
   .add(async (path = 'assets/cn-01.jpg') => {
+    // the default models are not stored in git
+    await $`./ake fetch PP-OCRv5_server_det_infer.onnx,PP-OCRv5_server_rec_infer.onnx,ppocr_keys_v5.txt`.cwd(
+      '../../models',
+    )
     await $`rm -rf output`
     await $`bun run node-example.ts ${path}`
   })

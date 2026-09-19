@@ -6,8 +6,9 @@ import { ModelBase } from './ModelBase'
 
 export class Recognition extends ModelBase {
   #dictionary: Dictionary
+  #recognitionThreshold: number
 
-  static async create({ models, onnxOptions = {}, ...restOptions }: ModelCreateOptions) {
+  static async create({ models, onnxOptions = {}, recognitionThreshold = 0.5, ...restOptions }: ModelCreateOptions) {
     const recognitionPath = models?.recognitionPath || defaultModels?.recognitionPath
     invariant(recognitionPath, 'recognitionPath is required')
     const dictionaryPath = models?.dictionaryPath || defaultModels?.dictionaryPath
@@ -15,12 +16,15 @@ export class Recognition extends ModelBase {
     const model = await InferenceSession.create(recognitionPath, onnxOptions)
     const dictionaryText = await FileUtils.read(dictionaryPath)
     const dictionary = [...dictionaryText.split('\n'), ' ']
-    return new Recognition({ model, options: restOptions }, dictionary)
+    const instance = new Recognition({ model, options: restOptions }, dictionary)
+    instance.#recognitionThreshold = recognitionThreshold
+    return instance
   }
 
   constructor(options: ModelBaseConstructorArg, dictionary: Dictionary) {
     super(options)
     this.#dictionary = dictionary
+    this.#recognitionThreshold = 0.5
   }
 
   async run(lineImages: LineImage[], { onnxOptions = {} }: { onnxOptions?: InferenceSessionCommon.RunOptions } = {}) {
@@ -55,7 +59,7 @@ export class Recognition extends ModelBase {
       allLines.unshift(...lines)
     }
     // console.timeEnd('Recognition')
-    const result = calculateBox({ lines: allLines, lineImages })
+    const result = calculateBox({ lines: allLines, lineImages, threshold: this.#recognitionThreshold })
     return result
   }
 
@@ -118,9 +122,11 @@ function decode(dictionary: string[], textIndex: number[], textProb: number[], i
 function calculateBox({
   lines,
   lineImages,
+  threshold = 0.5,
 }: {
   lines: Line[]
   lineImages: LineImage[]
+  threshold?: number
 }) {
   let mainLine = lines
   const box = lineImages
@@ -130,9 +136,9 @@ function calculateBox({
       p[0] = p[0]
       p[1] = p[1]
     }
-    mainLine[i]['box'] = b
+    mainLine[i].box = b
   }
-  mainLine = mainLine.filter((x) => x.mean >= 0.5)
+  mainLine = mainLine.filter((x) => x.mean >= threshold)
   mainLine = afAfRec(mainLine)
   return mainLine
 }
@@ -161,7 +167,11 @@ function afAfRec(lines: Line[]) {
     }
     let outputBox = undefined
     if (boxes.at(0) && boxes.at(-1)) {
-      outputBox = [boxes.at(0)![0], boxes.at(-1)![1], boxes.at(-1)![2], boxes.at(0)![3]]
+      const firstBox = boxes.at(0)
+      const lastBox = boxes.at(-1)
+      if (firstBox && lastBox) {
+        outputBox = [firstBox[0], lastBox[1], lastBox[2], firstBox[3]]
+      }
     }
     outputLines.push({
       mean: mean / boxes.length,

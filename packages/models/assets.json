@@ -1,0 +1,41 @@
+{
+  "$comment": "Model assets are not stored in this repository. `./ake fetch` downloads them into assets/ and verifies each file against the sha256 below. Set GUTEN_OCR_MODELS_BASE_URL to use your own mirror.",
+  "baseUrl": "https://github.com/gutenye/ocr/releases/download/models-v1",
+  "assets": [
+    {
+      "name": "PP-OCRv5_server_det_infer.onnx",
+      "size": 88118768,
+      "sha256": "127edf0182bb3d218ad59476377b02ca90296cfb4cc85df55042d671a3e53aeb"
+    },
+    {
+      "name": "PP-OCRv5_server_rec_infer.onnx",
+      "size": 84505505,
+      "sha256": "13d0dda27d63dc0f4938af48df2c55b33f3c989a0bd5eacb8410e30f1735f644"
+    },
+    {
+      "name": "ppocr_keys_v5.txt",
+      "size": 74012,
+      "sha256": "d1979e9f794c464c0d2e0b70a7fe14dd978e9dc644c0e71f14158cdf8342af1b"
+    },
+    {
+      "name": "ch_PP-OCRv4_det_infer.onnx",
+      "size": 4745517,
+      "sha256": "30a86f5731181461d08021402766601e4302a9b9b9666be8aff402696339cdff"
+    },
+    {
+      "name": "ch_PP-OCRv4_rec_infer.onnx",
+      "size": 10822323,
+      "sha256": "06b3e6af6c59a1ba5d53790ed8c2e4b2de389870b6cf5a97f349f3412cb269c0"
+    },
+    {
+      "name": "ch_ppocr_mobile_v2.0_cls_infer.onnx",
+      "size": 578966,
+      "sha256": "491843a3c65de46295864c6815e41127eaa812c4dac1e19c6850ec49da9d3640"
+    },
+    {
+      "name": "ppocr_keys_v1.txt",
+      "size": 26249,
+      "sha256": "28b2362ad4ab2dc38769aa72feb535e3a9ddb3fd2a7585a05920e6393b1dc7f7"
+    }
+  ]
+}

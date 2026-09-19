@@ -17,7 +17,7 @@ export function registerBackend(backend: {
   ImageRaw: ImageRawType | any
   InferenceSession: InferenceSessionType | any
   splitIntoLineImages: SplitIntoLineImagesType
-  defaultModels: ModelCreateOptionsType['models']
+  defaultModels?: ModelCreateOptionsType['models']
 }) {
   FileUtils = backend.FileUtils
   ImageRaw = backend.ImageRaw
