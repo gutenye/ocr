@@ -8,14 +8,12 @@ const BASE_SIZE = 32
 
 export class Detection extends ModelBase {
   private detectionThreshold!: number
-  private boxThreshold!: number
   private unclipRatio!: number
 
   static async create({
     models,
     onnxOptions = {},
     detectionThreshold = 0.3,
-    boxThreshold = 0.6,
     unclipRatio = 1.5,
     ...restOptions
   }: ModelCreateOptions) {
@@ -24,7 +22,6 @@ export class Detection extends ModelBase {
     const model = await InferenceSession.create(detectionPath, onnxOptions)
     const instance = new Detection({ model, options: restOptions })
     instance.detectionThreshold = detectionThreshold
-    instance.boxThreshold = boxThreshold
     instance.unclipRatio = unclipRatio
     return instance
   }
@@ -65,7 +62,7 @@ export class Detection extends ModelBase {
     // Find text boxes, split image into lines
     //   - findContours from the image
     //   - returns text boxes and line images
-    const lineImages = await splitIntoLineImages(outputImage, inputImage, this.unclipRatio, this.boxThreshold)
+    const lineImages = await splitIntoLineImages(outputImage, inputImage, this.unclipRatio)
     this.debugBoxImage(inputImage, lineImages, 'boxes.jpg')
 
     return {

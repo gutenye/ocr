@@ -11,7 +11,6 @@ export async function splitIntoLineImages(
   image: ImageRawType,
   sourceImage: ImageRawType,
   unclipRatio = 1.5,
-  boxThreshold = 0.6,
 ): Promise<LineImage[]> {
   const w = image.width
   const h = image.height
