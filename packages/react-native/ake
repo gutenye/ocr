@@ -1,16 +1,14 @@
-#!/usr/bin/env nu
+#!/usr/bin/env bun
 
-alias bob = bun run bob
+import { $, app } from '@gutenye/script.js'
 
-def main [] {}
+app.cmd('build', 'Build the package with bob').add(async () => {
+  await $`bun run bob build`.nothrow()
+})
 
-def 'main build' [] {
-  do -i { bob build } 
-}
+app.cmd('publish', 'Publish to npm').add(async () => {
+  // build by scripts.prepublishOnly
+  await $`npm publish`
+})
 
-
-def 'main publish' [] {
-  # build by scripts.prepublishOnly
-  npm publish
-}
-
+await app.run()

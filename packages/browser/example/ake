@@ -1,18 +1,24 @@
-#!/usr/bin/env nu
+#!/usr/bin/env bun
 
-$env.DEFAULT_IMAGE_PATH = '/assets/cn-01.jpg'
+import { $, app } from '@gutenye/script.js'
 
-def main [] {}
+// read by build.ts to bake the default image into the bundle
+process.env.DEFAULT_IMAGE_PATH = '/assets/cn-01.jpg'
 
-def 'main build:watch' [] {
-  chokidar '../../src/**/*.ts' 'web.ts' 'build.ts' -c 'bun run build.ts' --initial
-}
+app.cmd('build:watch', 'Rebuild the bundle on source changes').add(async () => {
+  await $`chokidar '../../src/**/*.ts' web.ts build.ts -c 'bun run build.ts' --initial`
+})
 
-def 'main start' [] {
-  bun run build.ts
-  main start:prod --header "Cache-Control:no-cache"
-}
+app.cmd('start', 'Build and serve the example').add(async () => {
+  await $`bun run build.ts`
+  await app.invoke('start:prod --header Cache-Control:no-cache')
+})
 
-def --wrapped 'main start:prod' [...args] {
-  miniserve build -p 3000 --index index.html --verbose ...$args
-}
+app
+  .cmd('start:prod', 'Serve the built example')
+  .add('[...args]', 'Extra miniserve args')
+  .add(async (_args, { argv }) => {
+    await $`miniserve build -p 3000 --index index.html --verbose ${argv}`
+  })
+
+await app.run()

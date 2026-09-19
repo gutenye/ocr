@@ -1,6 +1,6 @@
 {
   "name": "@gutenye/ocr",
-  "version": "1.4.8",
+  "version": "1.4.9",
   "workspaces": [
     "packages/browser",
     "packages/browser/example",
@@ -13,6 +13,7 @@
   ],
   "devDependencies": {
     "@biomejs/biome": "1.7.3",
+    "@gutenye/script.js": "^8.3.1",
     "@types/bun": "latest",
     "tsc-alias": "^1.8.8",
     "typescript": "^5.0.0"

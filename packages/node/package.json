@@ -8,7 +8,7 @@
     "onnxruntime",
     "node"
   ],
-  "version": "1.4.8",
+  "version": "1.4.9",
   "type": "module",
   "license": "MIT",
   "repository": {

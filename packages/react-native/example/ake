@@ -1,36 +1,42 @@
-#!/usr/bin/env nu
+#!/usr/bin/env bun
 
-alias expo = bun run expo
+import { $, app } from '@gutenye/script.js'
 
-def main [] {}
+app.cmd('pod install', 'Install CocoaPods').add(async () => {
+  await $`pod install --project-directory=ios`
+})
 
-def 'main pod install' [] {
-  pod install --project-directory=ios
-}
+app.cmd('prebuild', 'Generate native projects').add(async () => {
+  await $`bun run expo prebuild`
+  await app.invoke('pod install')
+})
 
-def 'main prebuild' [] {
-  expo prebuild
-  main pod install
-}
+app.cmd('start', 'Start the expo dev server').add(async () => {
+  await $`bun run start`
+})
 
-def 'main start' [] {
-  bun run start
-}
+app
+  .cmd('add', 'Install packages with expo')
+  .add('[...packages]', 'Packages to install')
+  .add(async (_packages, { argv }) => {
+    await $`bun run expo install ${argv}`
+  })
 
-def --wrapped 'main add' [...args] {
-  expo install ...$args
-}
+app.cmd('android-studio', 'Open Android Studio').add(async () => {
+  await $`open -a 'Android Studio'`
+})
 
-def 'main android-studio' [] {
-  ^open -a 'Android Studio'
-}
+app
+  .cmd('simulator a', 'Boot an Android emulator')
+  .add('<name>', 'AVD name', ['$(emulator -list-avds)'])
+  .add(async (name) => {
+    await $`emulator @${name} -dns-server 8.8.8.8`
+    await Bun.sleep(10_000)
+    await app.invoke('fix a')
+  })
 
-def 'main simulator a' [name?: string = platforms ] {
-  emulator $'@($name)' -dns-server 8.8.8.8
-  sleep 10sec
-  main fix a
-}
+app.cmd('fix a', 'Reverse the Metro port to the device').add(async () => {
+  await $`adb reverse tcp:8081 tcp:8081`
+})
 
-def 'main fix a' [] {
-  adb reverse tcp:8081 tcp:8081
-}
+await app.run()

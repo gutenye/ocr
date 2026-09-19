@@ -1,21 +1,29 @@
-#!/usr/bin/env nu
+#!/usr/bin/env bun
 
+import { $, app } from '@gutenye/script.js'
 
-def main [] {}
+app
+  .cmd('start', 'Build with cmake and run')
+  // the inline `[path=...]` default would lose the dot in the filename
+  .add('[path]', 'Image path (default: ./assets/cn-01.jpg)', ['$files'])
+  .add(async (path = './assets/cn-01.jpg') => {
+    await $`mkdir -p build`
+    await $`
+      cmake ..
+      make
+    `.cwd('build')
+    await app.invoke('run', path)
+  })
 
-def 'main start' [path?: string = './assets/cn-01.jpg'] {
-  mkdir build
-  cd build
-  cmake ..  
-  make
-  cd ..
-  main run $path
-}
+app.cmd('start watch', 'Rebuild and run on source changes').add(async () => {
+  await $`chokidar '*.cc' '*.h' CMakeLists.txt -c './ake start' --initial`
+})
 
-def 'main run' [path: string] {
-  ./build/ocr $path
-}
+app
+  .cmd('run', 'Run the built binary')
+  .add('<path>', 'Image path', ['$files'])
+  .add(async (path) => {
+    await $`./build/ocr ${path}`
+  })
 
-def 'main start watch' [] {
-  chokidar *.cc *.h CMakeLists.txt -c './ake start' --initial 
-}
+await app.run()
